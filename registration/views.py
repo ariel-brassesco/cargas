@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from django.core.mail import send_mail
+
 from .models import User, Client, Inspector, Address
 from .serializers import ClientSerializer, UserSerializer, InspectorSerializer
 
@@ -11,14 +13,19 @@ from .serializers import ClientSerializer, UserSerializer, InspectorSerializer
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def me(request):
-    print(request.auth)
-    return Response(
-        {
-            "id": request.user.id,
-            "username": request.user.username,
-            "email": request.user.email,
-        }
-    )
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+def send_credentials(request):
+    user_id = request.data.pop('id', None)
+    try:
+        user = User.objects.get(id=user_id)
+        user.send_credentials()
+    except User.DoesNotExist:
+        return Response({"ok": False})
+    return Response({"ok": True})
 
 @api_view(["GET"])
 def validate_username(request):
@@ -53,8 +60,7 @@ class ClientViewSet(ModelViewSet):
                 }
         if not address and instance.address: data['address'] = None
         serializer = self.get_serializer(instance, data=data, partial=True)
-        if not serializer.is_valid(raise_exception=False):
-            print(serializer.errors)
+        serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
 
@@ -89,8 +95,7 @@ class InspectorViewSet(ModelViewSet):
                 }
         if not address and instance.address: data['address'] = None
         serializer = self.get_serializer(instance, data=data, partial=True)
-        if not serializer.is_valid(raise_exception=False):
-            print(serializer.errors)
+        serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
 

@@ -139,4 +139,7 @@ PASSWORD_RESET_TIMEOUT = 3600
 # Validators General Parameters
 MAX_PHONE_LENGTH = 15
 
+# Storage Files
+DEFAULT_FILE_STORAGE =  ('django.core.files.storage.FileSystemStorage' 
+if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
 

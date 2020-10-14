@@ -2,7 +2,7 @@ import os
 from .settings import BASE_DIR, MIDDLEWARE, INSTALLED_APPS
 
 
-ALLOWED_HOSTS = ['thepizzaclub.herokuapp.com']
+ALLOWED_HOSTS = ['cargas.herokuapp.com']
 
 # Application definition
 
@@ -48,3 +48,17 @@ SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SESSION_SAVE_EVERY_REQUEST = True # For session dictionary modifications between request
+
+# EMAIL SETTINGS
+EMAIL_HOST = os.getenv('MAILGUN_SMTP_SERVER')
+EMAIL_HOST_USER = os.getenv('MAILGUN_SMTP_LOGIN')
+EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_SMTP_PASSWORD')
+EMAIL_PORT = os.getenv('MAILGUN_SMTP_PORT')
+EMAIL_USE_TLS = True
+#EMAIL_SENDER_CONSULTA = os.getenv('EMAIL_SENDER_CONSULTA')
+#EMAIL_SENDER_COMPRAS = os.getenv('EMAIL_SENDER_COMPRAS')
+EMAIL_ERROR_REPORT = os.getenv('EMAIL_ERROR_REPORT')
+EMAIL_OWNER = os.getenv('EMAIL_OWNER')
+MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_API_KEY')
+MAILGUN_SERVER_NAME = os.getenv('MAILGUN_DOMAIN')
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'

@@ -1,7 +1,5 @@
 from rest_framework.serializers import ModelSerializer, StringRelatedField, ValidationError
 from django.db import IntegrityError
-import random
-import string
 
 from .models import User, Client, Inspector, Address
 
@@ -19,9 +17,7 @@ class UserSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'is_staff',
-            'is_inspector',
-            'is_client'
+            'user_type'
         ]
 
 class InspectorSerializer(ModelSerializer):
@@ -37,7 +33,6 @@ class InspectorSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         # Extract Data
-        print(validated_data)
         user = validated_data.pop('user', None)
         address = validated_data.pop('address', True)
         # Update User
@@ -63,7 +58,7 @@ class InspectorSerializer(ModelSerializer):
         # Create User
         user_data = validated_data.pop('user', None)
         user = User(is_client=False, is_inspector=True, is_staff=False, **user_data)
-        password = self.gen_password()
+        password = user.gen_password()
         user.set_password(password)
         user.save()
         # Create Address
@@ -79,12 +74,6 @@ class InspectorSerializer(ModelSerializer):
             letters = string.ascii_letters
             password = ''.join(random.choice(letters) for i in range(10))
             return password
-
-    def gen_password(self):
-        # Random string with the combination of lower and upper case
-        letters = string.ascii_letters
-        password = ''.join(random.choice(letters) for i in range(10))
-        return password
 
 class ClientSerializer(ModelSerializer):
     '''
@@ -124,7 +113,7 @@ class ClientSerializer(ModelSerializer):
         # Create User or Reactivate
         user_data = validated_data.pop('user', None)
         user = User(is_client=True, is_inspector=False, is_staff=False, **user_data)
-        password = self.gen_password()
+        password = user.gen_password()
         user.set_password(password)
         user.save()
         # Create Address
@@ -135,9 +124,4 @@ class ClientSerializer(ModelSerializer):
         client.save()
         return client
 
-    def gen_password(self):
-        # Random string with the combination of lower and upper case
-        letters = string.ascii_letters
-        password = ''.join(random.choice(letters) for i in range(10))
-        return password
 

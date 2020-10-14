@@ -2,12 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator, MaxLengthValidator, RegexValidator
 
-# from pizzaclub.settings import MAX_DNI_LENGTH, MAX_CUIL_LENGTH, PASSWORD_RESET_TIMEOUT
-# from pizzaclub.settings import MIN_DNI_LENGTH, MIN_CUIL_LENGTH
 from cargas.settings import MAX_PHONE_LENGTH
 
 import secrets
 import datetime
+import string
+import random
 # Create your models here.
 class Address(models.Model):
     address = models.CharField(max_length=100)
@@ -31,6 +31,29 @@ class User(AbstractUser):
     token = models.CharField(max_length=50)
     token_date = models.DateTimeField(auto_now=True)
     token_valid = models.BooleanField(default=True)
+
+    def user_type(self):
+        if self.is_superuser: return 'IS_SUPERUSER'
+        if self.is_staff: return 'IS_STAFF'
+        if self.is_inspector: return 'IS_INSPECTOR'
+        if self.is_client: return 'IS_CLIENT'
+        raise TypeError('The User has no type.')
+    
+    def gen_password(self):
+        # Random string with the combination of lower and upper case
+        letters = string.ascii_letters
+        password = ''.join(random.choice(letters) for i in range(10))
+        return password
+    
+    def send_credentials(self):
+        password = self.gen_password()
+        self.set_password(password)
+        self.save()
+        self.email_user(
+            subject='Credentials',
+            message=f"Username: {self.username}\nPassword: {password}",
+            from_email='ariel.brassesco@gmail.com')
+
 
     def is_manager(self):
         return (self.is_inspector and self.is_active) or self.is_superuser

@@ -31,4 +31,5 @@ urlpatterns = [
     path("inspectors/", inspector_list),
     path("inspectors/<int:pk>/", inspector_detail),
     path("validate_username/", views.validate_username),
+    path("send_credentials/", views.send_credentials),
 ]

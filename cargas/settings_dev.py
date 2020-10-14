@@ -39,3 +39,6 @@ MEDIA_URL = "/media/"
 # SECURE_HSTS_SECONDS = 60
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SESSION_SAVE_EVERY_REQUEST = True # For session dictionary modifications between request
+
+# EMAIL SETTINGS
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
