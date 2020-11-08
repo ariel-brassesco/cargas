@@ -35,7 +35,7 @@ def validate_username(request):
     return Response({"ok": not res})
 
 class ClientViewSet(ModelViewSet):
-    queryset = Client.objects.filter(user__is_active=True)
+    queryset = Client.objects.all()
     serializer_class = ClientSerializer
     
     def update(self, request, *args, **kwargs):
@@ -70,7 +70,7 @@ class ClientViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class InspectorViewSet(ModelViewSet):
-    queryset = Inspector.objects.filter(user__is_active=True)
+    queryset = Inspector.objects.all()
     serializer_class = InspectorSerializer
 
     def update(self, request, *args, **kwargs):

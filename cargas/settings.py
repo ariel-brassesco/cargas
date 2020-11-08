@@ -35,7 +35,7 @@ else:
 # Application definition
 INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
-    #'orders.apps.OrdersConfig',
+    'orders.apps.OrdersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

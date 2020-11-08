@@ -54,7 +54,6 @@ class User(AbstractUser):
             message=f"Username: {self.username}\nPassword: {password}",
             from_email='ariel.brassesco@gmail.com')
 
-
     def is_manager(self):
         return (self.is_inspector and self.is_active) or self.is_superuser
 

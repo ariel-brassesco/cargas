@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-#from django.contrib.auth.models import User
 from .models import User, Client, Inspector, Address
 
 # Register your models here
@@ -17,6 +16,16 @@ class UserAdmin(BaseUserAdmin):
         'is_inspector',
         'is_client'
         ]
+    # In fieldset define the custom fields 
+    # when change an user in admin app
+    fieldsets = BaseUserAdmin.fieldsets + (
+        (None, {'fields': ('is_client', 'is_inspector')}),
+    )
+    # In add_fieldset define the custom fields 
+    # when create anew user in admin app
+    add_fieldsets = BaseUserAdmin.add_fieldsets + (
+        (None, {'fields': ('is_client', 'is_inspector')}),
+    )
 
 class AddressAdmin(admin.ModelAdmin):
     list_display = ['id', 'address', 'lat', 'lon']

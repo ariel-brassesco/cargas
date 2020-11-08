@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer, StringRelatedField, ValidationError
+from rest_framework.serializers import ModelSerializer, StringRelatedField
 from django.db import IntegrityError
 
 from .models import User, Client, Inspector, Address
@@ -17,7 +17,8 @@ class UserSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'user_type'
+            'user_type',
+            'is_active'
         ]
 
 class InspectorSerializer(ModelSerializer):
