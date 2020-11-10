@@ -10,7 +10,7 @@ export const DASHBOARD_REPORTS: string = "/dashboard/informes";
 
 // DASHBOARD ORDERS ROUTES
 export const NEW_ORDER: string = DASHBOARD_ORDERS + "/new"
-export const ORDER_EDIT: string = DASHBOARD_ORDERS + "/edit/:order"
+export const ORDER_EDIT: string = DASHBOARD_ORDERS + "/edit"
 
 
 

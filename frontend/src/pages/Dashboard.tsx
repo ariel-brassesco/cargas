@@ -9,7 +9,7 @@ import {
   DASHBOARD_CLIENTS,
   DASHBOARD_INSPECTORS,
   DASHBOARD_PRODUCTS,
-  DASHBOARD_REPORTS 
+  // DASHBOARD_REPORTS 
 } from "../routes";
 // Import Pages
 import DashboardHomePage from "./DashboardHome";
@@ -20,24 +20,34 @@ import DashboardProductsPage from "./DashboardProduct";
 // import DashboardReportsPage from "./DashboardReport";
 //Import Components
 import { Navbar } from "../components/Navbar";
+// Import Actions
+import { 
+  fetchClients, 
+  fetchInspectors, 
+  fetchProducts, 
+  fetchOrders
+} from "../actions/dashboardActions";
 // Import Getters
 import { getAccount } from "../reducers/dashboardReducer";
 // Import Types
 import { Account, userTypeMapRoute } from "../types/account";
 
 const DashboardPage: FC = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const account: Account = useSelector((state: any) => getAccount(state));
   const router = useHistory();
 
   useEffect(() => {
-    dispatch(fetchPlace());
-  }, []);
+    dispatch(fetchClients());
+    dispatch(fetchInspectors());
+    dispatch(fetchProducts());
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!account?.id) router.push(LOGIN)
     else router.push(userTypeMapRoute[account.user_type]);
-  }, [account, router, userTypeMapRoute]);
+  }, [account, router]);
 
   return (
     <div>

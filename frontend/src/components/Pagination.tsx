@@ -19,11 +19,12 @@ export const Pagination: FC<Props> = ({
   next,
   pages,
   changePage,
+  ...props
 }) => {
   const numbers = Array.from({ length: pages }, (_, i) => ++i);
   return (
     <nav
-      className="pagination is-rounded"
+      className="pagination is-rounded is-small mt-1"
       role="navigation"
       aria-label="pagination"
     >

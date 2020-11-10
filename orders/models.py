@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.utils import timezone
 
 from registration.models import Client, Inspector
@@ -40,7 +39,7 @@ class Order(models.Model):
     boxes = models.IntegerField(default=0)
     net_weight = models.FloatField(default=0)
     gross_weight = models.FloatField(default=0)
-    lot = ArrayField(models.IntegerField(), default=list())
+    lot = models.CharField(max_length=50, default="",blank=True)
     status = models.CharField(choices=STATUS_OPTIONS, max_length=20)
     comment = models.TextField(default="", blank=True)
 

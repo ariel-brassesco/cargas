@@ -17,11 +17,12 @@ export interface Order extends Base {
   client: Client;
   inspector: Inspector;
   products: Product[];
-  date: Date;
-  time_start: Date;
-  time_complete: Date;
+  date: string;
+  time_start: string;
+  time_complete: string;
   origin: string;
   discharge: string;
+  booking: string
   shipping_line?: string;
   vessel_name: string;
   etd?: string;

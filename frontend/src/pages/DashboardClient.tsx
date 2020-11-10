@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faEdit, 
+  faTrash, 
+  faPlus,
+  faFingerprint
+} from '@fortawesome/free-solid-svg-icons';
 
 // Import Component
 import { Align, Table, Column } from "../components/Table";
@@ -31,7 +38,7 @@ class DashboardClientsPage extends Component<Props> {
     clients: [],
   };
 
-  private columns = [
+  private columns: Column[] = [
     {
       key: "company",
       title: "Compañía",
@@ -68,7 +75,7 @@ class DashboardClientsPage extends Component<Props> {
                 data-tooltip="Editar"
                 >
                 <span className="icon">
-                  <i className="fas fa-edit" />
+                  <FontAwesomeIcon icon={faEdit} />
                 </span>
               </button>
             }
@@ -86,7 +93,7 @@ class DashboardClientsPage extends Component<Props> {
               data-tooltip="Eliminar"
               >
               <span className="icon">
-                <i className="fas fa-trash" />
+                <FontAwesomeIcon icon={faTrash} />
               </span>
             </button>
           </Confirm>
@@ -98,7 +105,7 @@ class DashboardClientsPage extends Component<Props> {
                 data-tooltip="Enviar Credenciales"
                 >
                 <span className="icon">
-                  <i className="fas fa-fingerprint" />
+                  <FontAwesomeIcon icon={faFingerprint} />
                 </span>
               </button>
             }
@@ -144,7 +151,7 @@ class DashboardClientsPage extends Component<Props> {
             button={
               <button className="button is-info">
                 <span className="icon">
-                  <i className="fas fa-plus" />
+                  <FontAwesomeIcon icon={faPlus} />
                 </span>
                 <span>Nuevo Cliente</span>
               </button>

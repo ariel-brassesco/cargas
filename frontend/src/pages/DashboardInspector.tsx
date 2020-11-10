@@ -6,12 +6,15 @@ import {
   faTrash, 
   faPlus,
   faTimesCircle,
-  faCheckCircle
+  faCheckCircle,
+  faFingerprint
 } from '@fortawesome/free-solid-svg-icons';
 
 // Import Components
-import { Align, Table } from "../components/Table";
+import { Align, Table, Column } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
+import { NotificationTrigger } from "../components/NotificationTrigger";
+import { Notification } from "../components/Notification";
 import { Confirm } from "../components/Confirm";
 import { Toolbar } from "../components/Toolbar";
 import { EditInspectorModal } from "../components/modals/EditComponent";
@@ -20,7 +23,8 @@ import {
   createInspector,
   deleteInspector,
   updateInspector,
-  fetchInspectors
+  fetchInspectors,
+  sendCredentials
 } from "../actions/dashboardActions";
 // Import Getters
 import { getInspectors } from "../reducers/dashboardReducer";
@@ -36,7 +40,7 @@ class DashboardInspectorsPage extends Component<Props> {
     inspectors: [],
   };
 
-  private columns = [
+  private columns: Column[] = [
     {
       key: "activate",
       title: "",
@@ -60,12 +64,10 @@ class DashboardInspectorsPage extends Component<Props> {
     {
       key: "user.username",
       title: "Usuario",
-      width: 100,
     },
     {
       key: "full_name",
       title: "Nombre y Apellido",
-      width: 200,
       render: (inspector: Inspector) => (
       <p className="is-capitalize">
         {`${inspector.user.first_name} ${inspector.user.last_name}`}
@@ -75,29 +77,26 @@ class DashboardInspectorsPage extends Component<Props> {
     {
       key: "user.email",
       title: "Correo Electrónico",
-      width: 200,
     },
     {
       key: "phone",
       title: "Teléfono",
-      width: 200,
     },
     {
       key: "address",
       title: "Dirección",
-      width: 300,
       render: (inspector: Inspector) => (inspector.address?.address || '-')
     },
     {
       key: "actions",
       title: "Acciones",
       align: Align.center,
-      width: 120,
+      width: 150,
       render: (inspector: Inspector) => (
         <div>
           <ModalTrigger
             button={
-              <button className="button is-info mr-2 has-tooltip-arrow" 
+              <button className="button is-small is-info mr-1 has-tooltip-arrow" 
                 data-tooltip="Editar"
                 >
                 <span className="icon">
@@ -118,13 +117,33 @@ class DashboardInspectorsPage extends Component<Props> {
             okLabel="Eliminar"
             onClick={this.handleDeleteInspector(inspector)}
           >
-            <button className="button is-danger has-tooltip-arrow"
+            <button className="button is-small is-danger mr-1 has-tooltip-arrow"
               data-tooltip="Eliminar">
               <span className="icon">
                 <FontAwesomeIcon icon={faTrash} />
               </span>
             </button>
           </Confirm>
+
+          <NotificationTrigger
+            onCall={this.handleSendCredentials(inspector)}
+            button={
+              <button className="button is-small is-warning has-tooltip-arrow"
+                data-tooltip="Enviar Credenciales"
+                >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faFingerprint} />
+                </span>
+              </button>
+            }
+            modal= {
+              <Notification 
+                okMsg="Las credentiales fueron enviadas."
+                wrongMsg="Upss! Algo salió. Intentalo de nuevo."
+              />
+            }
+          />
+
         </div>
       ),
     },
@@ -137,6 +156,10 @@ class DashboardInspectorsPage extends Component<Props> {
   private handleEditInspector = (inspector: Inspector) => (data: Record<string, any>) => {
     this.props.dispatch(updateInspector(inspector.user.id, data));
   };
+
+  private handleSendCredentials = (inspector: Inspector) => () => (
+    this.props.dispatch(sendCredentials(inspector.user.id))
+  );
 
   private handleSaveInspector = (inspector: Record<string, any>) => {
     this.props.dispatch(createInspector(inspector));

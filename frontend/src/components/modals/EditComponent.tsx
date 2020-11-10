@@ -183,7 +183,6 @@ export const EditInspectorModal: FC<Props> = ({user, onOk, ...props}) => {
   );
 }
 
-
 export const EditProductModal: FC<PropsProduct> = ({product , onOk, ...props}) => {
 
   const validationSchema = Yup.object({

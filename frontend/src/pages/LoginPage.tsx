@@ -10,12 +10,7 @@ import { CustomField } from "../components/Common";
 import { login, logout } from "../actions/dashboardActions";
 // Import Routes
 import { DASHBOARD } from "../routes";
-// import {
-//   IS_SUPERUSER,
-//   IS_STAFF,
-//   IS_CLIENT,
-//   IS_INSPECTOR
-// } from "../constans";
+
 
 type Values = {
   username: "";

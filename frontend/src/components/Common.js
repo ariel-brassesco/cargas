@@ -130,6 +130,29 @@ export const CustomSelect = ({
   </div>
 );
 
+export const CustomMultipleSelect = ({
+  field,
+  form: { touched, errors },
+  ...props
+}) => (
+  <div className="field">
+    {props.label ? (
+      <label className="label is-large">{props.label}</label>
+    ) : null}
+    <div className="control">
+      <div className="select is-multiple is-medium fullwidth">
+        <select multiple className="fullwidth" {...field} {...props}>
+          {props.children}
+        </select>
+      </div>
+    </div>
+    {touched[field.name] && errors[field.name] ? (
+      <p className="help is-danger">{errors[field.name]}</p>
+    ) : null}
+  </div>
+);
+
+
 export const Loader = ({
   className = "image is-128x128",
   src = "/images/loader.gif",

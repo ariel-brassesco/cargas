@@ -1,10 +1,6 @@
 import { Dispatch } from "redux";
 // Import Types
 import { Credentials } from "../types/credentials";
-import { Client } from "../types/client";
-import { Inspector } from "../types/inspector";
-import { Product } from "../types/product";
-import { Order } from "../types/order";
 // Import Actions
 import {
   DASHBOARD_LOGIN,
