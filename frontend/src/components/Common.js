@@ -152,7 +152,6 @@ export const CustomMultipleSelect = ({
   </div>
 );
 
-
 export const Loader = ({
   className = "image is-128x128",
   src = "/images/loader.gif",

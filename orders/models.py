@@ -16,6 +16,8 @@ class Order(models.Model):
         ("pending", "pending"),
         ("initiating", "initiating"),
         ("loading", "loading"),
+        ("closing", "closing"),
+        ("finish", "finish"),
         ("cancel", "cancel"),
         ("ready", "ready")
     ]
@@ -48,12 +50,29 @@ class Order(models.Model):
                 f"{self.client.company}-" \
                 f"{self.inspector.user.get_full_name()}"
 
+
+def name_files_row(instance, filename):
+    return f"carga_{instance.order.id}/row_{instance.number}/{filename}"
+
 class RowOrder(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='rows')
     number = models.IntegerField(default=1)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=100, null=True, blank=True)
+    image = models.ImageField(upload_to=name_files_row)
     quantity = models.IntegerField(default=0)
+
+    def get_file_extension(self, name):
+        # Get the file extension
+        return f".{name.split('.')[-1]}"
+
+    def save(self, *args, **kwargs):
+        '''
+            Change the name of images.
+        '''
+        # Change the name of image
+        self.image.name = f"{self.order.id}-row_{self.number}{self.get_file_extension(self.image.name)}"
+        super(RowOrder, self).save(*args, **kwargs)
 
 class WeightControl(models.Model):
     order = models.ForeignKey(
@@ -71,5 +90,108 @@ class TemperatureControl(models.Model):
         Order,
         on_delete=models.CASCADE,
         related_name='temps')
-    row = models.ForeignKey(RowOrder, on_delete=models.CASCADE)
+    row = models.PositiveIntegerField(default=1)
     temp = models.FloatField()
+
+
+def name_files_container(instance, filename):
+    return f"carga_{instance.order.id}/contenedor/{filename}"
+
+class ContainerOrder(models.Model):
+    """
+    This model has the picture for the initial process of load.
+    """
+    
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='initial')
+    empty = models.ImageField(upload_to=name_files_container)
+    matricula = models.ImageField(upload_to=name_files_container)
+    ventilation = models.ImageField(upload_to=name_files_container, null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now=True)
+
+    def get_file_extension(self, name):
+        # Get the file extension
+        return f".{name.split('.')[-1]}"
+
+    def save(self, *args, **kwargs):
+        '''
+            Change the name of images.
+        '''
+        
+        # Change the name of image
+        self.empty.name = f"{self.order.id}-contenedor-vacio{self.get_file_extension(self.empty.name)}"
+        self.matricula.name = f"{self.order.id}-contenedor-matricula{self.get_file_extension(self.matricula.name)}"
+        if self.ventilation:
+            self.ventilation.name = f"{self.order.id}-ventilacion{self.get_file_extension(self.ventilation.name)}"
+        super(ContainerOrder, self).save(*args, **kwargs)
+
+
+def name_files_closing(instance, filename):
+    return f"carga_{instance.order.id}/closing/{filename}"
+
+class CloseOrder(models.Model):
+    """
+    This model has the picture for the final process of load.
+    """
+    
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='final')
+    full = models.ImageField(upload_to=name_files_container)
+    semi_close = models.ImageField(upload_to=name_files_container, null=True, blank=True)
+    close = models.ImageField(upload_to=name_files_container, null=True, blank=True)
+    precinto = models.ImageField(upload_to=name_files_container, null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now=True)
+
+    def get_file_extension(self, name):
+        # Get the file extension
+        return f".{name.split('.')[-1]}"
+
+    def save(self, *args, **kwargs):
+        '''
+            Change the name of images.
+        '''
+        # Change the name of image
+        self.full.name = f"{self.order.id}-contenedor-lleno" \
+            f"{self.get_file_extension(self.full.name)}"
+        if self.semi_close: 
+            self.semi_close.name = f"{self.order.id}-contenedor-semicerrado" \
+                f"{self.get_file_extension(self.semi_close.name)}"
+        if self.close:
+            self.close.name = f"{self.order.id}-contenedor-cerrado" \
+                f"{self.get_file_extension(self.close.name)}"
+        if self.close:
+            self.precinto.name = f"{self.order.id}-contenedor-precinto" \
+                f"{self.get_file_extension(self.precinto.name)}"
+        super(CloseOrder, self).save(*args, **kwargs)
+
+
+def name_files_control(instance, filename):
+    return f"carga_{instance.order.id}/control/{instance.control}/{filename}"
+
+class ImageControl(models.Model):
+    TYPE_OPTIONS = [
+        ("temperature", "temperature"),
+        ("weight", "weight"),
+        ("measure", "measure"),
+    ]
+    
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='images')
+    control = models.CharField(choices=TYPE_OPTIONS, max_length=15)
+    number = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to=name_files_control)
+    uploaded_at = models.DateTimeField(auto_now=True)
+
+    def get_file_extension(self, name):
+        # Get the file extension
+        return f".{name.split('.')[-1]}"
+
+    def save(self, *args, **kwargs):
+        '''
+            Change the name of images.
+        '''
+        
+        # Change the name of image
+        self.image.name = f"{self.order.id}-{self.control}{self.number}" \
+            f"{self.get_file_extension(self.image.name)}"
+        super(ImageControl, self).save(*args, **kwargs)

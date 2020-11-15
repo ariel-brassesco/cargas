@@ -214,11 +214,12 @@ class DashboardOrdersPage extends Component<Props, State> {
         <Switch>
           <Route path={NEW_ORDER} render={({history}) => (
             <EditOrder
-            clients={clients}
-            inspectors={inspectors.filter(i => i.user.is_active)}
-            products={products}
-            onOk={this.handleSaveOrder} 
-            onCancel={() => history.push(DASHBOARD_ORDERS)}/>
+              clients={clients}
+              inspectors={inspectors.filter(i => i.user.is_active)}
+              products={products}
+              onOk={this.handleSaveOrder} 
+              onCancel={() => history.push(DASHBOARD_ORDERS)}
+            />
           )
           }/>
           

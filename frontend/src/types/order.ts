@@ -9,6 +9,8 @@ export const statusMap: Record<string, string> = {
   pending: "Pendiente",
   initiating: "Iniciando",
   loading: "Cargando",
+  closing: "Cerrando",
+  finish: "Terminado",
   cancel: "Cancelado",
   ready: "Listo",
 };

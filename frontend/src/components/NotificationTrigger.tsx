@@ -16,7 +16,7 @@ export const NotificationTrigger: FC<Props> = ({ button, modal, onCall }) => {
       setOk(res)
       setOpen(true);
     }
-  }, [modal.props]);
+  }, [onCall]);
 
   return (
     <>

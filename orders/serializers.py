@@ -1,6 +1,14 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 
-from .models import Order, Product
+from .models import (
+    Order, 
+    Product, 
+    ContainerOrder,
+    CloseOrder,
+    RowOrder,
+    TemperatureControl,
+    WeightControl
+)
 from registration.models import Client, Inspector
 from registration.serializers import ClientSerializer, InspectorSerializer
 
@@ -9,10 +17,40 @@ class ProductSerializer(ModelSerializer):
         model = Product
         fields = "__all__"
 
+class ContainerOrderSerializer(ModelSerializer):
+    order = PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = ContainerOrder
+        fields = "__all__"
+    
+    def create(self, validated_data):
+        order_id = self.context["request"].data.get("order")
+        order = Order.objects.get(pk=order_id)
+        if order.initial.exists(): raise ValueError("This order already has a Container Data")
+        container = ContainerOrder.objects.create(order=order, **validated_data)
+        return container
+
+class CloseOrderSerializer(ModelSerializer):
+    order = PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = CloseOrder
+        fields = "__all__"
+    
+    def create(self, validated_data):
+        order_id = self.context["request"].data.get("order")
+        order = Order.objects.get(pk=order_id)
+        if order.final.exists(): raise ValueError("This order already has a Close Data")
+        container = CloseOrder.objects.create(order=order, **validated_data)
+        return container
+
 class OrderSerializer(ModelSerializer):
     client = ClientSerializer(read_only=True)
     inspector = InspectorSerializer(read_only=True)
     products = ProductSerializer(many=True, read_only=True)
+    initial = ContainerOrderSerializer(read_only=True, many=True)
+    final = CloseOrderSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
@@ -54,3 +92,44 @@ class OrderSerializer(ModelSerializer):
 
         order.save()
         return order
+
+class RowOrderSerializer(ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    class Meta:
+        model = RowOrder
+        fields = "__all__"
+        read_only_fields = ['order']
+    
+    def create(self, validated_data):
+        # Get the order nad the prooduct form request
+        order = Order.objects.get(pk=self.context["request"].data.get("order"))
+        product = Product.objects.get(pk=self.context["request"].data.get("product"))
+        # Create row and return
+        row = RowOrder.objects.create(**validated_data, order=order, product=product)
+        return row
+
+class TempControlSerializer(ModelSerializer):
+    class Meta:
+        model = TemperatureControl
+        fields = "__all__"
+        read_only_fields = ['order']
+    
+    def create(self, validated_data):
+        # Get the order nad the prooduct form request
+        order = Order.objects.get(pk=self.context["request"].data.get("order"))
+        # Create row and return
+        temp = TemperatureControl.objects.create(**validated_data, order=order)
+        return temp
+
+class WeightControlSerializer(ModelSerializer):
+    class Meta:
+        model = WeightControl
+        fields = "__all__"
+        read_only_fields = ['order']
+    
+    def create(self, validated_data):
+        # Get the order nad the prooduct form request
+        order = Order.objects.get(pk=self.context["request"].data.get("order"))
+        # Create row and return
+        weight = WeightControl.objects.create(**validated_data, order=order)
+        return weight

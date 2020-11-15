@@ -59,10 +59,12 @@ export const apiRoutes = {
   inspectors_data: "accounts/inspectors/",
   validate_username: "/accounts/validate_username/",
   credentials: "accounts/send_credentials/",
-  // orders_create: "/orders/admin/new_order/",
-  // orders_update: "/orders/admin/update/",
   orders_data: "/orders/admin/",
   products_data: "/orders/products/",
   client_orders: "/orders/client/",
-  inspector_orders: "/orders/inspector/"
+  inspector_orders: "/orders/inspector/",
+  inspector_rows: "/orders/inspector/rows/",
+  inspector_temps: "/orders/inspector/temps/",
+  inspector_weights: "/orders/inspector/weights/",
+  inspector_close: "/orders/inspector/close/",
 };
