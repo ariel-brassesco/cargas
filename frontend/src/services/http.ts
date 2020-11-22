@@ -66,5 +66,8 @@ export const apiRoutes = {
   inspector_rows: "/orders/inspector/rows/",
   inspector_temps: "/orders/inspector/temps/",
   inspector_weights: "/orders/inspector/weights/",
+  inspector_add_measure: "/orders/inspector/measure/",
+  inspector_list_measure: "/orders/inspector/measures/",
   inspector_close: "/orders/inspector/close/",
+  inspector_container: "/orders/inspector/container/",
 };

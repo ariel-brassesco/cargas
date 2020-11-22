@@ -19,6 +19,7 @@ type Values = {
   client: string;
   inspector: string;
   products: number[];
+  gross_weight: number;
   date: string;
   time_start: string;
   time_complete: string;
@@ -63,6 +64,7 @@ export const EditOrder: FC<Props> = ({
         client: String(order?.client.user.id ?? ""),
         inspector: String(order?.inspector.user.id ?? ""),
         products: order?.products.map(p => p.id) ?? [],
+        gross_weight: order?.gross_weight ?? 0,
         date: dateInUSFormat(order?.date),
         time_start: timeFromUTCToLocal(order?.date, order?.time_start),
         time_complete: timeFromUTCToLocal(order?.date, order?.time_complete),
@@ -114,13 +116,24 @@ export const EditOrder: FC<Props> = ({
             </Field>
           </div>
         </div>
-        <Field name="products" label="Productos" component={CustomMultipleSelect}>
-        {products?.map(p => (
-            <option value={p.id} key={p.id}>
-            {p.name}
-            </option>
-        ))}
-        </Field>
+        <div className="field is-horizontal">
+          <div className="field-body">
+            <Field name="products" label="Productos" component={CustomMultipleSelect}>
+            {products?.map(p => (
+                <option value={p.id} key={p.id}>
+                {p.name}
+                </option>
+            ))}
+            </Field>
+
+            <Field 
+              name="gross_weight" 
+              label="Peso Bruto" 
+              type="text" 
+              component={CustomField}
+            />
+          </div>
+        </div>
         
         <div className="field is-horizontal">
           <div className="field-body">

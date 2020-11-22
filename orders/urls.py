@@ -6,7 +6,9 @@ from .views import (
     ClientOrderViewSet,
     RowOrderViewSet,
     TempControlViewSet,
-    WeightControlViewSet
+    WeightControlViewSet,
+    ContainerOrderViewSet,
+    CloseOrderViewSet
 )
 from . import views
 
@@ -42,17 +44,24 @@ rows_list = RowOrderViewSet.as_view({"get": "list", "post": "create"})
 temps_list = TempControlViewSet.as_view({"get": "list", "post": "create"})
 weights_list = WeightControlViewSet.as_view({"get": "list", "post": "create"})
 
+rows_detail = RowOrderViewSet.as_view({"patch": "partial_update", "delete": "destroy"})
+container_detail = ContainerOrderViewSet.as_view({"patch": "partial_update"})
+close_container_detail = CloseOrderViewSet.as_view({"patch": "partial_update"})
+
 urlpatterns = [
-    # path("inspector/<int:pk>/", views.get_order_inspector),
-    # path("client/<int:pk>/", views.get_order_client),
     path("admin/", order_list),
     path("admin/<int:pk>/", order_detail),
     path("products/", product_list),
     path("products/<int:pk>/", product_detail),
     path("inspector/rows/", rows_list),
+    path("inspector/rows/<int:pk>/", rows_detail),
     path("inspector/temps/", temps_list),
     path("inspector/weights/", weights_list),
+    path("inspector/measure/", views.create_measure),
+    path("inspector/measures/", views.get_list_measure),
     path("inspector/close/", inspector_close),
+    path("inspector/container/<int:pk>/", container_detail),
+    path("inspector/close/<int:pk>/", close_container_detail),
     path("inspector/", inspector_list),
     path("inspector/<int:pk>/", inspector_detail),
     path("client/", client_list),

@@ -10,12 +10,18 @@ export const FETCH_ORDERS_INSPECTOR: string = "FETCH_ORDERS_INSPECTOR";
 export const FETCH_ROWS_INSPECTOR: string = "FETCH_ROWS_INSPECTOR";
 export const FETCH_TEMPS_INSPECTOR: string = "FETCH_TEMPS_INSPECTOR";
 export const FETCH_WEIGHTS_INSPECTOR: string = "FETCH_WEIGHTS_INSPECTOR";
+export const FETCH_MEASURES_INSPECTOR: string = "FETCH_MEASURES_INSPECTOR";
 export const INIT_ORDER: string = "INIT_ORDER";
 export const CLOSE_ORDER: string = "CLOSE_ORDER";
-export const UPDATE_STATUS_ORDER: string = "UPDATE_STATUS_ORDER";
+export const UPDATE_ORDER_INSPECTOR: string = "UPDATE_ORDER_INSPECTOR";
 export const NEW_ROW: string = "INSPECTOR_NEW_ROW";
+export const UPDATE_ROW: string = "UPDATE_ROW";
+export const DELETE_ROW: string = "DELETE_ROW";
 export const NEW_TEMPERATURE: string = "INSPECTOR_NEW_TEMPERATURE";
 export const NEW_WEIGHT: string = "INSPECTOR_NEW_WEIGHT";
+export const NEW_MEASURE: string = "INSPECTOR_NEW_MEASURE";
+export const UPDATE_INIT_ORDER_INSPECTOR: string = "UPDATE_INIT_ORDER_INSPECTOR";
+export const UPDATE_CLOSE_ORDER_INSPECTOR: string = "UPDATE_CLOSE_ORDER_INSPECTOR";
 
 type State = {
   orders: Order[];
@@ -23,6 +29,7 @@ type State = {
   next: number;
   temps: Temperature[];
   weights: Weight[];
+  measures: any[];
 }
 
 const initialState: State = {
@@ -31,7 +38,7 @@ const initialState: State = {
   next: 1,
   temps: [],
   weights: [],
-  // measures: []
+  measures: []
 };
 
 export const inspectorReducer: Reducer<State> = (
@@ -66,6 +73,12 @@ export const inspectorReducer: Reducer<State> = (
         weights: payload ?? [],
       };
 
+    case FETCH_MEASURES_INSPECTOR:
+        return {
+          ...state,
+          measures: payload ?? [],
+        };
+
     case INIT_ORDER:
       return {
         ...state,
@@ -78,7 +91,19 @@ export const inspectorReducer: Reducer<State> = (
         orders: state.orders.map(o => (o.id === payload.id)?payload:o)
       }
 
-    case UPDATE_STATUS_ORDER:
+    case UPDATE_ORDER_INSPECTOR:
+      return {
+        ...state,
+        orders: state.orders.map(o => (o.id === payload.id)?payload:o)
+      }
+    
+    case UPDATE_INIT_ORDER_INSPECTOR:
+      return {
+        ...state,
+        orders: state.orders.map(o => (o.id === payload.id)?payload:o)
+      }
+    
+    case UPDATE_CLOSE_ORDER_INSPECTOR:
       return {
         ...state,
         orders: state.orders.map(o => (o.id === payload.id)?payload:o)
@@ -90,6 +115,18 @@ export const inspectorReducer: Reducer<State> = (
         ...state,
         rows,
         next: payload.number + 1
+      }
+    
+    case UPDATE_ROW:
+      return {
+        ...state,
+        rows: state.rows.map(r => (r.id === payload.id)?payload:r)
+      }
+    
+    case DELETE_ROW:
+      return {
+        ...state,
+        rows: state.rows.filter(r => r.id !== payload.id)
       }
     
     case NEW_TEMPERATURE:
@@ -105,6 +142,13 @@ export const inspectorReducer: Reducer<State> = (
         ...state,
         weights
       }
+    
+    case NEW_MEASURE:
+      const measures = state.measures.concat(payload);
+      return {
+        ...state,
+        measures
+      }
 
     default:
       return state;
@@ -117,3 +161,4 @@ export const getRows = (state: any) => state.inspector.rows;
 export const getNextRow = (state: any) => state.inspector.next;
 export const getTemps = (state: any) => state.inspector.temps;
 export const getWeights = (state: any) => state.inspector.weights;
+export const getMeasures = (state: any) => state.inspector.measures;

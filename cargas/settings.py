@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
@@ -144,3 +145,15 @@ MAX_PHONE_LENGTH = 15
 DEFAULT_FILE_STORAGE =  ('django.core.files.storage.FileSystemStorage' 
 if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
 
+# EMAIL SETTINGS
+EMAIL_HOST = os.getenv('MAILGUN_SMTP_SERVER')
+EMAIL_HOST_USER = os.getenv('MAILGUN_SMTP_LOGIN')
+EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_SMTP_PASSWORD')
+EMAIL_PORT = os.getenv('MAILGUN_SMTP_PORT')
+EMAIL_USE_TLS = True
+EMAIL_SENDER_CREDENTIALS = os.getenv('EMAIL_SENDER_CREDENTIALS')
+EMAIL_RECEIVE_CREDENTIALS = os.getenv("EMAIL_RECEIVE_CREDENTIALS")
+EMAIL_OWNER = os.getenv("EMAIL_OWNER")
+MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_API_KEY')
+MAILGUN_SERVER_NAME = os.getenv('MAILGUN_DOMAIN')
+EMAIL_BACKEND = 'django_mailgun.MailgunBackend'

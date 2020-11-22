@@ -7,8 +7,6 @@ import {
   withRouter
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import { Formik, Field, Form } from "formik";
-// import * as Yup from "yup";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPlus,
@@ -19,6 +17,7 @@ import {
 import FormNewRow from "../components/FormNewRow";
 import FormNewTemperature from "../components/FormNewTemperature";
 import FormNewWeight from "../components/FormNewWeight";
+import FormNewMeasure from "../components/FormNewMeasure";
 import { GoToButton } from "../components/Common";
 import { Table, Column, Align } from "../components/Table";
 import { Confirm } from "../components/Confirm";
@@ -27,10 +26,12 @@ import {
   fetchRows,
   fetchTemps,
   fetchWeights,
-  updateStatusOrder,
+  fetchMeasures,
+  updateOrderInspector,
   newRow,
   newTemperature,
-  newWeight
+  newWeight,
+  newMeasure
 } from "../actions/inspectorActions";
 //Import Types
 import { Order } from "../types/order";
@@ -42,7 +43,7 @@ import {
   INSPECTOR_NEW_LINE,
   INSPECTOR_TEMPERATURE_CONTROL,
   INSPECTOR_WEIGHT_CONTROL,
-  // INSPECTOR_ORGANOLEPTIC_CONTROL
+  INSPECTOR_MEASURE_CONTROL
 } from "../routes";
 // Import Getters
 import { getRows } from "../reducers/inspectorReducer";
@@ -92,10 +93,11 @@ const InspectorLoadingOrder: FC<Props>= ({
     dispatch(fetchRows(order.id));
     dispatch(fetchTemps(order.id));
     dispatch(fetchWeights(order.id));
+    dispatch(fetchMeasures(order.id));
   }, [order, dispatch]);
 
   const  handleNewRow = (data: FormData) => {
-    if (rows.length < 1) dispatch(updateStatusOrder(order.id, "loading"));
+    if (rows.length < 1) dispatch(updateOrderInspector(order.id, {status: "loading"}));
     return newRow(data)(dispatch);
   }
 
@@ -103,8 +105,10 @@ const InspectorLoadingOrder: FC<Props>= ({
 
   const  handleNewWeight = (data: FormData) => newWeight(data)(dispatch);
 
+  const  handleNewMeasure = (data: FormData) => newMeasure(data)(dispatch);
+
   const handleFinishLoading = async (status: string) => {
-    await dispatch(updateStatusOrder(order.id, status));
+    await dispatch(updateOrderInspector(order.id, { status }));
     history.push(`${INSPECTOR_CLOSING_ORDER}/${order.id}`);
   }
   
@@ -115,50 +119,69 @@ const InspectorLoadingOrder: FC<Props>= ({
   if (!allowStatus.includes(order.status)) return <Redirect to={PROFILE_INSPECTOR}/>
   
   return (
-    <div>
+    <div className="m-2 is-flex is-flex-direction-column">
       <Switch>
         <Route path={url + INSPECTOR_NEW_LINE}>
-          <FormNewRow order={order} backUrl={url} onOk={handleNewRow}/>
+          <FormNewRow order={order} okUrl={url} backUrl={url} onOk={handleNewRow}/>
         </Route>
 
         <Route path={url + INSPECTOR_TEMPERATURE_CONTROL}>
-          <FormNewTemperature order={order} backUrl={url} onOk={handleNewTemperature}/>
+          <FormNewTemperature order={order} okUrl={url} backUrl={url} onOk={handleNewTemperature}/>
         </Route>
 
         <Route path={url + INSPECTOR_WEIGHT_CONTROL}>
-          <FormNewWeight order={order} backUrl={url} onOk={handleNewWeight}/>
+          <FormNewWeight order={order} okUrl={url} backUrl={url} onOk={handleNewWeight}/>
+        </Route>
+
+        <Route path={url + INSPECTOR_MEASURE_CONTROL}>
+          <FormNewMeasure order={order} okUrl={url} backUrl={url} onOk={handleNewMeasure}/>
         </Route>
 
         <Route path={url}>
           <GoToButton
             path={url + INSPECTOR_NEW_LINE} 
-            className="button is-success is-fullwidth m-2"
+            className="button is-success is-fullwidth my-2"
           >
             <span className="icon">
               <FontAwesomeIcon icon={faPlus} />
             </span>
-            <span>Fila</span>
+            <span className="is-uppercase">Fila</span>
           </GoToButton>
           <GoToButton 
             path={url + INSPECTOR_TEMPERATURE_CONTROL} 
-            className="button is-success is-fullwidth m-2" 
+            className="button is-success is-fullwidth my-2" 
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Temperatura</span>
+            <span className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+            <span className="is-uppercase">Temperatura</span>
           </GoToButton>
           <GoToButton 
             path={url + INSPECTOR_WEIGHT_CONTROL} 
-            className="button is-success is-fullwidth m-2" 
+            className="button is-success is-fullwidth my-2" 
           >
-            <FontAwesomeIcon icon={faPlus} />
-            <span>Pesos</span>
+            <span className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+            <span className="is-uppercase">Pesos</span>
+          </GoToButton>
+          <GoToButton 
+            path={url + INSPECTOR_MEASURE_CONTROL} 
+            className="button is-success is-fullwidth my-2" 
+          >
+            <span className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+            <span className="is-uppercase">Organoléptica</span>
           </GoToButton>
           <GoToButton 
             path={PROFILE_INSPECTOR} 
-            className="button is-warning is-fullwidth m-2" 
+            className="button is-warning is-fullwidth my-2" 
           >
-            <FontAwesomeIcon icon={faUndo} />
-            <span>Volver</span>
+            <span className="icon">
+              <FontAwesomeIcon icon={faUndo} />
+            </span>
+            <span className="is-uppercase">Volver</span>
           </GoToButton>
 
           <Confirm
@@ -166,7 +189,7 @@ const InspectorLoadingOrder: FC<Props>= ({
             okLabel="Sí"
             onClick={() => handleFinishLoading("closing")}
           >
-            <span className="button is-danger is-fullwidth m-2">
+            <span className="button is-danger is-fullwidth is-uppercase mb-4">
               Finalizar Carga  
             </span>
           </Confirm>

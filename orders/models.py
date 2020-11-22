@@ -71,7 +71,9 @@ class RowOrder(models.Model):
             Change the name of images.
         '''
         # Change the name of image
-        self.image.name = f"{self.order.id}-row_{self.number}{self.get_file_extension(self.image.name)}"
+        image_name = f"{self.order.id}-row_{self.number}"
+        if image_name not in self.image.name:
+            self.image.name = image_name + f"{self.get_file_extension(self.image.name)}"
         super(RowOrder, self).save(*args, **kwargs)
 
 class WeightControl(models.Model):
@@ -118,10 +120,18 @@ class ContainerOrder(models.Model):
         '''
         
         # Change the name of image
-        self.empty.name = f"{self.order.id}-contenedor-vacio{self.get_file_extension(self.empty.name)}"
-        self.matricula.name = f"{self.order.id}-contenedor-matricula{self.get_file_extension(self.matricula.name)}"
+        empty_name = f"{self.order.id}-contenedor-vacio"
+        if empty_name not in self.empty.name:
+            self.empty.name = empty_name + f"{self.get_file_extension(self.empty.name)}"
+        
+        matricula_name = f"{self.order.id}-contenedor-matricula"
+        if matricula_name not in self.matricula.name:
+            self.matricula.name = matricula_name + f"{self.get_file_extension(self.matricula.name)}"
+        
         if self.ventilation:
-            self.ventilation.name = f"{self.order.id}-ventilacion{self.get_file_extension(self.ventilation.name)}"
+            ventilation_name = f"{self.order.id}-ventilacion"
+            if ventilation_name not in self.ventilation.name:
+                self.ventilation.name = ventilation_name  + f"{self.get_file_extension(self.ventilation.name)}"
         super(ContainerOrder, self).save(*args, **kwargs)
 
 
@@ -148,18 +158,22 @@ class CloseOrder(models.Model):
         '''
             Change the name of images.
         '''
+        full_name = f"{self.order.id}-contenedor-lleno"
         # Change the name of image
-        self.full.name = f"{self.order.id}-contenedor-lleno" \
-            f"{self.get_file_extension(self.full.name)}"
-        if self.semi_close: 
-            self.semi_close.name = f"{self.order.id}-contenedor-semicerrado" \
-                f"{self.get_file_extension(self.semi_close.name)}"
+        if full_name not in self.full.name: 
+            self.full.name = full_name +f"{self.get_file_extension(self.full.name)}" 
+        if self.semi_close:
+            semi_close_name = f"{self.order.id}-contenedor-semicerrado"
+            if semi_close_name not in self.semi_close.name: 
+                self.semi_close.name = semi_close_name + f"{self.get_file_extension(self.semi_close.name)}"
         if self.close:
-            self.close.name = f"{self.order.id}-contenedor-cerrado" \
-                f"{self.get_file_extension(self.close.name)}"
-        if self.close:
-            self.precinto.name = f"{self.order.id}-contenedor-precinto" \
-                f"{self.get_file_extension(self.precinto.name)}"
+            close_name = f"{self.order.id}-contenedor-cerrado"
+            if close_name not in self.close.name:
+                self.close.name = close_name + f"{self.get_file_extension(self.close.name)}"
+        if self.precinto:
+            precinto_name = f"{self.order.id}-contenedor-precinto"
+            if precinto_name not in self.precinto.name:
+                self.precinto.name = precinto_name + f"{self.get_file_extension(self.precinto.name)}"
         super(CloseOrder, self).save(*args, **kwargs)
 
 
@@ -192,6 +206,7 @@ class ImageControl(models.Model):
         '''
         
         # Change the name of image
-        self.image.name = f"{self.order.id}-{self.control}{self.number}" \
-            f"{self.get_file_extension(self.image.name)}"
+        image_name = f"{self.order.id}-{self.control}{self.number}"
+        if image_name not in self.image.name:
+            self.image.name = image_name + f"{self.get_file_extension(self.image.name)}"
         super(ImageControl, self).save(*args, **kwargs)

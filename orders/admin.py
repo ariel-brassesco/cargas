@@ -12,6 +12,7 @@ from .models import (
 # Register your models here.
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'client', 'inspector')
+    filter_horizontal = ('products',)
 
 class ContainerAdmin(admin.ModelAdmin):
     list_display = ("id", "order", "empty", "matricula", "ventilation", "uploaded_at")

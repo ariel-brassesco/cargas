@@ -100,6 +100,33 @@ export const CustomField = ({ field, form: { touched, errors }, ...props }) => (
   </div>
 );
 
+export const CustomFieldHorizontal = ({ field, form: { touched, errors }, ...props }) => (
+  <div className="field is-horizontal">
+    {props.label ? (
+      <label className="label is-large">{props.label}</label>
+    ) : null}
+    <div className="field-body">
+      <div className="field">
+        <div className="control">
+          {props.type === "textarea" ? (
+            <textarea
+              type="text"
+              className="input is-medium form-comment"
+              {...field}
+              {...props}
+            ></textarea>
+          ) : (
+            <input type="text" className="input is-medium" {...field} {...props} />
+          )}
+        </div>
+        {touched[field.name] && errors[field.name] ? (
+          <p className="help is-danger">{errors[field.name]}</p>
+        ) : null}
+      </div>
+    </div>
+  </div>
+);
+
 export const SocialNetworkIcon = ({ src, className, classIcon, target }) => {
   return (
     <a href={src} className={className} target={target}>

@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import FormCloseOrder from "../components/FormCloseOrder";
 import CheckListOrder from "../components/CheckListOrder";
 // import Actions
-import { closeOrder, updateStatusOrder } from "../actions/inspectorActions";
+import { closeOrder, updateOrderInspector } from "../actions/inspectorActions";
 //Import Types
 import { Order } from "../types/order";
 // Import Routes
@@ -32,7 +32,8 @@ const InspectorClosingOrder: FC<Props>= ({
 
   const  handleCloseOrder = (data: FormData) => closeOrder(data)(dispatch);
 
-  const handleFinishOrder = (status: string) => dispatch(updateStatusOrder(order.id, status));
+  const handleFinishOrder = (status: string) => 
+    dispatch(updateOrderInspector(order.id, { status }));
   
   
   // If the Order has not status initiating or loading
@@ -41,7 +42,7 @@ const InspectorClosingOrder: FC<Props>= ({
   if (!allowStatus.includes(order.status)) return <Redirect to={PROFILE_INSPECTOR}/>
   
   return (
-    <div className="mt-2">
+    <div className="m-2 is-flex is-flex-direction-column">
       <Switch>
         <Route path={url + INSPECTOR_CHECK_ORDER}>
           <CheckListOrder

@@ -7,7 +7,8 @@ from .models import (
     CloseOrder,
     RowOrder,
     TemperatureControl,
-    WeightControl
+    WeightControl,
+    ImageControl
 )
 from registration.models import Client, Inspector
 from registration.serializers import ClientSerializer, InspectorSerializer
@@ -80,15 +81,17 @@ class OrderSerializer(ModelSerializer):
         if inspector and str(order.inspector.pk) != inspector:
             order.inspector = Inspector.objects.get(pk=inspector)
 
-        for p in order.products.select_related():
-            if str(p.pk) not in products:
-                order.products.remove(p)
-            else:
+        if products:
+            # Remove the products that are not in products
+            for p in order.products.select_related():
+                if str(p.pk) not in products:
+                    order.products.remove(p)
+                else:
+                    products.remove(str(p.pk))
 
-                products.remove(str(p.pk))
-
-        for p in products: 
-            order.products.add(Product.objects.get(id=p))
+            # Add the products to order
+            for p in products: 
+                order.products.add(Product.objects.get(id=p))
 
         order.save()
         return order
@@ -106,6 +109,18 @@ class RowOrderSerializer(ModelSerializer):
         product = Product.objects.get(pk=self.context["request"].data.get("product"))
         # Create row and return
         row = RowOrder.objects.create(**validated_data, order=order, product=product)
+        return row
+    
+    def update(self, instance, validated_data):
+        product = self.context["request"].data.get("product", None)
+        # Update the RowOrder data
+        row = super().update(instance, validated_data)
+
+        if (product and (str(row.product.pk) != product)):
+            # Add the products to row
+            row.product = Product.objects.get(id=product)
+
+        row.save()
         return row
 
 class TempControlSerializer(ModelSerializer):
@@ -133,3 +148,8 @@ class WeightControlSerializer(ModelSerializer):
         # Create row and return
         weight = WeightControl.objects.create(**validated_data, order=order)
         return weight
+
+class ImageControlSerializer(ModelSerializer):
+    class Meta:
+        model = ImageControl
+        fields = "__all__"

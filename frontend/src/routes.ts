@@ -19,6 +19,7 @@ export const INSPECTOR_CLOSING_ORDER: string = PROFILE_INSPECTOR + "/finalizar";
 export const INSPECTOR_NEW_LINE: string = "/add/line";
 export const INSPECTOR_TEMPERATURE_CONTROL: string = "/add/temp";
 export const INSPECTOR_WEIGHT_CONTROL: string = "/add/weight";
-export const INSPECTOR_ORGANOLEPTIC_CONTROL: string = "/add/organoleptic";
+export const INSPECTOR_MEASURE_CONTROL: string = "/add/organoleptic";
 export const INSPECTOR_CHECK_ORDER: string = "/check";
+export const INSPECTOR_CHECK_ROWS: string = PROFILE_INSPECTOR + "/check/rows";
 

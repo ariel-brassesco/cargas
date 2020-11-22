@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import User, Client, Inspector, Address
 from .serializers import ClientSerializer, UserSerializer, InspectorSerializer
+from cargas.settings import EMAIL_SENDER_CREDENTIALS, EMAIL_RECEIVE_CREDENTIALS, EMAIL_OWNER
 
 
 @api_view(["GET"])
@@ -22,7 +24,26 @@ def send_credentials(request):
     user_id = request.data.pop('id', None)
     try:
         user = User.objects.get(id=user_id)
-        user.send_credentials()
+        # Generate password
+        password = user.gen_password()
+        user.set_password(password)
+        user.save()
+        # Send email with credentials
+        subject = 'Tus Credentiales para el seguimiento de Carga'
+        template_email ='registration/email_credentials.html'
+        content = render_to_string(
+            template_email, 
+            context={"user": user, "password": password}
+        )
+        send_mail(
+            subject,
+            content,
+            EMAIL_SENDER_CREDENTIALS,
+            [EMAIL_RECEIVE_CREDENTIALS, EMAIL_OWNER],
+            html_message= content,
+            fail_silently=False,
+        )
+        # user.send_credentials()
     except User.DoesNotExist:
         return Response({"ok": False})
     return Response({"ok": True})

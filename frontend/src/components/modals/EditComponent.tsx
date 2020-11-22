@@ -1,10 +1,19 @@
 import React, { FC } from "react";
+import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-
-import { CustomField } from "../Common";
+// Import Components
+import { CustomField, CustomFieldHorizontal, CustomSelect} from "../Common";
 import { Modal } from "../Modal";
+import { Thumb } from "../Thumb";
+import { FileField } from "../FormsComponents"
+// Import Services
 import { apiRoutes, http } from "../../services/http";
+// Import Types
+import { Order } from "../../types/order";
+import { Row } from "../../types/row";
+// Import Getters
+import { getNextRow } from "../../reducers/inspectorReducer";
 
 type ClientValues = {
   company: string;
@@ -27,6 +36,14 @@ type ProductValues = {
   name: string;
 }
 
+type RowValues = {
+  number: number;
+  product: string;
+  size: string;
+  image: string | File | undefined;
+  quantity: number;
+}
+
 type Props = {
   user?: any;
   onOk: (client: any) => void;
@@ -35,6 +52,20 @@ type Props = {
 type PropsProduct = {
   product?: any;
   onOk: (product: any) => void;
+};
+
+type PropsOrderInit = {
+  name: string;
+  type: string;
+  value: any;
+  label?: string;
+  onOk: (data: any) => void;
+}
+
+type PropsRow = {
+  row?: Row;
+  order: Order;
+  onOk: (data: any) => void;
 };
 
 export const EditClientModal: FC<Props> = ({user, onOk, ...props}) => {
@@ -184,7 +215,6 @@ export const EditInspectorModal: FC<Props> = ({user, onOk, ...props}) => {
 }
 
 export const EditProductModal: FC<PropsProduct> = ({product , onOk, ...props}) => {
-
   const validationSchema = Yup.object({
     name: Yup.string().required("Campo requerido"),
   });
@@ -210,6 +240,154 @@ export const EditProductModal: FC<PropsProduct> = ({product , onOk, ...props}) =
           </Form>
         </Modal>
       )}
+    </Formik>
+  );
+}
+
+export const EditOrderInitModal: FC<PropsOrderInit> = ({
+  name, 
+  type, 
+  value, 
+  label, 
+  onOk, 
+  ...props
+}) => {
+
+  return (
+    <Formik
+      initialValues={{
+        [name]: value,
+      }}
+
+      onSubmit={async (values, { setSubmitting }) => {
+        const form = new FormData();
+        form.append(name, values[name]);
+        await onOk(form);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue }) => (
+        <Modal
+          {...props}
+          title={`Editar ${label}`}
+          okLabel="Guardar"
+          onOk={handleSubmit}
+        >
+          <Form>
+            {
+              (type==="file")
+              ?<Field >
+                {(props: any)=> (
+                  <FileField 
+                      label="Foto"
+                      onChange={(value: any)=> setFieldValue(name, value)}
+                      accept="image/*"
+                      {...props}>
+                      <Thumb />
+                  </FileField>
+                )}
+              </Field>
+              :<Field 
+                type={type} 
+                name={name} 
+                label={label} 
+                component={CustomFieldHorizontal} 
+              />
+            }
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+}
+
+export const EditRowModal: FC<PropsRow> = ({
+  row, 
+  order, 
+  onOk, 
+  ...props
+}) => {
+
+  const validationSchema = Yup.object().shape({
+    number: Yup.number().required("Campo Requerido"),
+    product: Yup.string().required("Campo Requerido"),
+    size: Yup.string(),
+    image: Yup.mixed().required("Imagen Requerida"),
+    quantity: Yup.number().required("Campo requerido"),
+  });
+
+  const nextRow = useSelector((state: any) => getNextRow(state));
+
+  return (
+    <Formik<RowValues>
+      initialValues={{
+        number: row?.number ?? nextRow,
+        product: String(row?.product.id) ?? "",
+        size: row?.size ?? "",
+        image: row?.image,
+        quantity: row?.quantity ?? 0,
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        console.log(values);
+        // const form = new FormData();
+        // Object.entries(values).forEach(i => {
+        //     if (i[1]) form.append(...i)
+        // })
+        // await onOk(form);
+        setSubmitting(false); 
+      }}
+    >
+    {({ setFieldValue, handleSubmit }) => (
+      <Modal
+        {...props}
+        title={row ? "Editar Fila" : "Nueva Fila"}
+        okLabel="Guardar"
+        onOk={handleSubmit}
+      >
+        <Form>
+            <Field
+                type="number"
+                name="number"
+                label="Fila"
+                component={CustomField}
+            />
+            <Field name="product" label="Producto" component={CustomSelect}>
+                <option value="">-----</option>
+                {order.products.map(p => (
+                    <option value={p.id} key={p.id}>
+                        {p.name}
+                    </option>
+                ))}
+            </Field>
+            
+            <Field
+                type="number"
+                name="quantity"
+                label="Cantidad"
+                component={CustomField}
+            />
+            <Field
+                type="text"
+                name="size"
+                label="Tamaño"
+                component={CustomField}
+            />
+            <Field >
+            {(props: any)=> (
+                <FileField 
+                    label="Foto"
+                    onChange={(value: any)=> setFieldValue("image", value)}
+                    accept="image/*"
+                    {...props}>
+                    <Thumb />
+                </FileField>
+                )
+            }
+            </Field>
+        </Form>
+      </Modal>
+    )}
     </Formik>
   );
 }

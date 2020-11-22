@@ -100,11 +100,12 @@ class DashboardOrdersPage extends Component<Props, State> {
     {
       key: "products",
       title: "Productos",
-      width: 300,
+      align: Align.center,
+      width: 250,
       render: (order: Order) => (
         <ul>
           {order.products.map(p => (
-            <li key={p.id} className="tag is-light is-flex my-1">
+            <li key={p.id} className="tag is-black is-flex my-1">
               {p.name}
             </li>
             )

@@ -7,6 +7,7 @@ import InspectorHomePage from "./InspectorHomePage";
 import InspectorStartPage from "./InspectorStartOrder";
 import InspectorLoadingPage from "./InspectorLoadingOrder";
 import InspectorClosingPage from "./InspectorClosingOrder";
+import InspectorCheckRowsPage from "./InspectorCheckRows";
 //Import Actions
 import { logout } from "../actions/dashboardActions";
 import { fetchOrders, initOrder } from "../actions/inspectorActions";
@@ -21,7 +22,8 @@ import {
     PROFILE_INSPECTOR,
     INSPECTOR_START_ORDER,
     INSPECTOR_LOADING_ORDER,
-    INSPECTOR_CLOSING_ORDER
+    INSPECTOR_CLOSING_ORDER,
+    INSPECTOR_CHECK_ROWS
 } from "../routes";
 
 const InspectorProfile: FC = () => {
@@ -44,9 +46,9 @@ const InspectorProfile: FC = () => {
 
     return (
         <div >
-            <div className="hero is-info">
+            <div className="hero is-primary">
                 <div className="hero-body">
-                    Hola {`${first_name } ${last_name}`} !
+                    <p className="title">Hola {`${first_name } ${last_name}`} !</p>
                     <button
                         type="button"
                         className="button is-danger"
@@ -59,7 +61,7 @@ const InspectorProfile: FC = () => {
 
             <div className="container">
                 <div className="columns">
-                    <div className="column">
+                    <div className="column is-full">
                         <Switch>
 
                             <Route exact path={PROFILE_INSPECTOR}>
@@ -104,6 +106,19 @@ const InspectorProfile: FC = () => {
                                 
                                     return  order?(
                                         <InspectorClosingPage order={order} />)
+                                        :null;
+                                }
+                            } />
+
+                            <Route 
+                                path={`${INSPECTOR_CHECK_ROWS}/:orderId`} 
+                                render={({ match })=> { 
+                                    const order = orders.find(
+                                        ({ id }) => match.params.orderId === String(id)
+                                    );
+                                
+                                    return  order?(
+                                        <InspectorCheckRowsPage order={order} />)
                                         :null;
                                 }
                             } />

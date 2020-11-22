@@ -32,7 +32,7 @@ export const Modal: FC<Props> = ({
       <div className="modal-background" onClick={handleClose} />
       <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">{title}</p>
+          <p className="modal-card-title is-flex-shrink-1">{title}</p>
           <button className="delete" aria-label="close" onClick={handleClose} />
         </header>
         {!!children && (

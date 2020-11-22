@@ -13,12 +13,14 @@ from .serializers import (
     CloseOrderSerializer,
     RowOrderSerializer,
     TempControlSerializer,
-    WeightControlSerializer
+    WeightControlSerializer,
+    ImageControlSerializer
 )
 from .models import (
     Order, 
     Product, 
-    ContainerOrder, 
+    ContainerOrder,
+    CloseOrder, 
     RowOrder, 
     TemperatureControl, 
     WeightControl,
@@ -28,21 +30,6 @@ from registration.models import Client, Inspector
 from registration.serializers import ClientSerializer, InspectorSerializer
 from .pagination import OrdersPagination
 # Create your views here.
-
-# @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# def get_order_client(request, pk):
-#     orders = Order.objects.filter(client=pk)
-#     serializer = OrderSerializer(orders, many=True)
-#     return Response(serializer.data, status=status.HTTP_200_OK)
-
-# @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# def get_order_inspector(request, pk):
-#     if request.user.is_client: return Response(status=status.HTTP_401_UNAUTHORIZED)
-#     orders = Order.objects.filter(inspector=pk)
-#     serializer = OrderSerializer(orders, many=True)
-#     return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
@@ -104,6 +91,9 @@ class InspectorOrderViewSet(ModelViewSet):
     @action(detail=False, methods=["post"])
     def close_order(self, request):
         try:
+            gross_weight = request.data.get("gross_weight", 0)
+            net_weight = request.data.get("net_weight", 0)
+            boxes = request.data.get("boxes", 0)
             # Create ContainerOrder
             serial_container = CloseOrderSerializer(
                 data=request.data,
@@ -113,6 +103,9 @@ class InspectorOrderViewSet(ModelViewSet):
             container = serial_container.save()
             # Set the order state in finish
             container.order.status = "finish"
+            container.order.gross_weight = gross_weight
+            container.order.net_weight = net_weight
+            container.order.boxes = boxes 
             container.order.save()
             # Serialize Order and Send
             serializer = self.get_serializer(container.order)
@@ -121,6 +114,17 @@ class InspectorOrderViewSet(ModelViewSet):
         except Exception as error:
             print(error)
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    # def update(self, request, *args, **kwargs):
+    #     print(request.data)
+    #     partial = kwargs.pop('partial', False)
+
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance, data=request.data, partial=partial)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #     print(serializer.data)
+    #     return Response(serializer.data)
 
 class ClientOrderViewSet(ModelViewSet):
     queryset = Order.objects.exclude(status__in=["cancel", "ready"]).order_by('-date')
@@ -151,11 +155,8 @@ class RowOrderViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
-            permission_classes = [IsAdminUser]
-        else:
-            if (not self.request.user.is_client):
-                permission_classes = [IsAuthenticated]
+        if (not self.request.user.is_client):
+            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
@@ -276,3 +277,90 @@ class WeightControlViewSet(ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+class ContainerOrderViewSet(ModelViewSet):
+    queryset = ContainerOrder.objects.all()
+    serializer_class = ContainerOrderSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "delete":
+            permission_classes = [IsAdminUser]
+        else:
+            if (not self.request.user.is_client):
+                permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def perform_update(self, serializer):
+        return serializer.save()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        container = self.perform_update(serializer)
+
+        order = OrderSerializer(container.order)
+
+        return Response(order.data)
+
+class CloseOrderViewSet(ModelViewSet):
+    queryset = CloseOrder.objects.all()
+    serializer_class = CloseOrderSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "delete":
+            permission_classes = [IsAdminUser]
+        else:
+            if (not self.request.user.is_client):
+                permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def perform_update(self, serializer):
+        return serializer.save()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=False)
+        close = self.perform_update(serializer)
+
+        order = OrderSerializer(close.order)
+
+        return Response(order.data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_measure(request):
+    if request.user.is_client: return Response(status=status.HTTP_401_UNAUTHORIZED)
+    # Load Images
+    images = request.FILES.getlist("images")
+    order = Order.objects.get(pk=request.data.get("order"))
+    data = []
+    for img in images:
+        data.append(
+            ImageControl.objects.create(
+            order=order,
+            image=img, 
+            control="measure"
+            )
+        )
+    serializer = ImageControlSerializer(data, many=True)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_list_measure(request):
+    if request.user.is_client: return Response(status=status.HTTP_401_UNAUTHORIZED)
+    order = request.query_params.get("order")
+    data = ImageControl.objects.filter(control="measure").filter(order=order)
+    serializer = ImageControlSerializer(data, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

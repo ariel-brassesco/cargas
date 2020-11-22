@@ -17,6 +17,7 @@ import { PROFILE_INSPECTOR } from "../routes";
 type Props = {
     order: Order;
     backUrl?: string;
+    okUrl?: string;
     onOk?: (value: any) => void;
 }
 
@@ -34,6 +35,7 @@ const validationSchema = Yup.object().shape({
 const FormNewRow: FC<Props> = ({
     order,
     backUrl,
+    okUrl,
     onOk
 }) => {
     const history = useHistory();
@@ -58,7 +60,7 @@ const FormNewRow: FC<Props> = ({
 
                 const res = onOk && await onOk(form);
                 setSubmitting(false);
-                if (res && backUrl) history.push(backUrl); 
+                if (res && okUrl) history.push(okUrl); 
             }}
         >
         {({ isSubmitting, isValid, setFieldValue, values }) => (
@@ -100,22 +102,22 @@ const FormNewRow: FC<Props> = ({
                 }
                 </Field>
 
-                <div className="buttons">
-                <button
-                    type="submit"
-                    disabled={isSubmitting || !isValid}
-                    className={`button is-success ${isSubmitting?"is-loading":""}`}
-                >
-                    <span>Guardar</span>
-                </button>
-                
-                <Link 
-                    to={backUrl ?? PROFILE_INSPECTOR} 
-                    className="button is-danger" 
-                    aria-disabled={isSubmitting}
+                <div className="buttons is-justify-content-space-evenly">
+                    <button
+                        type="submit"
+                        disabled={isSubmitting || !isValid}
+                        className={`button is-success is-large ${isSubmitting?"is-loading":""}`}
                     >
-                    <span>Cancelar</span>
-                </Link>
+                        <span>Guardar</span>
+                    </button>
+                    
+                    <Link 
+                        to={backUrl ?? PROFILE_INSPECTOR} 
+                        className="button is-danger is-large" 
+                        aria-disabled={isSubmitting}
+                        >
+                        <span>Cancelar</span>
+                    </Link>
                 </div>
             </Form>
         )}

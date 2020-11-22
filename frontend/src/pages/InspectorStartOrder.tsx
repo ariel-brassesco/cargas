@@ -4,7 +4,7 @@ import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 
 // Import Components
-import { CustomField } from "../components/Common";
+import { CustomFieldHorizontal } from "../components/Common";
 import { Thumb } from "../components/Thumb";
 import { FileField } from "../components/FormsComponents";
 //Import Types
@@ -28,10 +28,10 @@ const InspectorStartOrder: FC<Props>= ({
   order,
   onOk
 }) => {
-  if (order.status !== "pending") return <Redirect to={INSPECTOR_LOADING_ORDER}/>
+  if (order.status !== "pending") return <Redirect to={`${INSPECTOR_LOADING_ORDER}/${order.id}`}/>
   
   const validationSchema = Yup.object().shape({
-    container: Yup.string().required("Campo Requerido"),
+    container: Yup.string().required("La Matricula del Contenedor es requerida"),
     empty: Yup.mixed().required("Imagen Requerida"),
     matricula: Yup.mixed().required("Imagen requerido"),
     ventilation: Yup.mixed(),
@@ -56,12 +56,12 @@ const InspectorStartOrder: FC<Props>= ({
           }}
       >
       {({ isSubmitting, isValid, setFieldValue }) => (
-          <Form>
+          <Form className="px-2">
               <Field
                   type="text"
                   name="container"
-                  label="Container"
-                  component={CustomField}
+                  label="Contenedor"
+                  component={CustomFieldHorizontal}
               />
               
               <Field>
@@ -103,18 +103,18 @@ const InspectorStartOrder: FC<Props>= ({
                 }
               </Field>
 
-              <div className="buttons">
+              <div className="buttons is-justify-content-space-evenly">
                 <button
                     type="submit"
                     disabled={isSubmitting || !isValid}
-                    className={`button is-success ${isSubmitting?"is-loading":""}`}
+                    className={`button is-success is-large ${isSubmitting?"is-loading":""}`}
                 >
                     <span>Guardar</span>
                 </button>
                 
                 <Link 
                     to={PROFILE_INSPECTOR} 
-                    className="button is-danger" 
+                    className="button is-danger is-large" 
                     aria-disabled={isSubmitting}
                     >
                     <span>Cancelar</span>

@@ -15,6 +15,25 @@ export const statusMap: Record<string, string> = {
   ready: "Listo",
 };
 
+export interface InitOrder {
+  id: number;
+  order: number;
+  empty: string;
+  matricula: string;
+  ventilation: string | null;
+  uploaded_at: string;
+}
+
+export interface FinalOrder {
+  id: number;
+  order: number;
+  full: string;
+  semi_close: string | null;
+  close: string | null;
+  precinto: string | null;
+  uploaded_at: string;
+}
+
 export interface Order extends Base {
   client: Client;
   inspector: Inspector;
@@ -33,10 +52,12 @@ export interface Order extends Base {
   container?: string;
   plant?: string;
   boxes?: number;
-  net_weigth?: number;
-  gross_weigth?: number;
+  net_weight?: number;
+  gross_weight?: number;
   lot?: string[];
   status: string;
+  initial: InitOrder[];
+  final: FinalOrder[];
 }
 
 export interface OrderPagination {
