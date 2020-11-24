@@ -20,13 +20,12 @@ import {
   FETCH_PRODUCTS,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
-  DELETE_PRODUCT
+  DELETE_PRODUCT,
 } from "../reducers/dashboardReducer";
-import {apiRoutes, http} from "../services/http";
-
+import { apiRoutes, http } from "../services/http";
 
 /* LOGIN AND LOGOUT ACTIONS */
-export const login = (credentials: Credentials) => async ( 
+export const login = (credentials: Credentials) => async (
   dispatch: Dispatch
 ) => {
   try {
@@ -38,7 +37,9 @@ export const login = (credentials: Credentials) => async (
     const user = await http.get(apiRoutes.me);
 
     return dispatch({ type: DASHBOARD_LOGIN, payload: user });
-  } catch (error) { return false }
+  } catch (error) {
+    return false;
+  }
 };
 
 export const logout = () => (dispatch: Dispatch) => {
@@ -52,10 +53,12 @@ export const logout = () => (dispatch: Dispatch) => {
 
 export const sendCredentials = (id: number) => async () => {
   try {
-    const { ok } = await http.post(apiRoutes.credentials, {id: id});
+    const { ok } = await http.post(apiRoutes.credentials, { id: id });
     return ok;
-  } catch (error) { return false }
-}
+  } catch (error) {
+    return false;
+  }
+};
 /* CLIENTS ACTIONS */
 export const fetchClients = () => async (dispatch: Dispatch) => {
   try {
@@ -65,8 +68,8 @@ export const fetchClients = () => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
-export const createClient = (client: Record<string, any>) => async ( 
-  dispatch: Dispatch 
+export const createClient = (client: Record<string, any>) => async (
+  dispatch: Dispatch
 ) => {
   try {
     const result = await http.post(apiRoutes.clients_data, client);
@@ -75,22 +78,17 @@ export const createClient = (client: Record<string, any>) => async (
   } catch (error) {}
 };
 
-export const updateClient = (id: number, client: Record<string, any>) => async ( 
+export const updateClient = (id: number, client: Record<string, any>) => async (
   dispatch: Dispatch
 ) => {
   try {
-    const result = await http.patch(
-      `${apiRoutes.clients_data}${id}/`,
-      client
-    );
+    const result = await http.patch(`${apiRoutes.clients_data}${id}/`, client);
 
     return dispatch({ type: UPDATE_CLIENT, payload: result });
   } catch (error) {}
 };
 
-export const deleteClient = (id: number) => async (
-  dispatch: Dispatch
-) => {
+export const deleteClient = (id: number) => async (dispatch: Dispatch) => {
   try {
     await http.delete(`${apiRoutes.clients_data}${id}/`);
 
@@ -99,9 +97,7 @@ export const deleteClient = (id: number) => async (
 };
 
 /* INSPECTOR ACTIONS */
-export const fetchInspectors = () => async (
-  dispatch: Dispatch
-) => {
+export const fetchInspectors = () => async (dispatch: Dispatch) => {
   try {
     const inspectors = await http.get(apiRoutes.inspectors_data);
 
@@ -109,7 +105,9 @@ export const fetchInspectors = () => async (
   } catch (error) {}
 };
 
-export const createInspector = (inspector: Record<string, any>) => async ( dispatch: Dispatch ) => {
+export const createInspector = (inspector: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
   try {
     const result = await http.post(apiRoutes.inspectors_data, inspector);
 
@@ -117,9 +115,10 @@ export const createInspector = (inspector: Record<string, any>) => async ( dispa
   } catch (error) {}
 };
 
-export const updateInspector = (id: number, inspector: Record<string, any>) => async ( 
-  dispatch: Dispatch 
-) => {
+export const updateInspector = (
+  id: number,
+  inspector: Record<string, any>
+) => async (dispatch: Dispatch) => {
   try {
     const result = await http.patch(
       `${apiRoutes.inspectors_data}${id}/`,
@@ -147,7 +146,9 @@ export const fetchProducts = () => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
-export const createProduct = (product: Record<string, any>) => async ( dispatch: Dispatch) => {
+export const createProduct = (product: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
   try {
     const result = await http.post(apiRoutes.products_data, product);
 
@@ -155,11 +156,15 @@ export const createProduct = (product: Record<string, any>) => async ( dispatch:
   } catch (error) {}
 };
 
-export const updateProduct = (id: number, product: Record<string, any>) => async ( 
-  dispatch: Dispatch
-) => {
+export const updateProduct = (
+  id: number,
+  product: Record<string, any>
+) => async (dispatch: Dispatch) => {
   try {
-    const result = await http.patch(`${apiRoutes.products_data}${id}/`, product);
+    const result = await http.patch(
+      `${apiRoutes.products_data}${id}/`,
+      product
+    );
 
     return dispatch({ type: UPDATE_PRODUCT, payload: result });
   } catch (error) {}
@@ -182,7 +187,7 @@ export const fetchOrders = (page?: number) => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
-export const createOrder = (order: Record<string, any>) => async ( 
+export const createOrder = (order: Record<string, any>) => async (
   dispatch: Dispatch
 ) => {
   try {
@@ -192,7 +197,7 @@ export const createOrder = (order: Record<string, any>) => async (
   } catch (error) {}
 };
 
-export const updateOrder = (id: number, order: Record<string, any>) => async ( 
+export const updateOrder = (id: number, order: Record<string, any>) => async (
   dispatch: Dispatch
 ) => {
   try {

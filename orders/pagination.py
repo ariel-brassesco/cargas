@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 class OrdersPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 20
 
     def get_next_page(self):
         if not self.page.has_next():

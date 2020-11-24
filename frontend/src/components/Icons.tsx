@@ -1,22 +1,26 @@
 import React, { FC } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
   faCheckCircle,
-  faTimesCircle
-} from '@fortawesome/free-solid-svg-icons';
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
-    className?: string;
+  className?: string;
 }
 
-export const CheckCircleIcon: FC<Props> = ({className = "icon has-text-success"}) => (
-    <span className={className}>
-        <FontAwesomeIcon icon={faCheckCircle}/>
-    </span>
-)
+export const CheckCircleIcon: FC<Props> = ({
+  className = "icon has-text-success",
+}) => (
+  <span className={className}>
+    <FontAwesomeIcon icon={faCheckCircle} />
+  </span>
+);
 
-export const TimesCircleIcon: FC<Props> = ({className = "icon has-text-danger" }) => (
-    <span className={className}>
-        <FontAwesomeIcon icon={faTimesCircle}/>
-    </span>
-)
+export const TimesCircleIcon: FC<Props> = ({
+  className = "icon has-text-danger",
+}) => (
+  <span className={className}>
+    <FontAwesomeIcon icon={faTimesCircle} />
+  </span>
+);

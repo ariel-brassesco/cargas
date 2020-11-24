@@ -1,6 +1,6 @@
 export const LOGIN: string = "/";
-export const PROFILE_CLIENT: string = "/cliente"
-export const PROFILE_INSPECTOR: string ="/inspector"
+export const PROFILE_CLIENT: string = "/cliente";
+export const PROFILE_INSPECTOR: string = "/inspector";
 export const DASHBOARD: string = "/dashboard";
 export const DASHBOARD_ORDERS: string = "/dashboard/cargas";
 export const DASHBOARD_CLIENTS: string = "/dashboard/clientes";
@@ -22,4 +22,3 @@ export const INSPECTOR_WEIGHT_CONTROL: string = "/add/weight";
 export const INSPECTOR_MEASURE_CONTROL: string = "/add/organoleptic";
 export const INSPECTOR_CHECK_ORDER: string = "/check";
 export const INSPECTOR_CHECK_ROWS: string = PROFILE_INSPECTOR + "/check/rows";
-

@@ -63,7 +63,7 @@ ROOT_URLCONF = 'cargas.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,18 +142,10 @@ PASSWORD_RESET_TIMEOUT = 3600
 MAX_PHONE_LENGTH = 15
 
 # Storage Files
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
 DEFAULT_FILE_STORAGE =  ('django.core.files.storage.FileSystemStorage' 
 if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
-
-# EMAIL SETTINGS
-EMAIL_HOST = os.getenv('MAILGUN_SMTP_SERVER')
-EMAIL_HOST_USER = os.getenv('MAILGUN_SMTP_LOGIN')
-EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_SMTP_PASSWORD')
-EMAIL_PORT = os.getenv('MAILGUN_SMTP_PORT')
-EMAIL_USE_TLS = True
-EMAIL_SENDER_CREDENTIALS = os.getenv('EMAIL_SENDER_CREDENTIALS')
-EMAIL_RECEIVE_CREDENTIALS = os.getenv("EMAIL_RECEIVE_CREDENTIALS")
-EMAIL_OWNER = os.getenv("EMAIL_OWNER")
-MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_API_KEY')
-MAILGUN_SERVER_NAME = os.getenv('MAILGUN_DOMAIN')
-EMAIL_BACKEND = 'django_mailgun.MailgunBackend'

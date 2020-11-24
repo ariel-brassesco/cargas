@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
 import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import { compose } from "redux";
-import { Formik, Field, Form} from "formik";
+import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 // Import Components
 import { CustomField } from "../components/Common";
@@ -11,11 +11,10 @@ import { login, logout } from "../actions/dashboardActions";
 // Import Routes
 import { DASHBOARD } from "../routes";
 
-
 type Values = {
   username: "";
   password: "";
-}
+};
 
 const validationSchema = Yup.object({
   username: Yup.string().required("Campo requerido"),
@@ -25,19 +24,18 @@ const validationSchema = Yup.object({
 type Props = DispatchProp<any> & RouteComponentProps & {};
 
 class LoginPage extends Component<Props> {
-  
   public state = {
-    errorMsg: ""
-  }
+    errorMsg: "",
+  };
 
   private handleSubmit = async (values: Values) => {
-    this.setState({errorMsg: ""})
-    try{
+    this.setState({ errorMsg: "" });
+    try {
       await this.props.dispatch(login(values));
-      this.props.history.push(DASHBOARD); 
+      this.props.history.push(DASHBOARD);
     } catch {
       //Else show Invalid Credentials message
-      this.setState({errorMsg: "Usuario o Contraseña Incorrecta"})
+      this.setState({ errorMsg: "Usuario o Contraseña Incorrecta" });
       this.props.dispatch(logout());
     }
   };
@@ -59,20 +57,30 @@ class LoginPage extends Component<Props> {
                   onSubmit={this.handleSubmit}
                 >
                   {({ isSubmitting }) => (
-                  <Form>
-                    <p className="help is-danger has-text-centered">{this.state.errorMsg}</p>
-                    <Field name="username" label="Usuario" component={CustomField} />
-                    <Field type="password" name="password" label="Contraseña" component={CustomField} />
+                    <Form>
+                      <p className="help is-danger has-text-centered">
+                        {this.state.errorMsg}
+                      </p>
+                      <Field
+                        name="username"
+                        label="Usuario"
+                        component={CustomField}
+                      />
+                      <Field
+                        type="password"
+                        name="password"
+                        label="Contraseña"
+                        component={CustomField}
+                      />
 
-                    <button 
-                      id="login-btn"
-                      className={
-                        `button is-block is-info is-fullwidth 
-                        ${isSubmitting?"is-loading":""}`
-                        }>
-                      Ingresar
-                    </button>
-                  </Form>
+                      <button
+                        id="login-btn"
+                        className={`button is-block is-info is-fullwidth 
+                        ${isSubmitting ? "is-loading" : ""}`}
+                      >
+                        Ingresar
+                      </button>
+                    </Form>
                   )}
                 </Formik>
               </div>

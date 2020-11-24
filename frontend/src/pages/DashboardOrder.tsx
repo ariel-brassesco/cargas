@@ -1,17 +1,10 @@
 import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
 import { Route, Switch, Link } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faEdit, 
-  faTrash, 
-  faPlus
-} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
 // Import Services
-import { 
-  dateInARFormat,
-  timeFromUTCToLocal
-} from "../services/datetime";
+import { dateInARFormat, timeFromUTCToLocal } from "../services/datetime";
 // Import Components
 import { Align, Table, Column } from "../components/Table";
 import { Confirm } from "../components/Confirm";
@@ -21,13 +14,13 @@ import { Pagination } from "../components/Pagination";
 import { Loader } from "../components/Common";
 // Import Actions
 import {
-  fetchOrders, 
+  fetchOrders,
   createOrder,
   updateOrder,
-  deleteOrder
+  deleteOrder,
 } from "../actions/dashboardActions";
 // Import Getters
-import { 
+import {
   getClients,
   getInspectors,
   getOrders,
@@ -35,7 +28,7 @@ import {
   getOrdersPages,
   getOrdersCurrent,
   getOrdersPrevious,
-  getOrdersNext
+  getOrdersNext,
 } from "../reducers/dashboardReducer";
 // Import Types
 import { Order, statusMap } from "../types/order";
@@ -43,13 +36,7 @@ import { Client } from "../types/client";
 import { Inspector } from "../types/inspector";
 import { Product } from "../types/product";
 // Import Routes
-import { 
-  ORDER_EDIT, 
-  NEW_ORDER,
-  DASHBOARD_ORDERS
-} from "../routes";
-
-
+import { ORDER_EDIT, NEW_ORDER, DASHBOARD_ORDERS } from "../routes";
 
 type Props = DispatchProp<any> & {
   orders: Order[];
@@ -64,15 +51,14 @@ type Props = DispatchProp<any> & {
 
 type State = {
   loading: boolean;
-}
+};
 
 class DashboardOrdersPage extends Component<Props, State> {
-  
   constructor(props: Props) {
     super(props);
     this.state = {
       loading: false,
-    }
+    };
   }
 
   private columns: Column[] = [
@@ -86,16 +72,15 @@ class DashboardOrdersPage extends Component<Props, State> {
       key: "client",
       title: "Cliente",
       width: 100,
-      render: (order: Order) => order.client.company
+      render: (order: Order) => order.client.company,
     },
     {
       key: "inspector",
       title: "Inspector",
       width: 100,
-      render: (order: Order) => (
+      render: (order: Order) =>
         `${order.inspector.user.first_name} 
-        ${order.inspector.user.last_name}`
-      )
+        ${order.inspector.user.last_name}`,
     },
     {
       key: "products",
@@ -104,32 +89,30 @@ class DashboardOrdersPage extends Component<Props, State> {
       width: 250,
       render: (order: Order) => (
         <ul>
-          {order.products.map(p => (
+          {order.products.map((p) => (
             <li key={p.id} className="tag is-black is-flex my-1">
               {p.name}
             </li>
-            )
-          )}
+          ))}
         </ul>
-      )
+      ),
     },
     {
       key: "date",
       title: "Fecha",
       align: Align.center,
       width: 100,
-      render: (order: Order) =>
-        order.date ? dateInARFormat(order.date) : "-",
+      render: (order: Order) => (order.date ? dateInARFormat(order.date) : "-"),
     },
     {
       key: "time",
       title: "Hora: Comienzo/Finalizado",
       align: Align.center,
       width: 100,
-      render: (order: Order) =>{
+      render: (order: Order) => {
         const start = timeFromUTCToLocal(order.date, order.time_start);
         const completed = timeFromUTCToLocal(order.date, order.time_complete);
-        return (`${start} A ${completed}`);
+        return `${start} A ${completed}`;
       },
     },
     {
@@ -147,49 +130,50 @@ class DashboardOrdersPage extends Component<Props, State> {
       width: 120,
       render: (order: Order) => (
         <div>
-            <button 
-              className="button is-small is-info mr-1 has-tooltip-arrow"
-              data-tooltip="Editar"
+          <button
+            className="button is-small is-info mr-1 has-tooltip-arrow"
+            data-tooltip="Editar"
+          >
+            <Link
+              to={`${ORDER_EDIT}/${order.id}`}
+              className="icon is-info has-text-white"
             >
-              <Link to={`${ORDER_EDIT}/${order.id}`} className="icon is-info has-text-white">
-                <FontAwesomeIcon icon={faEdit} />
-              </Link>
-            </button>
-            
-            <Confirm
-                title={`Está seguro que desea eliminar la Carga #${order.id}?`}
-                okLabel="Eliminar"
-                onClick={this.handleDeleteOrder(order.id)}
-            >
-                <button className="button is-small is-danger mr-1 has-tooltip-arrow"
-                data-tooltip="Eliminar"
-                >
-                <span className="icon">
-                    <FontAwesomeIcon icon={faTrash}/>
-                </span>
-                </button>
-            </Confirm>
+              <FontAwesomeIcon icon={faEdit} />
+            </Link>
+          </button>
 
+          <Confirm
+            title={`Está seguro que desea eliminar la Carga #${order.id}?`}
+            okLabel="Eliminar"
+            onClick={this.handleDeleteOrder(order.id)}
+          >
+            <button
+              className="button is-small is-danger mr-1 has-tooltip-arrow"
+              data-tooltip="Eliminar"
+            >
+              <span className="icon">
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </button>
+          </Confirm>
         </div>
       ),
     },
   ];
 
-  private handleSaveOrder = (order: Record<string, any>) => (
-    this.props.dispatch(createOrder(order))
-  );
+  private handleSaveOrder = (order: Record<string, any>) =>
+    this.props.dispatch(createOrder(order));
 
-  private handleUpdateOrder = (order: Order) => (data: Record<string, any>) => (
-    this.props.dispatch(updateOrder(order.id, data))
-  );
+  private handleUpdateOrder = (order: Order) => (data: Record<string, any>) =>
+    this.props.dispatch(updateOrder(order.id, data));
 
   // private handleChangeStatus = (id: number, status: string) => () => {
   //   this.props.dispatch(updateOrder(id, { status }));
   // };
 
   private handleDeleteOrder = (id: number) => () => {
-      this.props.dispatch(deleteOrder(id));
-  }
+    this.props.dispatch(deleteOrder(id));
+  };
 
   private handleChangePage = async (page: number) => {
     if (page !== this.props.current) {
@@ -213,47 +197,55 @@ class DashboardOrdersPage extends Component<Props, State> {
     return (
       <div>
         <Switch>
-          <Route path={NEW_ORDER} render={({history}) => (
-            <EditOrder
-              clients={clients}
-              inspectors={inspectors.filter(i => i.user.is_active)}
-              products={products}
-              onOk={this.handleSaveOrder} 
-              onCancel={() => history.push(DASHBOARD_ORDERS)}
-            />
-          )
-          }/>
-          
-          <Route path={`${ORDER_EDIT}/:order`} render={({ history, match }) => {
-            const order = orders.find(o => String(o.id) === match.params.order);
-            if (!order) return null;
-            return (
-              <>
-                <EditOrder
-                  order={order}
-                  clients={clients}
-                  inspectors={inspectors.filter(i => i.user.is_active)}
-                  products={products}
-                  onOk={this.handleUpdateOrder(order)} 
-                  onCancel={() => history.push(DASHBOARD_ORDERS)}/>
-              </>
-            )
-          }} />
+          <Route
+            path={NEW_ORDER}
+            render={({ history }) => (
+              <EditOrder
+                clients={clients}
+                inspectors={inspectors.filter((i) => i.user.is_active)}
+                products={products}
+                onOk={this.handleSaveOrder}
+                onCancel={() => history.push(DASHBOARD_ORDERS)}
+              />
+            )}
+          />
+
+          <Route
+            path={`${ORDER_EDIT}/:order`}
+            render={({ history, match }) => {
+              const order = orders.find(
+                (o) => String(o.id) === match.params.order
+              );
+              if (!order) return null;
+              return (
+                <>
+                  <EditOrder
+                    order={order}
+                    clients={clients}
+                    inspectors={inspectors.filter((i) => i.user.is_active)}
+                    products={products}
+                    onOk={this.handleUpdateOrder(order)}
+                    onCancel={() => history.push(DASHBOARD_ORDERS)}
+                  />
+                </>
+              );
+            }}
+          />
 
           <Route path={DASHBOARD_ORDERS}>
             <Toolbar title="Cargas">
               <Link to={NEW_ORDER} className="button is-info">
                 <span className="icon">
-                    <FontAwesomeIcon icon={faPlus} />
+                  <FontAwesomeIcon icon={faPlus} />
                 </span>
                 <span>Nueva Carga</span>
               </Link>
             </Toolbar>
-            <Table columns={this.columns} data={orders} dataKey="order" />
+            <Table columns={this.columns} data={orders} />
             <Pagination
-                {...{ current, next, previous, pages }}
-                changePage={this.handleChangePage}
-              />
+              {...{ current, next, previous, pages }}
+              changePage={this.handleChangePage}
+            />
           </Route>
         </Switch>
       </div>

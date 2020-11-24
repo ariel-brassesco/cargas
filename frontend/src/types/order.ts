@@ -43,7 +43,7 @@ export interface Order extends Base {
   time_complete: string;
   origin: string;
   discharge: string;
-  booking: string
+  booking: string;
   shipping_line?: string;
   vessel_name: string;
   etd?: string;

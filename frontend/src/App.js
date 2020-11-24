@@ -4,12 +4,7 @@ import React, { Component } from "react";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 //Import Routes
-import {
-  PROFILE_CLIENT,
-  PROFILE_INSPECTOR,
-  DASHBOARD,
-  LOGIN,
-} from "./routes";
+import { PROFILE_CLIENT, PROFILE_INSPECTOR, DASHBOARD, LOGIN } from "./routes";
 // Import Components
 import PrivateRoute from "./components/PrivateRoute";
 // Import Pages
@@ -23,7 +18,6 @@ class App extends Component {
     return (
       <BrowserRouter basename="">
         <Switch>
-          
           <Route exact path={LOGIN}>
             <LoginPage />
           </Route>
@@ -39,7 +33,6 @@ class App extends Component {
           <PrivateRoute path={PROFILE_INSPECTOR} redirect={LOGIN}>
             <InspectorProfile />
           </PrivateRoute>
-          
         </Switch>
       </BrowserRouter>
     );

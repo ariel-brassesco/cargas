@@ -1,12 +1,12 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
   faPlus,
   faUndo,
   faEdit,
-  faTrash
-} from '@fortawesome/free-solid-svg-icons';
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Import Components
 import { EditRowModal } from "../components/modals/EditComponent";
@@ -19,7 +19,7 @@ import {
   fetchRows,
   newRow,
   updateRow,
-  deleteRow
+  deleteRow,
 } from "../actions/inspectorActions";
 //Import Types
 import { Order } from "../types/order";
@@ -29,24 +29,22 @@ import { INSPECTOR_CLOSING_ORDER } from "../routes";
 // Import Getters
 import { getRows } from "../reducers/inspectorReducer";
 
-
 type Props = {
   order: Order;
-}
+};
 
-const InspectorCheckRows: FC<Props>= ({ order }) => {
+const InspectorCheckRows: FC<Props> = ({ order }) => {
   const dispatch = useDispatch();
   const rows: Row[] = useSelector((state: any) => getRows(state));
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     dispatch(fetchRows(order.id));
   }, [order, dispatch]);
-
 
   const handleNewRow = (data: FormData) => dispatch(newRow(data));
   const handleUpdateRow = (data: FormData) => dispatch(updateRow(data));
   const handleDeleteRow = (row: Row) => () => dispatch(deleteRow(row.id));
-  
+
   const columns: Column[] = [
     {
       key: "number",
@@ -73,20 +71,17 @@ const InspectorCheckRows: FC<Props>= ({ order }) => {
         <div>
           <ModalTrigger
             button={
-              <button className="button is-info is-small mr-2 has-tooltip-arrow" 
+              <button
+                className="button is-info is-small mr-2 has-tooltip-arrow"
                 data-tooltip="Editar"
-                >
+              >
                 <span className="icon">
                   <FontAwesomeIcon icon={faEdit} />
                 </span>
               </button>
             }
             modal={
-              <EditRowModal 
-                row={row}
-                order={order}
-                onOk={handleUpdateRow}
-              />
+              <EditRowModal row={row} order={order} onOk={handleUpdateRow} />
             }
           />
 
@@ -95,8 +90,10 @@ const InspectorCheckRows: FC<Props>= ({ order }) => {
             okLabel="Eliminar"
             onClick={handleDeleteRow(row)}
           >
-            <button className="button is-danger is-small has-tooltip-arrow"
-              data-tooltip="Eliminar">
+            <button
+              className="button is-danger is-small has-tooltip-arrow"
+              data-tooltip="Eliminar"
+            >
               <span className="icon">
                 <FontAwesomeIcon icon={faTrash} />
               </span>
@@ -104,9 +101,9 @@ const InspectorCheckRows: FC<Props>= ({ order }) => {
           </Confirm>
         </div>
       ),
-    }
+    },
   ];
-  
+
   return (
     <div className="m-2 is-flex is-flex-direction-column">
       <ModalTrigger
@@ -118,14 +115,12 @@ const InspectorCheckRows: FC<Props>= ({ order }) => {
             <span className="is-uppercase">Agregar Fila</span>
           </button>
         }
-        modal={
-          <EditRowModal order={order} onOk={handleNewRow} />
-        }
+        modal={<EditRowModal order={order} onOk={handleNewRow} />}
       />
-      
-      <GoToButton 
-        path={`${INSPECTOR_CLOSING_ORDER}/${order.id}/check`} 
-        className="button is-danger is-fullwidth my-2" 
+
+      <GoToButton
+        path={`${INSPECTOR_CLOSING_ORDER}/${order.id}/check`}
+        className="button is-danger is-fullwidth my-2"
       >
         <span className="icon">
           <FontAwesomeIcon icon={faUndo} />
@@ -133,9 +128,9 @@ const InspectorCheckRows: FC<Props>= ({ order }) => {
         <span className="is-uppercase">Volver</span>
       </GoToButton>
 
-      <Table columns={columns} data={rows} dataKey="rows" />
+      <Table columns={columns} data={rows} />
     </div>
   );
-}
+};
 
 export default InspectorCheckRows;

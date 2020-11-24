@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faEdit, 
-  faTrash, 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faTrash,
   faPlus,
   faTimesCircle,
   faCheckCircle,
-  faFingerprint
-} from '@fortawesome/free-solid-svg-icons';
+  faFingerprint,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Import Components
 import { Align, Table, Column } from "../components/Table";
@@ -24,16 +24,15 @@ import {
   deleteInspector,
   updateInspector,
   fetchInspectors,
-  sendCredentials
+  sendCredentials,
 } from "../actions/dashboardActions";
 // Import Getters
 import { getInspectors } from "../reducers/dashboardReducer";
 import { Inspector } from "../types/inspector";
 
-
 type Props = DispatchProp<any> & {
   inspectors: Inspector[];
-}
+};
 
 class DashboardInspectorsPage extends Component<Props> {
   static defaultProps = {
@@ -47,19 +46,19 @@ class DashboardInspectorsPage extends Component<Props> {
       width: 50,
       render: (inspector: Inspector) => {
         const active = inspector.user.is_active;
-        const data = {user: {is_active: !active}};
+        const data = { user: { is_active: !active } };
         return (
-          <span 
+          <span
             className={`icon is-clickable 
               has-tooltip-arrow
-              ${active?"has-text-success":"has-text-danger"}`}
-            data-tooltip={active?"Activo":"Inactivo"}
+              ${active ? "has-text-success" : "has-text-danger"}`}
+            data-tooltip={active ? "Activo" : "Inactivo"}
             onClick={() => this.handleEditInspector(inspector)(data)}
           >
-            <FontAwesomeIcon icon={active?faCheckCircle:faTimesCircle} />
+            <FontAwesomeIcon icon={active ? faCheckCircle : faTimesCircle} />
           </span>
-        )
-      }
+        );
+      },
     },
     {
       key: "user.username",
@@ -69,10 +68,10 @@ class DashboardInspectorsPage extends Component<Props> {
       key: "full_name",
       title: "Nombre y Apellido",
       render: (inspector: Inspector) => (
-      <p className="is-capitalize">
-        {`${inspector.user.first_name} ${inspector.user.last_name}`}
-      </p>
-      )
+        <p className="is-capitalize">
+          {`${inspector.user.first_name} ${inspector.user.last_name}`}
+        </p>
+      ),
     },
     {
       key: "user.email",
@@ -85,7 +84,7 @@ class DashboardInspectorsPage extends Component<Props> {
     {
       key: "address",
       title: "Dirección",
-      render: (inspector: Inspector) => (inspector.address?.address || '-')
+      render: (inspector: Inspector) => inspector.address?.address || "-",
     },
     {
       key: "actions",
@@ -96,17 +95,18 @@ class DashboardInspectorsPage extends Component<Props> {
         <div>
           <ModalTrigger
             button={
-              <button className="button is-small is-info mr-1 has-tooltip-arrow" 
+              <button
+                className="button is-small is-info mr-1 has-tooltip-arrow"
                 data-tooltip="Editar"
-                >
+              >
                 <span className="icon">
                   <FontAwesomeIcon icon={faEdit} />
                 </span>
               </button>
             }
             modal={
-              <EditInspectorModal 
-                user={inspector} 
+              <EditInspectorModal
+                user={inspector}
                 onOk={this.handleEditInspector(inspector)}
               />
             }
@@ -117,8 +117,10 @@ class DashboardInspectorsPage extends Component<Props> {
             okLabel="Eliminar"
             onClick={this.handleDeleteInspector(inspector)}
           >
-            <button className="button is-small is-danger mr-1 has-tooltip-arrow"
-              data-tooltip="Eliminar">
+            <button
+              className="button is-small is-danger mr-1 has-tooltip-arrow"
+              data-tooltip="Eliminar"
+            >
               <span className="icon">
                 <FontAwesomeIcon icon={faTrash} />
               </span>
@@ -128,22 +130,22 @@ class DashboardInspectorsPage extends Component<Props> {
           <NotificationTrigger
             onCall={this.handleSendCredentials(inspector)}
             button={
-              <button className="button is-small is-warning has-tooltip-arrow"
+              <button
+                className="button is-small is-warning has-tooltip-arrow"
                 data-tooltip="Enviar Credenciales"
-                >
+              >
                 <span className="icon">
                   <FontAwesomeIcon icon={faFingerprint} />
                 </span>
               </button>
             }
-            modal= {
-              <Notification 
+            modal={
+              <Notification
                 okMsg="Las credentiales fueron enviadas."
                 wrongMsg="Upss! Algo salió. Intentalo de nuevo."
               />
             }
           />
-
         </div>
       ),
     },
@@ -153,13 +155,14 @@ class DashboardInspectorsPage extends Component<Props> {
     this.props.dispatch(fetchInspectors());
   }
 
-  private handleEditInspector = (inspector: Inspector) => (data: Record<string, any>) => {
+  private handleEditInspector = (inspector: Inspector) => (
+    data: Record<string, any>
+  ) => {
     this.props.dispatch(updateInspector(inspector.user.id, data));
   };
 
-  private handleSendCredentials = (inspector: Inspector) => () => (
-    this.props.dispatch(sendCredentials(inspector.user.id))
-  );
+  private handleSendCredentials = (inspector: Inspector) => () =>
+    this.props.dispatch(sendCredentials(inspector.user.id));
 
   private handleSaveInspector = (inspector: Record<string, any>) => {
     this.props.dispatch(createInspector(inspector));
@@ -184,13 +187,11 @@ class DashboardInspectorsPage extends Component<Props> {
                 <span>Nuevo Inspector</span>
               </button>
             }
-            modal={
-              <EditInspectorModal onOk={this.handleSaveInspector} />
-            }
+            modal={<EditInspectorModal onOk={this.handleSaveInspector} />}
           />
         </Toolbar>
 
-        <Table columns={this.columns} data={inspectors} /> 
+        <Table columns={this.columns} data={inspectors} />
       </div>
     );
   }

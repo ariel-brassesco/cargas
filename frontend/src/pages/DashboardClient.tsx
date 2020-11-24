@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faEdit, 
-  faTrash, 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faTrash,
   faPlus,
-  faFingerprint
-} from '@fortawesome/free-solid-svg-icons';
+  faFingerprint,
+} from "@fortawesome/free-solid-svg-icons";
 
 // Import Component
 import { Align, Table, Column } from "../components/Table";
@@ -22,7 +22,7 @@ import {
   deleteClient,
   updateClient,
   fetchClients,
-  sendCredentials
+  sendCredentials,
 } from "../actions/dashboardActions";
 // Import Getters
 import { getClients } from "../reducers/dashboardReducer";
@@ -31,7 +31,7 @@ import { Client } from "../types/client";
 
 type Props = DispatchProp<any> & {
   clients: Client[];
-}
+};
 
 class DashboardClientsPage extends Component<Props> {
   static defaultProps = {
@@ -60,7 +60,7 @@ class DashboardClientsPage extends Component<Props> {
     {
       key: "address",
       title: "Dirección",
-      render: (client: Client) => (client.address?.address || '-')
+      render: (client: Client) => client.address?.address || "-",
     },
     {
       key: "actions",
@@ -71,16 +71,20 @@ class DashboardClientsPage extends Component<Props> {
         <div>
           <ModalTrigger
             button={
-              <button className="button is-small is-info mr-1 has-tooltip-arrow"
+              <button
+                className="button is-small is-info mr-1 has-tooltip-arrow"
                 data-tooltip="Editar"
-                >
+              >
                 <span className="icon">
                   <FontAwesomeIcon icon={faEdit} />
                 </span>
               </button>
             }
             modal={
-              <EditClientModal user={client} onOk={this.handleEditClient(client)} />
+              <EditClientModal
+                user={client}
+                onOk={this.handleEditClient(client)}
+              />
             }
           />
 
@@ -89,9 +93,10 @@ class DashboardClientsPage extends Component<Props> {
             okLabel="Eliminar"
             onClick={this.handleDeleteClient(client)}
           >
-            <button className="button is-small is-danger mr-1 has-tooltip-arrow"
+            <button
+              className="button is-small is-danger mr-1 has-tooltip-arrow"
               data-tooltip="Eliminar"
-              >
+            >
               <span className="icon">
                 <FontAwesomeIcon icon={faTrash} />
               </span>
@@ -101,16 +106,17 @@ class DashboardClientsPage extends Component<Props> {
           <NotificationTrigger
             onCall={this.handleSendCredentials(client)}
             button={
-              <button className="button is-small is-warning has-tooltip-arrow"
+              <button
+                className="button is-small is-warning has-tooltip-arrow"
                 data-tooltip="Enviar Credenciales"
-                >
+              >
                 <span className="icon">
                   <FontAwesomeIcon icon={faFingerprint} />
                 </span>
               </button>
             }
-            modal= {
-              <Notification 
+            modal={
+              <Notification
                 okMsg="Las credentiales fueron enviadas."
                 wrongMsg="Upss! Algo salió. Intentalo de nuevo."
               />
@@ -125,21 +131,22 @@ class DashboardClientsPage extends Component<Props> {
     this.props.dispatch(fetchClients());
   }
 
-  private handleEditClient = (client: Client) => (data: Record<string, any>) => {
+  private handleEditClient = (client: Client) => (
+    data: Record<string, any>
+  ) => {
     this.props.dispatch(updateClient(client.user.id, data));
   };
 
   private handleSaveClient = (client: Record<string, any>) => {
     this.props.dispatch(createClient(client));
-  }
+  };
 
   private handleDeleteClient = (client: Client) => () => {
     this.props.dispatch(deleteClient(client.user.id));
-  }
+  };
 
-  private handleSendCredentials = (client: Client) => () => (
-    this.props.dispatch(sendCredentials(client.user.id))
-  );
+  private handleSendCredentials = (client: Client) => () =>
+    this.props.dispatch(sendCredentials(client.user.id));
 
   public render() {
     const { clients } = this.props;
@@ -156,13 +163,11 @@ class DashboardClientsPage extends Component<Props> {
                 <span>Nuevo Cliente</span>
               </button>
             }
-            modal={
-              <EditClientModal onOk={this.handleSaveClient} />
-            }
+            modal={<EditClientModal onOk={this.handleSaveClient} />}
           />
         </Toolbar>
 
-        <Table columns={this.columns} data={clients} /> 
+        <Table columns={this.columns} data={clients} />
       </div>
     );
   }

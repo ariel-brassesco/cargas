@@ -20,11 +20,11 @@ export interface Column {
 type Props = {
   columns: Column[];
   data: Item[];
-  dataKey?: string | string[];
+  // dataKey?: string | string[];
 };
 
 export const Table: FC<Props> = ({
-  dataKey = "id",
+  // dataKey = "id",
   columns = [],
   data = [],
 }) => {

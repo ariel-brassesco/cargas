@@ -2,8 +2,8 @@ import React, { FC } from "react";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import lodash from "lodash";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 // Import Components
 import { FileField } from "../components/FormsComponents";
 import { Thumb } from "../components/Thumb";
@@ -14,91 +14,94 @@ import { Order } from "../types/order";
 import { PROFILE_INSPECTOR } from "../routes";
 
 type Props = {
-    order: Order;
-    backUrl?: string;
-    okUrl?: string;
-    onOk?: (value: any) => void;
-}
+  order: Order;
+  backUrl?: string;
+  okUrl?: string;
+  onOk?: (value: any) => void;
+};
 
 interface Values {
-    images: File[];
+  images: File[];
 }
 
-const FormNewMeasure: FC<Props> = ({
-    order,
-    backUrl,
-    okUrl,
-    onOk
-}) => {
-    const history = useHistory();
-    return (
-        <Formik<Values>
-            initialValues={{ images: [] }}
-            onSubmit={async (values, { setSubmitting }) => {
-                if (lodash.isEmpty(values.images)) {
-                    setSubmitting(false);
-                } else {
-                    const form = new FormData();
-                    // Append the order id and all the values in FormData
-                    form.append("order", String(order.id));
-                    // Append the images
-                    values.images.forEach(i => form.append("images", i))
+const FormNewMeasure: FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+  const history = useHistory();
+  return (
+    <Formik<Values>
+      initialValues={{ images: [] }}
+      onSubmit={async (values, { setSubmitting }) => {
+        if (lodash.isEmpty(values.images)) {
+          setSubmitting(false);
+        } else {
+          const form = new FormData();
+          // Append the order id and all the values in FormData
+          form.append("order", String(order.id));
+          // Append the images
+          values.images.forEach((i) => form.append("images", i));
 
-                    const res = onOk && await onOk(form);
-                    setSubmitting(false);
-                    if (res && okUrl) history.push(okUrl);
+          const res = onOk && (await onOk(form));
+          setSubmitting(false);
+          if (res && okUrl) history.push(okUrl);
+        }
+      }}
+    >
+      {({ isSubmitting, setFieldValue, values }) => (
+        <Form>
+          {values.images.map((i, idx, arr) => (
+            <div
+              key={idx}
+              className="is-flex is-justify-content-center is-align-items-center my-2"
+            >
+              <Thumb file={i} />
+              <span
+                onClick={() =>
+                  setFieldValue(
+                    "images",
+                    arr.filter((_, ix) => ix !== idx)
+                  )
                 }
-            }}
-        >
-        {({ isSubmitting, isValid, setFieldValue, values }) => (
-            <Form>
-                {
-                    values.images.map((i, idx, arr) => (
-                        <div 
-                            key={idx} 
-                            className="is-flex is-justify-content-center is-align-items-center my-2">
-                            <Thumb file={i} />
-                            <span onClick={() => 
-                                setFieldValue("images", arr.filter((_, ix) => ix !== idx))}
-                                className="button is-danger is-small">
-                                <FontAwesomeIcon icon={faTrash} />
-                            </span>
-                        </div>
-                        )
-                    )
+                className="button is-danger is-small"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </div>
+          ))}
+          <Field>
+            {(props: any) => (
+              <FileField
+                label="Fotos"
+                onChange={(value: any) =>
+                  setFieldValue("images", values.images.concat(value))
                 }
-                <Field >
-                {(props: any)=> (
-                    <FileField 
-                        label="Fotos"
-                        onChange={(value: any)=> setFieldValue("images", values.images.concat(value))}
-                        accept="image/*"
-                        {...props} 
-                    />)
-                }
-                </Field>
+                accept="image/*"
+                {...props}
+              />
+            )}
+          </Field>
 
-                <div className="buttons is-justify-content-space-evenly">
-                <button
-                    type="submit"
-                    disabled={isSubmitting || lodash.isEmpty(values.images)}
-                    className={`button is-success is-large ${isSubmitting?"is-loading":""}`}
-                >
-                    <span>Guardar</span>
-                </button>
-                
-                <Link 
-                    to={backUrl ?? PROFILE_INSPECTOR} 
-                    className="button is-danger is-large" 
-                    aria-disabled={isSubmitting}
-                    >
-                    <span>Cancelar</span>
-                </Link>
-                </div>
-            </Form>
-        )}
-        </Formik>
+          <div className="buttons is-justify-content-space-evenly">
+            <button
+              type="submit"
+              disabled={isSubmitting || lodash.isEmpty(values.images)}
+              className={`button is-success is-large ${
+                isSubmitting ? "is-loading" : ""
+              }`}
+            >
+              <span>Guardar</span>
+            </button>
+
+            <Link
+              to={backUrl ?? PROFILE_INSPECTOR}
+              className="button is-danger is-large"
+              aria-disabled={isSubmitting}
+            >
+              <span>Cancelar</span>
+            </Link>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
-}
+};
 
 export default FormNewMeasure;

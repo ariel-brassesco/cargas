@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 // Import Routes
 import {
   LOGIN,
-  DASHBOARD, 
-  DASHBOARD_ORDERS, 
+  DASHBOARD,
+  DASHBOARD_ORDERS,
   DASHBOARD_CLIENTS,
   DASHBOARD_INSPECTORS,
   DASHBOARD_PRODUCTS,
-  // DASHBOARD_REPORTS 
+  // DASHBOARD_REPORTS
 } from "../routes";
 // Import Pages
 import DashboardHomePage from "./DashboardHome";
@@ -21,11 +21,11 @@ import DashboardProductsPage from "./DashboardProduct";
 //Import Components
 import { Navbar } from "../components/Navbar";
 // Import Actions
-import { 
-  fetchClients, 
-  fetchInspectors, 
-  fetchProducts, 
-  fetchOrders
+import {
+  fetchClients,
+  fetchInspectors,
+  fetchProducts,
+  fetchOrders,
 } from "../actions/dashboardActions";
 // Import Getters
 import { getAccount } from "../reducers/dashboardReducer";
@@ -45,7 +45,7 @@ const DashboardPage: FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!account?.id) router.push(LOGIN)
+    if (!account?.id) router.push(LOGIN);
     else router.push(userTypeMapRoute[account.user_type]);
   }, [account, router]);
 

@@ -1,0 +1,86 @@
+# test directories
+__tests__
+tests
+powered-test
+*.test.js
+*.tap.js
+*.test.ts
+*tests.html
+
+# asset directories
+docs
+doc
+website
+images
+assets
+
+# examples
+example
+examples
+
+# code coverage directories
+coverage
+.nyc_output
+
+# build scripts
+Makefile
+Gulpfile.js
+Gruntfile.js
+
+# configs
+**/.github/**/*.yml
+.*ignore
+.babelrc
+.browserslistrc
+.dist.babelrc
+.dist.eslintrc
+.documentup.json
+.editorconfig
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.eslintrc.yml
+.flowconfig
+.gitattributes
+.idea
+.jshintrc
+.lib.babelrc
+.lib.eslintrc
+.tern-project
+.travis.yml
+.yarn-metadata.json
+.zuul.yml
+appveyor.yml
+bower.json
+circle.yml
+codeship-services.yml
+codeship-steps.yml
+jsdoc_conf.json
+rollup.config.js
+tsconfig.json
+wercker.yml
+
+# misc
+*.md
+*.markdown
+*.sh
+*.map
+!object.map
+*.png
+*.jpg
+*.gif
+*.sln
+*.un~
+
+AUTHORS
+CopyrightNotice.txt
+LICENSE-W3C.html
+LICENSE.md
+LICENSE.txt
+LICENSE-MIT.txt
+MIT-LICENSE
+LICENSE
+NOTICE.txt
+package-lock.json
+yarn-error.log
+yarn.lock

@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+// Import Components
 import { Align, Table, Column } from "../components/Table";
 import { Confirm } from "../components/Confirm";
 import { Toolbar } from "../components/Toolbar";
 import { ModalTrigger } from "../components/ModalTrigger";
 import { EditProductModal } from "../components/modals/EditComponent";
-import { 
-    fetchProducts,
-    createProduct,
-    updateProduct,
-    deleteProduct
+// Import Actions
+import {
+  fetchProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 } from "../actions/dashboardActions";
+// Immport Getters
 import { getProducts } from "../reducers/dashboardReducer";
+// Import Types
 import { Product } from "../types/product";
-
 
 type Props = DispatchProp<any> & {
   products: Product[];
@@ -36,9 +41,9 @@ class DashboardProductsPage extends Component<Props> {
       title: "Nombre",
       align: Align.center,
       width: 200,
-    render: (product: Product) => (
-      <p className="is-uppercase">{product.name}</p>
-      )
+      render: (product: Product) => (
+        <p className="is-uppercase">{product.name}</p>
+      ),
     },
     {
       key: "actions",
@@ -47,19 +52,20 @@ class DashboardProductsPage extends Component<Props> {
       width: 120,
       render: (product: Product) => (
         <div>
-            <ModalTrigger
+          <ModalTrigger
             button={
-              <button className="button is-info mr-2 has-tooltip-arrow" 
+              <button
+                className="button is-info mr-2 has-tooltip-arrow"
                 data-tooltip="Editar"
-                >
+              >
                 <span className="icon">
-                  <i className="fas fa-edit" />
+                  <FontAwesomeIcon icon={faEdit} />
                 </span>
               </button>
             }
             modal={
-              <EditProductModal 
-                product={product} 
+              <EditProductModal
+                product={product}
                 onOk={this.handleUpdateProduct(product)}
               />
             }
@@ -70,10 +76,12 @@ class DashboardProductsPage extends Component<Props> {
             okLabel="Eliminar"
             onClick={this.handleDeleteProduct(product.id)}
           >
-            <button className="button is-danger has-tooltip-arrow"
-              data-tooltip="Eliminar">
+            <button
+              className="button is-danger has-tooltip-arrow"
+              data-tooltip="Eliminar"
+            >
               <span className="icon">
-                <i className="fas fa-trash" />
+                <FontAwesomeIcon icon={faTrash} />
               </span>
             </button>
           </Confirm>
@@ -86,17 +94,16 @@ class DashboardProductsPage extends Component<Props> {
     this.props.dispatch(fetchProducts());
   }
 
-  private handleSaveProduct = (product: Record<string, any>) => (
-    this.props.dispatch(createProduct(product))
-  );
+  private handleSaveProduct = (product: Record<string, any>) =>
+    this.props.dispatch(createProduct(product));
 
-  private handleUpdateProduct = (product: Product) => (data: Record<string, any>) => (
-    this.props.dispatch(updateProduct(product.id, data))
-  );
+  private handleUpdateProduct = (product: Product) => (
+    data: Record<string, any>
+  ) => this.props.dispatch(updateProduct(product.id, data));
 
   private handleDeleteProduct = (id: number) => () => {
-      this.props.dispatch(deleteProduct(id));
-  }
+    this.props.dispatch(deleteProduct(id));
+  };
 
   public render() {
     const { products } = this.props;
@@ -108,18 +115,16 @@ class DashboardProductsPage extends Component<Props> {
             button={
               <button className="button is-info">
                 <span className="icon">
-                  <i className="fas fa-plus" />
+                  <FontAwesomeIcon icon={faPlus} />
                 </span>
                 <span>Nuevo Producto</span>
               </button>
             }
-            modal={
-              <EditProductModal onOk={this.handleSaveProduct} />
-            }
+            modal={<EditProductModal onOk={this.handleSaveProduct} />}
           />
         </Toolbar>
 
-        <Table columns={this.columns} data={products} dataKey="products" />
+        <Table columns={this.columns} data={products} />
       </div>
     );
   }

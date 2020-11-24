@@ -4,7 +4,7 @@ import { inspectorReducer } from "./inspectorReducer";
 // import { showcaseReducer } from "./showcaseReducer";
 // import { cartReducer } from "./cartReducer";
 
-const appReducer = combineReducers ({
+const appReducer = combineReducers({
   dashboard: dashboardReducer,
   inspector: inspectorReducer,
 });

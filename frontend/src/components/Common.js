@@ -100,7 +100,11 @@ export const CustomField = ({ field, form: { touched, errors }, ...props }) => (
   </div>
 );
 
-export const CustomFieldHorizontal = ({ field, form: { touched, errors }, ...props }) => (
+export const CustomFieldHorizontal = ({
+  field,
+  form: { touched, errors },
+  ...props
+}) => (
   <div className="field is-horizontal">
     {props.label ? (
       <label className="label is-large">{props.label}</label>
@@ -116,7 +120,12 @@ export const CustomFieldHorizontal = ({ field, form: { touched, errors }, ...pro
               {...props}
             ></textarea>
           ) : (
-            <input type="text" className="input is-medium" {...field} {...props} />
+            <input
+              type="text"
+              className="input is-medium"
+              {...field}
+              {...props}
+            />
           )}
         </div>
         {touched[field.name] && errors[field.name] ? (
@@ -181,7 +190,7 @@ export const CustomMultipleSelect = ({
 
 export const Loader = ({
   className = "image is-128x128",
-  src = "/images/loader.gif",
+  src = "/static/images/loader.gif",
   alt = "Loading ...",
 }) => {
   return (

@@ -19,7 +19,6 @@ export const Pagination: FC<Props> = ({
   next,
   pages,
   changePage,
-  ...props
 }) => {
   const numbers = Array.from({ length: pages }, (_, i) => ++i);
   return (

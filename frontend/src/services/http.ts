@@ -16,7 +16,7 @@ const handleError = (error: Error & { response: AxiosResponse<any> }) => {
 
 export class Http {
   public constructor() {
-    axios.defaults.baseURL = "/api";
+    axios.defaults.baseURL = "/";
     const token = localStorage.getItem("token") ?? "";
     this.setAuth(token);
   }

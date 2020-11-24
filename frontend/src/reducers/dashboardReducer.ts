@@ -7,7 +7,6 @@ import { Inspector } from "../types/inspector";
 import { Order, OrderPagination } from "../types/order";
 import { Product } from "../types/product";
 
-
 export const DASHBOARD_LOGIN = "DASHBOARD_LOGIN";
 export const DASHBOARD_LOGOUT = "DASHBOARD_LOGOUT";
 export const FETCH_CLIENTS = "FETCH_CLIENTS";
@@ -27,22 +26,20 @@ export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
-
 type State = {
   account: Partial<Account>;
   clients: Client[];
   inspectors: Inspector[];
   orders: Partial<OrderPagination>;
   products: Product[];
-}
-
+};
 
 const initialState: State = {
   account: {},
   clients: [],
   inspectors: [],
   orders: {},
-  products: []
+  products: [],
 };
 
 export const dashboardReducer: Reducer<State> = (
@@ -78,7 +75,7 @@ export const dashboardReducer: Reducer<State> = (
 
     case UPDATE_CLIENT:
       const clientIndex = state.clients.findIndex(
-        c => c.user.id === payload.user.id
+        (c) => c.user.id === payload.user.id
       );
       const clients = [...state.clients];
 
@@ -92,10 +89,9 @@ export const dashboardReducer: Reducer<State> = (
     case DELETE_CLIENT:
       return {
         ...state,
-        clients:
-          state.clients.filter(c => c.user.id !== payload) ?? [],
+        clients: state.clients.filter((c) => c.user.id !== payload) ?? [],
       };
-    
+
     // INSPECTORS ACTIONS //
     case FETCH_INSPECTORS:
       return {
@@ -111,7 +107,7 @@ export const dashboardReducer: Reducer<State> = (
 
     case UPDATE_INSPECTOR:
       const inspectorIndex = state.inspectors.findIndex(
-        i => i.user.id === payload.user.id
+        (i) => i.user.id === payload.user.id
       );
       const inspectors = [...state.inspectors];
 
@@ -125,22 +121,21 @@ export const dashboardReducer: Reducer<State> = (
     case DELETE_INSPECTOR:
       return {
         ...state,
-        inspectors:
-          state.inspectors.filter(i => i.user.id !== payload) ?? [],
+        inspectors: state.inspectors.filter((i) => i.user.id !== payload) ?? [],
       };
-    
+
     // PRODUCTS ACTIONS //
     case FETCH_PRODUCTS:
       return {
         ...state,
         products: payload ?? [],
       };
-    
+
     case CREATE_PRODUCT:
-    return {
-      ...state,
-      products: [...state.products, payload],
-    };
+      return {
+        ...state,
+        products: [...state.products, payload],
+      };
 
     case UPDATE_PRODUCT:
       const prodIndex = state.products.findIndex(
@@ -154,32 +149,28 @@ export const dashboardReducer: Reducer<State> = (
         ...state,
         products,
       };
-    
+
     case DELETE_PRODUCT:
       return {
         ...state,
-        products:
-          state.products.filter(p => p.id !== payload) ?? [],
+        products: state.products.filter((p) => p.id !== payload) ?? [],
       };
-    
+
     // ORDERS ACTIONS //
     case FETCH_ORDERS:
       return {
         ...state,
         orders: payload ?? {},
       };
-    
+
     case CREATE_ORDER:
-    return {
-      ...state,
-      orders: {
-        ...state.orders,
-        results: [
-          payload, 
-          ...state.orders.results!
-        ]
-      },
-    };
+      return {
+        ...state,
+        orders: {
+          ...state.orders,
+          results: [payload, ...state.orders.results!],
+        },
+      };
 
     case UPDATE_ORDER:
       const orderIndex = state.orders.results!.findIndex(
@@ -192,16 +183,15 @@ export const dashboardReducer: Reducer<State> = (
         ...state,
         orders,
       };
-    
+
     case DELETE_ORDER:
       return {
         ...state,
         orders: {
           ...state.orders,
-          results: state.orders.results!.filter(
-            (o: Order) => o.id !== payload
-          ) ?? []
-        }
+          results:
+            state.orders.results!.filter((o: Order) => o.id !== payload) ?? [],
+        },
       };
 
     default:

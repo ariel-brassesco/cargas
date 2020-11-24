@@ -8,11 +8,11 @@ import { Inspector } from "../types/inspector";
 import { Order, statusMap } from "../types/order";
 import { Product } from "../types/product";
 // Import services
-import { 
-  dateInUSFormat, 
+import {
+  dateInUSFormat,
   timeFromUTCToLocal,
   timeFromLocalToUTC,
-  dateToISOString 
+  dateToISOString,
 } from "../services/datetime";
 
 type Values = {
@@ -31,25 +31,23 @@ type Values = {
   status: string;
 };
 
-
 type Props = {
-  order?: Order,
-  clients?: Client[],
-  inspectors?: Inspector[],
-  products?: Product[],
+  order?: Order;
+  clients?: Client[];
+  inspectors?: Inspector[];
+  products?: Product[];
   onOk: (order: any) => any;
   onCancel: () => void;
-}
+};
 
 export const EditOrder: FC<Props> = ({
   order,
-  clients, 
+  clients,
   inspectors,
   products,
   onOk,
-  onCancel
+  onCancel,
 }) => {
-
   const validationSchema = Yup.object({
     client: Yup.string().required("Campo requerido"),
     inspector: Yup.string().required("Campo requerido"),
@@ -63,7 +61,7 @@ export const EditOrder: FC<Props> = ({
       initialValues={{
         client: String(order?.client.user.id ?? ""),
         inspector: String(order?.inspector.user.id ?? ""),
-        products: order?.products.map(p => p.id) ?? [],
+        products: order?.products.map((p) => p.id) ?? [],
         gross_weight: order?.gross_weight ?? 0,
         date: dateInUSFormat(order?.date),
         time_start: timeFromUTCToLocal(order?.date, order?.time_start),
@@ -75,119 +73,143 @@ export const EditOrder: FC<Props> = ({
         plant: order?.plant ?? "",
         status: order?.status ?? "pending",
       }}
-
       validationSchema={validationSchema}
-      
       onSubmit={async (values, { setSubmitting }) => {
-        const data: Record<string, any> = { 
+        const data: Record<string, any> = {
           ...values,
           date: dateToISOString(values.date),
           time_start: timeFromLocalToUTC(values.date, values.time_start),
           time_complete: timeFromLocalToUTC(values.date, values.time_complete),
-          };
-        const res: any = await onOk(data)
+        };
+        const res: any = await onOk(data);
         setSubmitting(false);
         if (res) onCancel();
-      }
-      }
+      }}
     >
       {({ isSubmitting }) => (
         <Form>
-        <h1 className="title is-1">
-            { order? "Editar Orden" : "Crear Carga"}
-        </h1>
-        <div className="field is-horizontal">
-          <div className="field-body">
-            <Field name="client" label="Cliente" component={CustomSelect}>
-            <option value="">-----</option>
-            {clients?.map(c => (
-                <option value={c.user.id} key={c.user.id}>
-                {c.company}
-                </option>
-            ))}
-            </Field>
-            <Field name="inspector" label="Inspector" component={CustomSelect}>
-            <option value="">-----</option>
-            {inspectors?.map(i => (
-                <option value={i.user.id} key={i.user.id}>
-                {i.user.username}
-                </option>
-            ))}
-            </Field>
+          <h1 className="title is-1">
+            {order ? "Editar Orden" : "Crear Carga"}
+          </h1>
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field name="client" label="Cliente" component={CustomSelect}>
+                <option value="">-----</option>
+                {clients?.map((c) => (
+                  <option value={c.user.id} key={c.user.id}>
+                    {c.company}
+                  </option>
+                ))}
+              </Field>
+              <Field
+                name="inspector"
+                label="Inspector"
+                component={CustomSelect}
+              >
+                <option value="">-----</option>
+                {inspectors?.map((i) => (
+                  <option value={i.user.id} key={i.user.id}>
+                    {i.user.username}
+                  </option>
+                ))}
+              </Field>
+            </div>
           </div>
-        </div>
-        <div className="field is-horizontal">
-          <div className="field-body">
-            <Field name="products" label="Productos" component={CustomMultipleSelect}>
-            {products?.map(p => (
-                <option value={p.id} key={p.id}>
-                {p.name}
-                </option>
-            ))}
-            </Field>
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field
+                name="products"
+                label="Productos"
+                component={CustomMultipleSelect}
+              >
+                {products?.map((p) => (
+                  <option value={p.id} key={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </Field>
 
-            <Field 
-              name="gross_weight" 
-              label="Peso Bruto" 
-              type="text" 
-              component={CustomField}
-            />
+              <Field
+                name="gross_weight"
+                label="Peso Bruto"
+                type="text"
+                component={CustomField}
+              />
+            </div>
           </div>
-        </div>
-        
-        <div className="field is-horizontal">
-          <div className="field-body">
-            <Field name="date" label="Fecha de Inicio"
+
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field
+                name="date"
+                label="Fecha de Inicio"
                 type="date"
-                component={CustomField} />
-            <Field name="time_start" label="Hora de Inicio"
+                component={CustomField}
+              />
+              <Field
+                name="time_start"
+                label="Hora de Inicio"
                 type="time"
-                component={CustomField} />
-            <Field name="time_complete" label="Hora de Finalización"
-              type="time"
-              component={CustomField} />
+                component={CustomField}
+              />
+              <Field
+                name="time_complete"
+                label="Hora de Finalización"
+                type="time"
+                component={CustomField}
+              />
+            </div>
           </div>
-        </div>
-        
-        <div className="field is-horizontal">
-          <div className="field-body">
-            <Field name="origin" label="Origen" component={CustomField} />
-            <Field name="discharge" label="Descarga" component={CustomField} />
+
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field name="origin" label="Origen" component={CustomField} />
+              <Field
+                name="discharge"
+                label="Descarga"
+                component={CustomField}
+              />
+            </div>
           </div>
-        </div>
-        
-        <div className="field is-horizontal">
-          <div className="field-body">
-            <Field name="booking" label="Booking" component={CustomField} />
-            <Field name="vessel_name" label="Vessel Name" component={CustomField} />
-            <Field name="plant" label="Planta" component={CustomField} />
+
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field name="booking" label="Booking" component={CustomField} />
+              <Field
+                name="vessel_name"
+                label="Vessel Name"
+                component={CustomField}
+              />
+              <Field name="plant" label="Planta" component={CustomField} />
+            </div>
           </div>
-        </div>
-        
-        <Field name="status" label="Estado" component={CustomSelect}>
-        {Object.entries(statusMap).map(s => (
-            <option value={s[0]} key={s[0]}>
-            {s[1]}
-            </option>
-        ))}
-        </Field>
-        
-        <div className="buttons">
-          <button 
-            className="button is-danger" 
-            disabled={isSubmitting} 
-            onClick={onCancel}>
+
+          <Field name="status" label="Estado" component={CustomSelect}>
+            {Object.entries(statusMap).map((s) => (
+              <option value={s[0]} key={s[0]}>
+                {s[1]}
+              </option>
+            ))}
+          </Field>
+
+          <div className="buttons">
+            <button
+              className="button is-danger"
+              disabled={isSubmitting}
+              onClick={onCancel}
+            >
               Cancelar
-          </button>
-          <button 
-            type="submit" 
-            className="button is-success" 
-            disabled={isSubmitting}>
+            </button>
+            <button
+              type="submit"
+              className="button is-success"
+              disabled={isSubmitting}
+            >
               Guardar
-          </button>
-        </div>
+            </button>
+          </div>
         </Form>
       )}
     </Formik>
   );
-}
+};

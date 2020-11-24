@@ -21,18 +21,13 @@ DATABASES = {
     'default':  dj_database_url.config(conn_max_age=600)
 }
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-
 # Google Drive Storage Settings
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = None
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS = os.getenv('GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS')
 GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = 'cargas/media'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "frontend", "build", "static"),
 ]
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -56,4 +51,8 @@ EMAIL_HOST_PASSWORD = os.getenv('MAILGUN_SMTP_PASSWORD')
 EMAIL_PORT = os.getenv('MAILGUN_SMTP_PORT')
 EMAIL_USE_TLS = True
 EMAIL_SENDER_CREDENTIALS = os.getenv('EMAIL_SENDER_CREDENTIALS')
+EMAIL_RECEIVE_CREDENTIALS = os.getenv("EMAIL_RECEIVE_CREDENTIALS")
+EMAIL_OWNER = os.getenv("EMAIL_OWNER")
+MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_API_KEY')
+MAILGUN_SERVER_NAME = os.getenv('MAILGUN_DOMAIN')
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
