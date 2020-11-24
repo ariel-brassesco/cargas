@@ -2,7 +2,7 @@ import os
 from .settings import BASE_DIR, MIDDLEWARE, INSTALLED_APPS
 
 
-ALLOWED_HOSTS = ['cargas.herokuapp.com']
+ALLOWED_HOSTS = ['cargas-ar.herokuapp.com']
 
 # Application definition
 
