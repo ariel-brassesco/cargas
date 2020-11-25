@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { getAccount } from "../reducers/dashboardReducer";

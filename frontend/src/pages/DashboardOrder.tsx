@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
 import { Route, Switch, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

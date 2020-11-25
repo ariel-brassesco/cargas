@@ -1,4 +1,4 @@
-import React, { FC, useState, ReactElement } from "react";
+import { FC, useState, ReactElement } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { connect, DispatchProp } from "react-redux";
 import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import { compose } from "redux";

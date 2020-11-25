@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState, useCallback } from "react";
+import { FC, ReactElement, useState, useCallback } from "react";
 
 type Props = {
   button: ReactElement;

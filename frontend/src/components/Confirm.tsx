@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { Modal } from "./Modal";
 import { ModalTrigger } from "./ModalTrigger";
 

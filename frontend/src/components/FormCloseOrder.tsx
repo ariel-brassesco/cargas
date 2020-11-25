@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useSelector } from "react-redux";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
