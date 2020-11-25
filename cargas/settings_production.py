@@ -1,6 +1,4 @@
 import os
-from .settings import BASE_DIR, MIDDLEWARE, INSTALLED_APPS
-
 
 ALLOWED_HOSTS = ['cargas-ar.herokuapp.com']
 
@@ -26,9 +24,6 @@ GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = None
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS = os.getenv('GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS')
 GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = 'cargas/media'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend", "build", "static"),
-]
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'

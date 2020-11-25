@@ -1,5 +1,4 @@
 import os
-from .settings import BASE_DIR
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
@@ -7,14 +6,10 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Application definition
 
 INSTALLED_APPS = [
-    
+
 ]
 
 MIDDLEWARE = []
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend", "build", "static"),
-]
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
