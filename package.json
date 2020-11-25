@@ -1,6 +1,9 @@
 {
   "name": "cargas",
   "description": "",
+  "engines": {
+    "yarn": "1.22.5"
+  },
   "workspaces": [
     "frontend"
   ],
