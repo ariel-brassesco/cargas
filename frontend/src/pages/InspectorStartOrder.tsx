@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
@@ -24,7 +24,7 @@ type Values = {
   ventilation: File | undefined;
 };
 
-const InspectorStartOrder: FC<Props> = ({ order, onOk }) => {
+const InspectorStartOrder: React.FC<Props> = ({ order, onOk }) => {
   if (order.status !== "pending")
     return <Redirect to={`${INSPECTOR_LOADING_ORDER}/${order.id}`} />;
 

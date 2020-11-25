@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 import { connect, DispatchProp } from "react-redux";
 import { Route, Switch, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,7 +53,7 @@ type State = {
   loading: boolean;
 };
 
-class DashboardOrdersPage extends Component<Props, State> {
+class DashboardOrdersPage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

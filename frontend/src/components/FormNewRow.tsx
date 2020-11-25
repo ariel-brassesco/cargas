@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
   quantity: Yup.number().required("Campo requerido"),
 });
 
-const FormNewRow: FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+const FormNewRow: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   const nextRow = useSelector((state: any) => getNextRow(state));
   const history = useHistory();
 

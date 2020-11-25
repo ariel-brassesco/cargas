@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 import { connect, DispatchProp } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +24,7 @@ type Props = DispatchProp<any> & {
   products: Product[];
 };
 
-class DashboardProductsPage extends Component<Props> {
+class DashboardProductsPage extends React.Component<Props> {
   static defaultProps = {
     products: [],
   };

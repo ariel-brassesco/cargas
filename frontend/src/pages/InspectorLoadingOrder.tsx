@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Redirect,
   Route,
@@ -49,7 +49,7 @@ type Props = RouteComponentProps & {
   order: Order;
 };
 
-const InspectorLoadingOrder: FC<Props> = ({ order, match, history }) => {
+const InspectorLoadingOrder: React.FC<Props> = ({ order, match, history }) => {
   const dispatch = useDispatch();
   const rows: Row[] = useSelector((state: any) => getRows(state));
   const { url } = match;

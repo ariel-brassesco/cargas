@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +33,7 @@ type Props = {
   order: Order;
 };
 
-const InspectorCheckRows: FC<Props> = ({ order }) => {
+const InspectorCheckRows: React.FC<Props> = ({ order }) => {
   const dispatch = useDispatch();
   const rows: Row[] = useSelector((state: any) => getRows(state));
 

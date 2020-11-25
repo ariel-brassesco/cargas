@@ -1,27 +1,28 @@
+import dj_database_url
 import os
 
 ALLOWED_HOSTS = ['cargas-ar.herokuapp.com']
 
 # Application definition
 
-INSTALLED_APPS += [
+INSTALLED_APPS = [
     'gdstorage',
 ]
 
-MIDDLEWARE += [
+MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-import dj_database_url
 DATABASES = {
     'default':  dj_database_url.config(conn_max_age=600)
 }
 
 # Google Drive Storage Settings
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = None
-GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS = os.getenv('GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS')
+GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS = os.getenv(
+    'GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE_CONTENTS')
 GOOGLE_DRIVE_STORAGE_MEDIA_ROOT = 'cargas/media'
 
 # Simplified static file serving.
@@ -37,7 +38,8 @@ CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SESSION_SAVE_EVERY_REQUEST = True # For session dictionary modifications between request
+# For session dictionary modifications between request
+SESSION_SAVE_EVERY_REQUEST = True
 
 # EMAIL SETTINGS
 EMAIL_HOST = os.getenv('MAILGUN_SMTP_SERVER')

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { getAccount } from "../reducers/dashboardReducer";
@@ -9,7 +9,12 @@ type Props = {
   redirect: string;
 };
 
-const PrivateRoute: FC<Props> = ({ children, account, redirect, ...props }) => (
+const PrivateRoute: React.FC<Props> = ({
+  children,
+  account,
+  redirect,
+  ...props
+}) => (
   <Route
     {...props}
     render={({ location }) =>

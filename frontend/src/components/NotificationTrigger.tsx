@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState, useCallback } from "react";
+import React, { ReactElement, useState, useCallback } from "react";
 
 type Props = {
   button: ReactElement;
@@ -6,7 +6,11 @@ type Props = {
   onCall?: Function;
 };
 
-export const NotificationTrigger: FC<Props> = ({ button, modal, onCall }) => {
+export const NotificationTrigger: React.FC<Props> = ({
+  button,
+  modal,
+  onCall,
+}) => {
   const [open, setOpen] = useState(false);
   const [ok, setOk] = useState(false);
 

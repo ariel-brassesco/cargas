@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDoubleLeft,
@@ -13,7 +13,7 @@ type Props = {
   changePage: (page: number) => void;
 };
 
-export const Pagination: FC<Props> = ({
+export const Pagination: React.FC<Props> = ({
   current = 1,
   previous,
   next,

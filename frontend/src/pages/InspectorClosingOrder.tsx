@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import {
   Redirect,
   Route,
@@ -22,7 +22,7 @@ type Props = RouteComponentProps & {
   order: Order;
 };
 
-const InspectorClosingOrder: FC<Props> = ({ order, match }) => {
+const InspectorClosingOrder: React.FC<Props> = ({ order, match }) => {
   const dispatch = useDispatch();
   const { url } = match;
 

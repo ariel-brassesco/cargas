@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import lodash from "lodash";
 // Import Componentes
@@ -8,7 +8,7 @@ import { getOrders } from "../reducers/inspectorReducer";
 // Import Types
 import { Order } from "../types/order";
 
-const InspectorHomePage: FC = () => {
+const InspectorHomePage: React.FC = () => {
   const orders: Order[] = useSelector((state: any) => getOrders(state));
   return (
     <div className="mt-3">

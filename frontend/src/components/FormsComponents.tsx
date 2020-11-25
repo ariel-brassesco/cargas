@@ -1,4 +1,4 @@
-import { FC, useState, ReactElement } from "react";
+import React, { useState, ReactElement } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -8,7 +8,7 @@ type Props = {
   onChange: (values: any) => void;
 };
 
-export const FileField: FC<Props | any> = ({
+export const FileField: React.FC<Props | any> = ({
   onChange,
   children,
   label,

@@ -1,4 +1,4 @@
-import { ChangeEvent, Component } from "react";
+import React, { ChangeEvent } from "react";
 
 type Props = {
   dataKey?: any;
@@ -9,7 +9,7 @@ type Props = {
   onChange: (option: any) => boolean | Promise<boolean>;
 };
 
-export class SelectOption extends Component<Props> {
+export class SelectOption extends React.Component<Props> {
   public state: Record<string, any> = {
     loading: false,
     value: this.props.value,

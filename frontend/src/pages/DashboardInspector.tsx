@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 import { connect, DispatchProp } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,7 +34,7 @@ type Props = DispatchProp<any> & {
   inspectors: Inspector[];
 };
 
-class DashboardInspectorsPage extends Component<Props> {
+class DashboardInspectorsPage extends React.Component<Props> {
   static defaultProps = {
     inspectors: [],
   };

@@ -1,4 +1,4 @@
-import { Component, FC, useEffect, useState } from "react";
+import React, { Component, FC, useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 // Import Components
@@ -57,7 +57,7 @@ interface CheckListState {
   check: boolean;
 }
 
-const CheckerModal: FC<CheckerProps> = ({
+const CheckerModal: React.FC<CheckerProps> = ({
   condition,
   value,
   labelOk,

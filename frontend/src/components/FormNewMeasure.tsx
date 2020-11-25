@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import lodash from "lodash";
@@ -24,7 +24,7 @@ interface Values {
   images: File[];
 }
 
-const FormNewMeasure: FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+const FormNewMeasure: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   const history = useHistory();
   return (
     <Formik<Values>

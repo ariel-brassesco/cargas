@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
@@ -36,7 +36,7 @@ const validationSchema = Yup.object().shape({
   product: Yup.string().required("Campo Requerido"),
 });
 
-const FormNewWeight: FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+const FormNewWeight: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   const history = useHistory();
   return (
     <Formik<Values>

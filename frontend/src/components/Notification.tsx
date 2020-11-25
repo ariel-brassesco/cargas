@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback } from "react";
 
 type Props = {
   open?: boolean;
@@ -8,7 +8,7 @@ type Props = {
   wrongMsg?: ReactNode;
 };
 
-export const Notification: FC<Props> = ({
+export const Notification: React.FC<Props> = ({
   open,
   onOpenChange,
   ok,

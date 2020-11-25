@@ -1,10 +1,10 @@
-import { FC } from "react";
+import React from "react";
 
 type Props = {
   title: string;
 };
 
-export const Toolbar: FC<Props> = ({ title, children }) => (
+export const Toolbar: React.FC<Props> = ({ title, children }) => (
   <nav className="columns is-vcentered is-mobile">
     <div className="column is-half">
       <h2 className="title">{title}</h2>

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-export const CheckCircleIcon: FC<Props> = ({
+export const CheckCircleIcon: React.FC<Props> = ({
   className = "icon has-text-success",
 }) => (
   <span className={className}>

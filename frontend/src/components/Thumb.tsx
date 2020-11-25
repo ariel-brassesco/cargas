@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 
 type Props = {
   file?: any;
@@ -10,7 +10,7 @@ type State = {
   thumb?: any;
 };
 
-export class Thumb extends Component<Props, State> {
+export class Thumb extends React.Component<Props, State> {
   public state = {
     loading: false,
     thumb: undefined,

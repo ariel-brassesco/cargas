@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React, { FC } from "react";
 import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -68,7 +68,7 @@ type PropsRow = {
   onOk: (data: any) => void;
 };
 
-export const EditClientModal: FC<Props> = ({ user, onOk, ...props }) => {
+export const EditClientModal: React.FC<Props> = ({ user, onOk, ...props }) => {
   const validationSchema = Yup.object({
     company: Yup.string().required("Campo requerido"),
     username: Yup.string()
@@ -313,7 +313,7 @@ export const EditOrderInitModal: FC<PropsOrderInit> = ({
   );
 };
 
-export const EditRowModal: FC<PropsRow> = ({ row, order, onOk, ...props }) => {
+export const EditRowModal: FC<PropsRow> = ({ row, order, ...props }) => {
   const validationSchema = Yup.object().shape({
     number: Yup.number().required("Campo Requerido"),
     product: Yup.string().required("Campo Requerido"),
@@ -337,9 +337,9 @@ export const EditRowModal: FC<PropsRow> = ({ row, order, onOk, ...props }) => {
       onSubmit={async (values, { setSubmitting }) => {
         console.log(values);
         // const form = new FormData();
-        // Object.entries(values).forEach(i => {
-        //     if (i[1]) form.append(...i)
-        // })
+        // Object.entries(values).forEach((i) => {
+        //   if (i[1]) form.append(...i)
+        // });
         // await onOk(form);
         setSubmitting(false);
       }}

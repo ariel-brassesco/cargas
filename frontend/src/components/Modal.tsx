@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback } from "react";
 
 type Props = {
   open?: boolean;
@@ -10,7 +10,7 @@ type Props = {
   onOk?: () => void;
 };
 
-export const Modal: FC<Props> = ({
+export const Modal: React.FC<Props> = ({
   open,
   onOpenChange,
   title,

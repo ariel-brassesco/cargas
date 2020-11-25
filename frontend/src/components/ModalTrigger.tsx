@@ -1,8 +1,8 @@
-import { FC, ReactElement, useState, useCallback } from "react";
+import React, { FC, useState, useCallback } from "react";
 
 type Props = {
-  button: ReactElement;
-  modal: ReactElement;
+  button: React.ReactElement;
+  modal: React.ReactElement;
 };
 
 export const ModalTrigger: FC<Props> = ({ button, modal }) => {

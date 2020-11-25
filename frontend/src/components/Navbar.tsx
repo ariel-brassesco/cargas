@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../actions/dashboardActions";
@@ -11,7 +11,7 @@ import {
   DASHBOARD_REPORTS,
 } from "../routes";
 
-export const Navbar = () => {
+export const Navbar: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleLogout = useCallback(() => dispatch(logout()), [dispatch]);

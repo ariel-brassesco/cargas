@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,7 +23,7 @@ type Props = {
   order: Order;
 };
 
-export const CardOrder: FC<Props> = ({ order }) => {
+export const CardOrder: React.FC<Props> = ({ order }) => {
   const [show, setDisplay] = useState(false);
 
   const handleDisplay = () => setDisplay(!show);

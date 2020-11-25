@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 import { connect, DispatchProp } from "react-redux";
 import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import { compose } from "redux";
@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
 
 type Props = DispatchProp<any> & RouteComponentProps & {};
 
-class LoginPage extends Component<Props> {
+class LoginPage extends React.Component<Props> {
   public state = {
     errorMsg: "",
   };

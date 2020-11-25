@@ -1,4 +1,4 @@
-import { FC } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
@@ -41,7 +41,7 @@ const validationSchema = Yup.object().shape({
   precinto: Yup.mixed(),
 });
 
-const FormCloseOrder: FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   const history = useHistory();
   const rows = useSelector((state: any) => getRows(state));
 

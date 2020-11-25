@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 
@@ -26,7 +26,7 @@ import {
   INSPECTOR_CHECK_ROWS,
 } from "../routes";
 
-const InspectorProfile: FC = () => {
+const InspectorProfile: React.FC = () => {
   const dispatch = useDispatch();
   const account: Account = useSelector((state: any) => getAccount(state));
   const orders: Order[] = useSelector((state: any) => getOrders(state));

@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React from "react";
 import { connect, DispatchProp } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +33,7 @@ type Props = DispatchProp<any> & {
   clients: Client[];
 };
 
-class DashboardClientsPage extends Component<Props> {
+class DashboardClientsPage extends React.Component<Props> {
   static defaultProps = {
     clients: [],
   };

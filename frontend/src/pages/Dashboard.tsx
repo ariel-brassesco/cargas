@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // Import Routes
@@ -32,7 +32,7 @@ import { getAccount } from "../reducers/dashboardReducer";
 // Import Types
 import { Account, userTypeMapRoute } from "../types/account";
 
-const DashboardPage: FC = () => {
+const DashboardPage: React.FC = () => {
   const dispatch = useDispatch();
   const account: Account = useSelector((state: any) => getAccount(state));
   const router = useHistory();

@@ -1,6 +1,6 @@
-import { Component } from "react";
+import React from "react";
 
-class DashboardHomePage extends Component {
+class DashboardHomePage extends React.Component {
   render() {
     return <div>Hola Como va</div>;
   }

@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import get from "lodash/get";
 
 type Item = Record<string, any>;
@@ -23,7 +23,7 @@ type Props = {
   // dataKey?: string | string[];
 };
 
-export const Table: FC<Props> = ({
+export const Table: React.FC<Props> = ({
   // dataKey = "id",
   columns = [],
   data = [],
