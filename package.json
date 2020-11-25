@@ -2,7 +2,9 @@
   "name": "cargas",
   "description": "",
   "engines": {
-    "yarn": "1.22.5"
+    "yarn": "1.22.5",
+    "node": "14.15.1",
+    "npm": "6.14.8"
   },
   "workspaces": [
     "frontend"
