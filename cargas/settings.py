@@ -24,11 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'true') == 'true'
+# DEBUG = os.getenv('DEBUG', 'true') == 'true'
+DEBUG = False
 
 # Import development settings or production settings
 if DEBUG:
-    from .settings_dev import * 
+    from .settings_dev import *
 else:
     from .settings_production import *
 
@@ -52,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -150,5 +151,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "frontend", "build", "static"),
 ]
 
-DEFAULT_FILE_STORAGE =  ('django.core.files.storage.FileSystemStorage' 
-if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
+DEFAULT_FILE_STORAGE = ('django.core.files.storage.FileSystemStorage'
+                        if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
