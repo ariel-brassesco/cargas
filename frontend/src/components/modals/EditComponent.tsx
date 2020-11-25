@@ -40,7 +40,6 @@ type RowValues = {
   number: number;
   product: string;
   size: string;
-  image: string | File | undefined;
   quantity: number;
 };
 
@@ -313,12 +312,11 @@ export const EditOrderInitModal: FC<PropsOrderInit> = ({
   );
 };
 
-export const EditRowModal: FC<PropsRow> = ({ row, order, ...props }) => {
+export const EditRowModal: FC<PropsRow> = ({ row, onOk, order, ...props }) => {
   const validationSchema = Yup.object().shape({
     number: Yup.number().required("Campo Requerido"),
     product: Yup.string().required("Campo Requerido"),
     size: Yup.string(),
-    image: Yup.mixed().required("Imagen Requerida"),
     quantity: Yup.number().required("Campo requerido"),
   });
 
@@ -330,21 +328,19 @@ export const EditRowModal: FC<PropsRow> = ({ row, order, ...props }) => {
         number: row?.number ?? nextRow,
         product: String(row?.product.id) ?? "",
         size: row?.size ?? "",
-        image: row?.image,
         quantity: row?.quantity ?? 0,
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        console.log(values);
-        // const form = new FormData();
-        // Object.entries(values).forEach((i) => {
-        //   if (i[1]) form.append(...i)
-        // });
-        // await onOk(form);
+        const form = new FormData();
+        Object.entries(values).forEach((i) => {
+          if (i[1]) form.append(i[0], String(i[1]));
+        });
+        await onOk(form);
         setSubmitting(false);
       }}
     >
-      {({ setFieldValue, handleSubmit }) => (
+      {({ handleSubmit }) => (
         <Modal
           {...props}
           title={row ? "Editar Fila" : "Nueva Fila"}
@@ -379,18 +375,6 @@ export const EditRowModal: FC<PropsRow> = ({ row, order, ...props }) => {
               label="Tamaño"
               component={CustomField}
             />
-            <Field>
-              {(props: any) => (
-                <FileField
-                  label="Foto"
-                  onChange={(value: any) => setFieldValue("image", value)}
-                  accept="image/*"
-                  {...props}
-                >
-                  <Thumb />
-                </FileField>
-              )}
-            </Field>
           </Form>
         </Modal>
       )}

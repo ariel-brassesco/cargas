@@ -103,14 +103,11 @@ export const newRow = (data: Record<string, any>) => async (
   } catch (error) {}
 };
 
-export const updateRow = (data: Record<string, any>) => async (
+export const updateRow = (id: number, data: Record<string, any>) => async (
   dispatch: Dispatch
 ) => {
   try {
-    const row = await http.patch(
-      `${apiRoutes.inspector_rows}${data.id}/`,
-      data
-    );
+    const row = await http.patch(`${apiRoutes.inspector_rows}${id}/`, data);
 
     return dispatch({ type: UPDATE_ROW, payload: row });
   } catch (error) {}

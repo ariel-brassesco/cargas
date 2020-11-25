@@ -14,7 +14,6 @@ import { Row } from "../types/row";
 import { getRows } from "../reducers/inspectorReducer";
 // Import Routes
 import { PROFILE_INSPECTOR } from "../routes";
-import { values } from "lodash";
 
 type Props = {
   order: Order;
@@ -83,7 +82,7 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
         if (res && okUrl) history.push(okUrl);
       }}
     >
-      {({ isSubmitting, isValid, setFieldValue }) => (
+      {({ isSubmitting, isValid, setFieldValue, values }) => (
         <Form>
           {order.products.map((p) => (
             <Field
@@ -95,8 +94,8 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
             />
           ))}
           <div className="is-flex is-justify-content-space-between">
-            <p>Total Cajas:</p>
-            <p>
+            <p className="label is-large">Total Cajas:</p>
+            <p className="is-size-4 has-text-weight-bold">
               {Object.entries(values).reduce(
                 (a: number, c: string[]) =>
                   c[0].startsWith("box") ? a + Number(c[1]) : a,

@@ -374,7 +374,7 @@ const RowsResume: FC<ContainerProps & { rows: Row[] }> = ({
         {order.products.map((p) => (
           <li key={p.id} className="is-flex is-justify-content-space-between">
             <CheckerLink
-              condition={numBox[p.id] > 0}
+              condition={checkRows}
               value={numBox[p.id]}
               labelOk={`N° Cajas de ${p.name}:`}
               labelWrong={`El número de cajas de ${p.name} es cero.`}

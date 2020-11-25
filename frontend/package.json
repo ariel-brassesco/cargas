@@ -45,7 +45,7 @@
     "http-proxy-middleware": "^1.0.6",
     "prettier": "^2.1.2",
     "react-scripts": "4.0.0",
-    "typescript": "^4.0.5",
+    "typescript": "~4.0.5",
     "eslint-plugin-react": "^7.21.5"
   },
   "browserslist": {

@@ -17,11 +17,6 @@ class Migration(migrations.Migration):
             field=models.TextField(blank=True, default=''),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='lot',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), default=list(), size=None),
-        ),
-        migrations.AlterField(
             model_name='roworder',
             name='size',
             field=models.CharField(blank=True, max_length=100, null=True),

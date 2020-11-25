@@ -10,4 +10,6 @@ psycopg2==2.8.5
 django-dotenv==1.4.2
 djangorestframework-jwt==1.11.0
 django-cors-headers==3.5.0
+testresources==2.0.1
+httplib2==0.15.0
 django-googledrive-storage==1.5.2

@@ -42,7 +42,8 @@ const InspectorCheckRows: React.FC<Props> = ({ order }) => {
   }, [order, dispatch]);
 
   const handleNewRow = (data: FormData) => dispatch(newRow(data));
-  const handleUpdateRow = (data: FormData) => dispatch(updateRow(data));
+  const handleUpdateRow = (id: number) => (data: FormData) =>
+    dispatch(updateRow(id, data));
   const handleDeleteRow = (row: Row) => () => dispatch(deleteRow(row.id));
 
   const columns: Column[] = [
@@ -81,7 +82,11 @@ const InspectorCheckRows: React.FC<Props> = ({ order }) => {
               </button>
             }
             modal={
-              <EditRowModal row={row} order={order} onOk={handleUpdateRow} />
+              <EditRowModal
+                row={row}
+                order={order}
+                onOk={handleUpdateRow(row.id)}
+              />
             }
           />
 
