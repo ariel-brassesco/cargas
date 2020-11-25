@@ -13,7 +13,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = []
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend", "public", "static"),
+    os.path.join(BASE_DIR, "frontend", "build", "static"),
 ]
 
 # Database
@@ -30,4 +30,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
 # EMAIL SETTINGS
+EMAIL_SENDER_CREDENTIALS = os.getenv('EMAIL_SENDER_CREDENTIALS')
+EMAIL_RECEIVE_CREDENTIALS = os.getenv("EMAIL_RECEIVE_CREDENTIALS")
+EMAIL_OWNER = os.getenv("EMAIL_OWNER")
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
