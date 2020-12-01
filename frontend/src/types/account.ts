@@ -1,9 +1,9 @@
 import { Base } from "./base";
-import { PROFILE_CLIENT, PROFILE_INSPECTOR, DASHBOARD } from "../routes";
+import { PROFILE_CLIENT, PROFILE_INSPECTOR, DASHBOARD_ORDERS } from "../routes";
 
 export const userTypeMapRoute: Record<string, string> = {
-  IS_STAFF: DASHBOARD,
-  IS_SUPERUSER: DASHBOARD,
+  IS_STAFF: DASHBOARD_ORDERS,
+  IS_SUPERUSER: DASHBOARD_ORDERS,
   IS_INSPECTOR: PROFILE_INSPECTOR,
   IS_CLIENT: PROFILE_CLIENT,
 };

@@ -21,7 +21,14 @@ import {
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   DELETE_PRODUCT,
+  FETCH_ROWS_ADMIN,
+  FETCH_TEMPS_ADMIN,
+  FETCH_WEIGHTS_ADMIN,
+  FETCH_IMAGES_ADMIN,
+  CHANGE_DISPLAY_IMAGES_ADMIN,
+  CHANGE_DISPLAY_ROWS_ADMIN,
 } from "../reducers/dashboardReducer";
+import { NEW_ROW, UPDATE_ROW, DELETE_ROW } from "../reducers/inspectorReducer";
 import { apiRoutes, http } from "../services/http";
 
 /* LOGIN AND LOGOUT ACTIONS */
@@ -212,5 +219,93 @@ export const deleteOrder = (id: number) => async (dispatch: Dispatch) => {
     await http.delete(`${apiRoutes.orders_data}${id}/`);
 
     return dispatch({ type: DELETE_ORDER, payload: id });
+  } catch (error) {}
+};
+
+/* MANAGE ORDER ACTIONS */
+export const fetchRows = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    const data = await http.get(`${apiRoutes.rows_data}?order=${id}`);
+
+    return dispatch({ type: FETCH_ROWS_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    const data = await http.get(`${apiRoutes.temps_data}?order=${id}`);
+
+    return dispatch({ type: FETCH_TEMPS_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    const data = await http.get(`${apiRoutes.weights_data}?order=${id}`);
+
+    return dispatch({ type: FETCH_WEIGHTS_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const fetchImagesControl = (id: number) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const data = await http.get(`${apiRoutes.images_data}?order=${id}`);
+
+    return dispatch({ type: FETCH_IMAGES_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const changeImageControlDisplay = (
+  id: number,
+  display: boolean
+) => async (dispatch: Dispatch) => {
+  try {
+    const data = await http.patch(`${apiRoutes.images_data}${id}/`, {
+      display,
+    });
+
+    return dispatch({ type: CHANGE_DISPLAY_IMAGES_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const changeRowImageDisplay = (id: number, display: boolean) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const data = await http.patch(`${apiRoutes.rows_data}${id}/`, {
+      display,
+    });
+
+    return dispatch({ type: CHANGE_DISPLAY_ROWS_ADMIN, payload: data });
+  } catch (error) {}
+};
+
+export const newRow = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const row = await http.post(apiRoutes.rows_data, data);
+
+    return dispatch({ type: NEW_ROW, payload: row });
+  } catch (error) {}
+};
+
+export const updateRow = (id: number, data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const row = await http.patch(`${apiRoutes.rows_data}${id}/`, data);
+
+    return dispatch({ type: UPDATE_ROW, payload: row });
+  } catch (error) {}
+};
+
+export const deleteRow = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    await http.delete(`${apiRoutes.rows_data}${id}/`);
+
+    return dispatch({ type: DELETE_ROW, payload: id });
   } catch (error) {}
 };

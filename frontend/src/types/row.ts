@@ -8,4 +8,5 @@ export interface Row extends Base {
   quantity: number;
   image: string;
   size: string;
+  display: boolean;
 }

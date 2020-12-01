@@ -41,6 +41,7 @@ type RowValues = {
   product: string;
   size: string;
   quantity: number;
+  image: File | undefined;
 };
 
 type Props = {
@@ -329,18 +330,27 @@ export const EditRowModal: FC<PropsRow> = ({ row, onOk, order, ...props }) => {
         product: String(row?.product.id) ?? "",
         size: row?.size ?? "",
         quantity: row?.quantity ?? 0,
+        image: undefined,
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        const form = new FormData();
-        Object.entries(values).forEach((i) => {
-          if (i[1]) form.append(i[0], String(i[1]));
-        });
-        await onOk(form);
+        if (row || values.image) {
+          const form = new FormData();
+          form.append("order", String(order.id));
+          Object.entries(values).forEach((i) => {
+            if (i[1]) {
+              if (typeof i[1] === "number") form.append(i[0], String(i[1]));
+              else {
+                form.append(i[0], i[1]);
+              }
+            }
+          });
+          await onOk(form);
+        }
         setSubmitting(false);
       }}
     >
-      {({ handleSubmit }) => (
+      {({ handleSubmit, setFieldValue }) => (
         <Modal
           {...props}
           title={row ? "Editar Fila" : "Nueva Fila"}
@@ -375,6 +385,20 @@ export const EditRowModal: FC<PropsRow> = ({ row, onOk, order, ...props }) => {
               label="Tamaño"
               component={CustomField}
             />
+            {row ? null : (
+              <Field>
+                {(props: any) => (
+                  <FileField
+                    label="Foto"
+                    onChange={(value: any) => setFieldValue("image", value)}
+                    accept="image/*"
+                    {...props}
+                  >
+                    <Thumb />
+                  </FileField>
+                )}
+              </Field>
+            )}
           </Form>
         </Modal>
       )}

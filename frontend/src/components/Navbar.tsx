@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../actions/dashboardActions";
 import {
-  DASHBOARD,
+  // DASHBOARD,
   DASHBOARD_ORDERS,
   DASHBOARD_PRODUCTS,
   DASHBOARD_CLIENTS,
@@ -19,11 +19,11 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="navbar is-spaced has-shadow mb-4">
       <div className="container">
-        <div className="navbar-brand">
+        {/* <div className="navbar-brand">
           <Link className="navbar-item brand-text" to={DASHBOARD}>
             Inicio
           </Link>
-        </div>
+        </div> */}
         <div id="navMenu" className="navbar-menu">
           <div className="navbar-start">
             <Link className="navbar-item" to={DASHBOARD_ORDERS}>

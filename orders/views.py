@@ -7,8 +7,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
 
 from .serializers import (
-    OrderSerializer, 
-    ProductSerializer, 
+    OrderSerializer,
+    ProductSerializer,
     ContainerOrderSerializer,
     CloseOrderSerializer,
     RowOrderSerializer,
@@ -17,12 +17,12 @@ from .serializers import (
     ImageControlSerializer
 )
 from .models import (
-    Order, 
-    Product, 
+    Order,
+    Product,
     ContainerOrder,
-    CloseOrder, 
-    RowOrder, 
-    TemperatureControl, 
+    CloseOrder,
+    RowOrder,
+    TemperatureControl,
     WeightControl,
     ImageControl
 )
@@ -31,10 +31,12 @@ from registration.serializers import ClientSerializer, InspectorSerializer
 from .pagination import OrdersPagination
 # Create your views here.
 
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAdminUser]
+
 
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all().order_by('-date')
@@ -42,18 +44,20 @@ class OrderViewSet(ModelViewSet):
     permission_classes = [IsAdminUser]
     pagination_class = OrdersPagination
 
+
 class InspectorOrderViewSet(ModelViewSet):
-    queryset = Order.objects.exclude(status__in=["cancel", "ready"]).order_by('-date')
+    queryset = Order.objects.exclude(
+        status__in=["cancel", "ready"]).order_by('-date')
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         if not request.query_params.get("inspector"):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         queryset = self.filter_queryset(
             self.get_queryset()
-            ).filter(inspector__pk=request.query_params.get("inspector"))
+        ).filter(inspector__pk=request.query_params.get("inspector"))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -87,7 +91,7 @@ class InspectorOrderViewSet(ModelViewSet):
         except Exception as error:
             print(error)
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
     @action(detail=False, methods=["post"])
     def close_order(self, request):
         try:
@@ -105,7 +109,7 @@ class InspectorOrderViewSet(ModelViewSet):
             container.order.status = "finish"
             container.order.gross_weight = gross_weight
             container.order.net_weight = net_weight
-            container.order.boxes = boxes 
+            container.order.boxes = boxes
             container.order.save()
             # Serialize Order and Send
             serializer = self.get_serializer(container.order)
@@ -126,18 +130,20 @@ class InspectorOrderViewSet(ModelViewSet):
     #     print(serializer.data)
     #     return Response(serializer.data)
 
+
 class ClientOrderViewSet(ModelViewSet):
-    queryset = Order.objects.exclude(status__in=["cancel", "ready"]).order_by('-date')
+    queryset = Order.objects.exclude(
+        status__in=["cancel", "ready"]).order_by('-date')
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         if not request.query_params.get("client"):
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         queryset = self.filter_queryset(
             self.get_queryset()
-            ).filter(client__pk=request.query_params.get("client"))
+        ).filter(client__pk=request.query_params.get("client"))
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -146,7 +152,8 @@ class ClientOrderViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
+
 class RowOrderViewSet(ModelViewSet):
     queryset = RowOrder.objects.all()
     serializer_class = RowOrderSerializer
@@ -163,10 +170,10 @@ class RowOrderViewSet(ModelViewSet):
         order = request.query_params.get("order")
         if not order:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         queryset = self.filter_queryset(
             self.get_queryset()
-            ).filter(order__pk=order)
+        ).filter(order__pk=order)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -175,6 +182,7 @@ class RowOrderViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
 
 class TempControlViewSet(ModelViewSet):
     queryset = TemperatureControl.objects.all()
@@ -195,10 +203,10 @@ class TempControlViewSet(ModelViewSet):
         order = request.query_params.get("order")
         if not order:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         queryset = self.filter_queryset(
             self.get_queryset()
-            ).filter(order__pk=order)
+        ).filter(order__pk=order)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -220,13 +228,14 @@ class TempControlViewSet(ModelViewSet):
         for img in images:
             ImageControl.objects.create(
                 order=order,
-                number = row,
-                image=img, 
+                number=row,
+                image=img,
                 control="temperature"
             )
         # Send the response
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class WeightControlViewSet(ModelViewSet):
     queryset = WeightControl.objects.all()
@@ -247,10 +256,10 @@ class WeightControlViewSet(ModelViewSet):
         order = request.query_params.get("order")
         if not order:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         queryset = self.filter_queryset(
             self.get_queryset()
-            ).filter(order__pk=order)
+        ).filter(order__pk=order)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -270,12 +279,13 @@ class WeightControlViewSet(ModelViewSet):
         for img in images:
             ImageControl.objects.create(
                 order=order,
-                image=img, 
+                image=img,
                 control="weights"
             )
         # Send the response
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class ContainerOrderViewSet(ModelViewSet):
     queryset = ContainerOrder.objects.all()
@@ -299,13 +309,15 @@ class ContainerOrderViewSet(ModelViewSet):
         partial = kwargs.pop('partial', False)
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         container = self.perform_update(serializer)
 
         order = OrderSerializer(container.order)
 
         return Response(order.data)
+
 
 class CloseOrderViewSet(ModelViewSet):
     queryset = CloseOrder.objects.all()
@@ -329,7 +341,8 @@ class CloseOrderViewSet(ModelViewSet):
         partial = kwargs.pop('partial', False)
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=False)
         close = self.perform_update(serializer)
 
@@ -337,10 +350,37 @@ class CloseOrderViewSet(ModelViewSet):
 
         return Response(order.data)
 
+
+class ImageControlViewSet(ModelViewSet):
+    queryset = ImageControl.objects.all()
+    serializer_class = ImageControlSerializer
+
+    def list(self, request, *args, **kwargs):
+        order = request.query_params.get("order")
+        if not order:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        ).filter(order__pk=order)
+
+        # if request.user.is_client:
+        #     queryset = queryset.filter(display=True)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_measure(request):
-    if request.user.is_client: return Response(status=status.HTTP_401_UNAUTHORIZED)
+    if request.user.is_client:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     # Load Images
     images = request.FILES.getlist("images")
     order = Order.objects.get(pk=request.data.get("order"))
@@ -348,18 +388,20 @@ def create_measure(request):
     for img in images:
         data.append(
             ImageControl.objects.create(
-            order=order,
-            image=img, 
-            control="measure"
+                order=order,
+                image=img,
+                control="measure"
             )
         )
     serializer = ImageControlSerializer(data, many=True)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_list_measure(request):
-    if request.user.is_client: return Response(status=status.HTTP_401_UNAUTHORIZED)
+    if request.user.is_client:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     order = request.query_params.get("order")
     data = ImageControl.objects.filter(control="measure").filter(order=order)
     serializer = ImageControlSerializer(data, many=True)

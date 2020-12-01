@@ -4,7 +4,12 @@ import React, { Component } from "react";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 
 //Import Routes
-import { PROFILE_CLIENT, PROFILE_INSPECTOR, DASHBOARD, LOGIN } from "./routes";
+import {
+  PROFILE_CLIENT,
+  PROFILE_INSPECTOR,
+  PROFILE_ADMIN,
+  LOGIN,
+} from "./routes";
 // Import Components
 import PrivateRoute from "./components/PrivateRoute";
 // Import Pages
@@ -22,7 +27,7 @@ class App extends Component {
             <LoginPage />
           </Route>
 
-          <PrivateRoute path={DASHBOARD} redirect={LOGIN}>
+          <PrivateRoute path={PROFILE_ADMIN} redirect={LOGIN}>
             <DashboardPage />
           </PrivateRoute>
 

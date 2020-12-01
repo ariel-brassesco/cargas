@@ -6,6 +6,12 @@ import { Client } from "../types/client";
 import { Inspector } from "../types/inspector";
 import { Order, OrderPagination } from "../types/order";
 import { Product } from "../types/product";
+import { Row } from "../types/row";
+import { Temperature } from "../types/temp";
+import { Weight } from "../types/weight";
+import { ImageControl } from "../types/images";
+// Import Actions
+import { NEW_ROW, UPDATE_ROW, DELETE_ROW } from "./inspectorReducer";
 
 export const DASHBOARD_LOGIN = "DASHBOARD_LOGIN";
 export const DASHBOARD_LOGOUT = "DASHBOARD_LOGOUT";
@@ -25,6 +31,12 @@ export const FETCH_PRODUCTS = "FETCH_PRODUCTS";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
+export const FETCH_ROWS_ADMIN = "FETCH_ROWS_ADMIN";
+export const FETCH_TEMPS_ADMIN = "FETCH_TEMPS_ADMIN";
+export const FETCH_WEIGHTS_ADMIN = "FETCH_WEIGHTS_ADMIN";
+export const FETCH_IMAGES_ADMIN = "FETCH_IMAGES_ADMIN";
+export const CHANGE_DISPLAY_IMAGES_ADMIN = "CHANGE_DISPLAY_IMAGES_ADMIN";
+export const CHANGE_DISPLAY_ROWS_ADMIN = "CHANGE_DISPLAY_ROWS_ADMIN";
 
 type State = {
   account: Partial<Account>;
@@ -32,6 +44,10 @@ type State = {
   inspectors: Inspector[];
   orders: Partial<OrderPagination>;
   products: Product[];
+  rows: Row[];
+  temps: Temperature[];
+  weights: Weight[];
+  images: ImageControl[];
 };
 
 const initialState: State = {
@@ -40,6 +56,10 @@ const initialState: State = {
   inspectors: [],
   orders: {},
   products: [],
+  rows: [],
+  temps: [],
+  weights: [],
+  images: [],
 };
 
 export const dashboardReducer: Reducer<State> = (
@@ -193,6 +213,62 @@ export const dashboardReducer: Reducer<State> = (
             state.orders.results!.filter((o: Order) => o.id !== payload) ?? [],
         },
       };
+    // MANAGE ORDER ACTIONS
+    case FETCH_ROWS_ADMIN:
+      return {
+        ...state,
+        rows: payload,
+      };
+
+    case FETCH_TEMPS_ADMIN:
+      return {
+        ...state,
+        temps: payload,
+      };
+
+    case FETCH_WEIGHTS_ADMIN:
+      return {
+        ...state,
+        weights: payload,
+      };
+
+    case FETCH_IMAGES_ADMIN:
+      return {
+        ...state,
+        images: payload,
+      };
+
+    case NEW_ROW:
+      const rows = [...state.rows, payload];
+      return {
+        ...state,
+        rows,
+        next: payload.number + 1,
+      };
+
+    case UPDATE_ROW:
+      return {
+        ...state,
+        rows: state.rows.map((r) => (r.id === payload.id ? payload : r)),
+      };
+
+    case DELETE_ROW:
+      return {
+        ...state,
+        rows: state.rows.filter((r) => r.id !== payload.id),
+      };
+
+    case CHANGE_DISPLAY_IMAGES_ADMIN:
+      return {
+        ...state,
+        images: state.images.map((i) => (i.id === payload.id ? payload : i)),
+      };
+
+    case CHANGE_DISPLAY_ROWS_ADMIN:
+      return {
+        ...state,
+        rows: state.rows.map((r) => (r.id === payload.id ? payload : r)),
+      };
 
     default:
       return state;
@@ -211,3 +287,7 @@ export const getOrdersCurrent = (state: any) => state.dashboard.orders.current;
 export const getOrdersNext = (state: any) => state.dashboard.orders.next;
 export const getOrdersPrevious = (state: any) =>
   state.dashboard.orders.previous;
+export const getRows = (state: any) => state.dashboard.rows;
+export const getTemps = (state: any) => state.dashboard.temps;
+export const getWeights = (state: any) => state.dashboard.weights;
+export const getImages = (state: any) => state.dashboard.images;

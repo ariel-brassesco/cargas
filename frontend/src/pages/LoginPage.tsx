@@ -9,7 +9,7 @@ import { CustomField } from "../components/Common";
 // Import Actions
 import { login, logout } from "../actions/dashboardActions";
 // Import Routes
-import { DASHBOARD } from "../routes";
+import { DASHBOARD_ORDERS } from "../routes";
 
 type Values = {
   username: "";
@@ -32,7 +32,7 @@ class LoginPage extends React.Component<Props> {
     this.setState({ errorMsg: "" });
     try {
       await this.props.dispatch(login(values));
-      this.props.history.push(DASHBOARD);
+      this.props.history.push(DASHBOARD_ORDERS);
     } catch {
       //Else show Invalid Credentials message
       this.setState({ errorMsg: "Usuario o Contraseña Incorrecta" });

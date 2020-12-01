@@ -1,26 +1,27 @@
 from django.urls import path
 from .views import (
-    OrderViewSet, 
-    ProductViewSet, 
-    InspectorOrderViewSet, 
+    OrderViewSet,
+    ProductViewSet,
+    InspectorOrderViewSet,
     ClientOrderViewSet,
     RowOrderViewSet,
     TempControlViewSet,
     WeightControlViewSet,
     ContainerOrderViewSet,
-    CloseOrderViewSet
+    CloseOrderViewSet,
+    ImageControlViewSet
 )
 from . import views
 
 app_name = "orders"
 
-order_list = OrderViewSet.as_view({ "get": "list", "post": "create" })
+order_list = OrderViewSet.as_view({"get": "list", "post": "create"})
 order_detail = OrderViewSet.as_view(
-    { 
-    "get": "retrieve",
-    "put": "update",
-    "patch": "partial_update",
-    "delete": "destroy",
+    {
+        "get": "retrieve",
+        "put": "update",
+        "patch": "partial_update",
+        "delete": "destroy",
     }
 )
 
@@ -34,21 +35,32 @@ product_detail = ProductViewSet.as_view(
     }
 )
 
-inspector_list = InspectorOrderViewSet.as_view({ "get": "list", "post": "init_order"})
-inspector_close = InspectorOrderViewSet.as_view({ "post": "close_order"})
+inspector_list = InspectorOrderViewSet.as_view(
+    {"get": "list", "post": "init_order"})
+inspector_close = InspectorOrderViewSet.as_view({"post": "close_order"})
 inspector_detail = InspectorOrderViewSet.as_view({"patch": "partial_update"})
 
-client_list = ClientOrderViewSet.as_view({ "get": "list"})
+client_list = ClientOrderViewSet.as_view({"get": "list"})
 
 rows_list = RowOrderViewSet.as_view({"get": "list", "post": "create"})
 temps_list = TempControlViewSet.as_view({"get": "list", "post": "create"})
 weights_list = WeightControlViewSet.as_view({"get": "list", "post": "create"})
 
-rows_detail = RowOrderViewSet.as_view({"patch": "partial_update", "delete": "destroy"})
+rows_detail = RowOrderViewSet.as_view(
+    {"patch": "partial_update", "delete": "destroy"})
 container_detail = ContainerOrderViewSet.as_view({"patch": "partial_update"})
 close_container_detail = CloseOrderViewSet.as_view({"patch": "partial_update"})
 
+images_list = ImageControlViewSet.as_view({"get": "list"})
+images_detail = ImageControlViewSet.as_view({"patch": "partial_update"})
+
 urlpatterns = [
+    path("admin/images/", images_list),
+    path("admin/images/<int:pk>/", images_detail),
+    path("admin/rows/", rows_list),
+    path("admin/rows/<int:pk>/", rows_detail),
+    path("admin/temps/", temps_list),
+    path("admin/weights/", weights_list),
     path("admin/", order_list),
     path("admin/<int:pk>/", order_detail),
     path("products/", product_list),

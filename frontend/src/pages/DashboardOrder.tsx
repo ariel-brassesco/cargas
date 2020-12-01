@@ -12,6 +12,7 @@ import { Toolbar } from "../components/Toolbar";
 import { EditOrder } from "../components/EditOrder";
 import { Pagination } from "../components/Pagination";
 import { Loader } from "../components/Common";
+import OrderManager from "../components/OrderManager";
 // Import Actions
 import {
   fetchOrders,
@@ -36,7 +37,12 @@ import { Client } from "../types/client";
 import { Inspector } from "../types/inspector";
 import { Product } from "../types/product";
 // Import Routes
-import { ORDER_EDIT, NEW_ORDER, DASHBOARD_ORDERS } from "../routes";
+import {
+  ORDER_EDIT,
+  NEW_ORDER,
+  DASHBOARD_ORDERS,
+  ORDER_MANAGE,
+} from "../routes";
 
 type Props = DispatchProp<any> & {
   orders: Order[];
@@ -67,6 +73,9 @@ class DashboardOrdersPage extends React.Component<Props, State> {
       title: "#",
       align: Align.right,
       width: 50,
+      render: (order: Order) => (
+        <Link to={`${ORDER_MANAGE}/${order.id}`}>{order.id}</Link>
+      ),
     },
     {
       key: "client",
@@ -218,17 +227,26 @@ class DashboardOrdersPage extends React.Component<Props, State> {
               );
               if (!order) return null;
               return (
-                <>
-                  <EditOrder
-                    order={order}
-                    clients={clients}
-                    inspectors={inspectors.filter((i) => i.user.is_active)}
-                    products={products}
-                    onOk={this.handleUpdateOrder(order)}
-                    onCancel={() => history.push(DASHBOARD_ORDERS)}
-                  />
-                </>
+                <EditOrder
+                  order={order}
+                  clients={clients}
+                  inspectors={inspectors.filter((i) => i.user.is_active)}
+                  products={products}
+                  onOk={this.handleUpdateOrder(order)}
+                  onCancel={() => history.push(DASHBOARD_ORDERS)}
+                />
               );
+            }}
+          />
+
+          <Route
+            path={`${ORDER_MANAGE}/:order`}
+            render={({ match }) => {
+              const order = orders.find(
+                (o) => String(o.id) === match.params.order
+              );
+              if (!order) return null;
+              return <OrderManager order={order} />;
             }}
           />
 

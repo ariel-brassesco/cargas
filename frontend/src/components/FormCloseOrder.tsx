@@ -33,7 +33,6 @@ interface Values {
 }
 
 const validationSchema = Yup.object().shape({
-  boxes: Yup.number().required("Campo Requerido"),
   full: Yup.mixed().required("Imagen Requerida"),
   semi_close: Yup.mixed(),
   close: Yup.mixed(),
@@ -66,7 +65,6 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        console.log(values);
         const form = new FormData();
         // Append the order id and all the values in FormData
         form.append("order", String(order.id));
@@ -74,8 +72,10 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
         // Append the images
         Object.entries(values).forEach((i) => {
           if (i[1] && !i[0].startsWith("box")) form.append(...i);
-          else boxes += i[1];
+          else if (i[0].startsWith("box")) boxes += i[1];
         });
+        console.log(boxes);
+        console.log(typeof boxes);
         form.append("boxes", String(boxes));
         const res = onOk && (await onOk(form));
         setSubmitting(false);

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 // Import Routes
 import {
   LOGIN,
-  DASHBOARD,
+  PROFILE_ADMIN,
   DASHBOARD_ORDERS,
   DASHBOARD_CLIENTS,
   DASHBOARD_INSPECTORS,
@@ -12,7 +12,6 @@ import {
   // DASHBOARD_REPORTS
 } from "../routes";
 // Import Pages
-import DashboardHomePage from "./DashboardHome";
 import DashboardClientsPage from "./DashboardClient";
 import DashboardOrdersPage from "./DashboardOrder";
 import DashboardInspectorsPage from "./DashboardInspector";
@@ -57,18 +56,22 @@ const DashboardPage: React.FC = () => {
         <div className="columns">
           <div className="column">
             <Switch>
-              <Route exact path={DASHBOARD}>
-                <DashboardHomePage />
+              <Route exact path={PROFILE_ADMIN}>
+                <DashboardOrdersPage />
               </Route>
+
               <Route path={DASHBOARD_ORDERS}>
                 <DashboardOrdersPage />
               </Route>
-              <Route path={DASHBOARD_CLIENTS}>
-                <DashboardClientsPage />
-              </Route>
+
               <Route path={DASHBOARD_INSPECTORS}>
                 <DashboardInspectorsPage />
               </Route>
+
+              <Route path={DASHBOARD_CLIENTS}>
+                <DashboardClientsPage />
+              </Route>
+
               <Route path={DASHBOARD_PRODUCTS}>
                 <DashboardProductsPage />
               </Route>
