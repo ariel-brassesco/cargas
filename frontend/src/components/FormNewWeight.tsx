@@ -69,30 +69,33 @@ const FormNewWeight: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
           <Field
             type="number"
             name="package"
-            label="Peso Package"
+            label="Peso Package(kg)"
             component={CustomField}
           />
 
           <Field
             type="number"
             name="carton"
-            label="Peso Carton"
+            label="Peso Carton(kg)"
             component={CustomField}
           />
           <Field
-            type="text"
+            type="number"
             name="product"
-            label="Peso Producto"
+            label="Peso Producto(kg)"
             component={CustomField}
           />
           <Field
-            type="text"
+            type="number"
             name="primary_package"
-            label="Peso Primary Package"
+            label="Peso Primary Package(kg)"
             component={CustomField}
           />
           {values.images.map((i, idx, arr) => (
-            <div key={idx} className="is-flex">
+            <div
+              key={idx}
+              className="is-flex is-justify-content-center is-align-items-center my-2"
+            >
               <Thumb file={i} />
               <span
                 onClick={() =>

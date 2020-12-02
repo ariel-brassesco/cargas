@@ -20,6 +20,7 @@ export interface Column {
 type Props = {
   columns: Column[];
   data: Item[];
+  className?: string;
   // dataKey?: string | string[];
 };
 
@@ -27,10 +28,11 @@ export const Table: React.FC<Props> = ({
   // dataKey = "id",
   columns = [],
   data = [],
+  className = "table is-fullwidth is-striped is-hoverable",
 }) => {
   return (
     <div className="table-container">
-      <table className="table is-fullwidth is-striped is-hoverable">
+      <table className={className}>
         <thead>
           <tr>
             {columns.map((column) => (

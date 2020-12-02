@@ -162,9 +162,7 @@ export const newWeight = (data: Record<string, any>) => async (
 // Actions for Measures
 export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
   try {
-    const res = await http.get(
-      `${apiRoutes.inspector_list_measure}?order=${id}`
-    );
+    const res = await http.get(`${apiRoutes.inspector_measures}?order=${id}`);
 
     return dispatch({ type: FETCH_MEASURES_INSPECTOR, payload: res });
   } catch (error) {}
@@ -174,7 +172,7 @@ export const newMeasure = (data: Record<string, any>) => async (
   dispatch: Dispatch
 ) => {
   try {
-    const measure = await http.post(apiRoutes.inspector_add_measure, data);
+    const measure = await http.post(apiRoutes.inspector_measures, data);
 
     return dispatch({ type: NEW_MEASURE, payload: measure });
   } catch (error) {}

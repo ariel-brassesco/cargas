@@ -2,6 +2,9 @@ import React, { FC } from "react";
 import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import lodash from "lodash";
 // Import Components
 import { CustomField, CustomFieldHorizontal, CustomSelect } from "../Common";
 import { Modal } from "../Modal";
@@ -12,6 +15,9 @@ import { apiRoutes, http } from "../../services/http";
 // Import Types
 import { Order } from "../../types/order";
 import { Row } from "../../types/row";
+import { Temperature } from "../../types/temp";
+import { Weight } from "../../types/weight";
+import { Measure } from "../../types/measure";
 // Import Getters
 import { getNextRow } from "../../reducers/inspectorReducer";
 
@@ -44,6 +50,25 @@ type RowValues = {
   image: File | undefined;
 };
 
+interface TempValues {
+  images: File[];
+  row: number;
+  temp: number;
+}
+
+interface WeightValues {
+  images: File[];
+  package: number;
+  carton: number;
+  primary_package: number;
+  product: number;
+}
+
+interface MeasureValues {
+  images: File[];
+  comment: string;
+}
+
 type Props = {
   user?: any;
   onOk: (client: any) => void;
@@ -65,6 +90,18 @@ type PropsOrderInit = {
 type PropsRow = {
   row?: Row;
   order: Order;
+  onOk: (data: any) => void;
+};
+
+type PropsControl = {
+  data?: Temperature & Weight & Measure;
+  order: Order;
+  onOk: (data: any) => void;
+};
+
+type PropsLabel = {
+  value?: string | number;
+  label: string;
   onOk: (data: any) => void;
 };
 
@@ -399,6 +436,319 @@ export const EditRowModal: FC<PropsRow> = ({ row, onOk, order, ...props }) => {
                 )}
               </Field>
             )}
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditTemperatureModal: FC<PropsControl> = ({
+  data,
+  onOk,
+  order,
+  ...props
+}) => {
+  const validationSchema = Yup.object().shape({
+    row: Yup.number().required("Campo Requerido"),
+    temp: Yup.number().required("Campo requerido"),
+  });
+
+  return (
+    <Formik<TempValues>
+      initialValues={{
+        row: data?.row ?? 1,
+        temp: data?.temp ?? 0,
+        images: [],
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const form = new FormData();
+        // Append the order id and all the values in FormData
+        form.append("order", String(order.id));
+        // Append the values, except images
+        Object.entries(values).forEach((i) => {
+          if (i[1] && i[0] !== "images") form.append(...i);
+        });
+        // Append the images
+        values.images.forEach((i) => form.append("images", i));
+
+        await onOk(form);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue, values }) => (
+        <Modal
+          {...props}
+          title={data ? "Editar Temperatura" : "Nueva Temperatura"}
+          okLabel="Guardar"
+          onOk={handleSubmit}
+        >
+          <Form>
+            <Field
+              type="number"
+              name="row"
+              label="Fila"
+              component={CustomField}
+            />
+            <Field
+              type="number"
+              name="temp"
+              label="Temperatura"
+              component={CustomField}
+            />
+            {values.images.map((i, idx, arr) => (
+              <div
+                key={idx}
+                className="is-flex is-justify-content-center is-align-items-center my-2"
+              >
+                <Thumb file={i} />
+                <span
+                  onClick={() =>
+                    setFieldValue(
+                      "images",
+                      arr.filter((_, ix) => ix !== idx)
+                    )
+                  }
+                  className="button is-danger is-small"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </div>
+            ))}
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Fotos"
+                  onChange={(value: any) =>
+                    setFieldValue("images", values.images.concat(value))
+                  }
+                  accept="image/*"
+                  {...props}
+                />
+              )}
+            </Field>
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditWeightModal: FC<PropsControl> = ({
+  data,
+  onOk,
+  order,
+  ...props
+}) => {
+  const validationSchema = Yup.object().shape({
+    package: Yup.number().required("Campo Requerido"),
+    carton: Yup.number().required("Campo Requerido"),
+    primary_package: Yup.number().required("Campo Requerido"),
+    product: Yup.string().required("Campo Requerido"),
+  });
+
+  return (
+    <Formik<WeightValues>
+      initialValues={{
+        package: data?.package ?? 0,
+        carton: data?.carton ?? 0,
+        primary_package: data?.primary_package ?? 0,
+        product: data?.product ?? 0,
+        images: [],
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const form = new FormData();
+        // Append the order id and all the values in FormData
+        form.append("order", String(order.id));
+        // Append the values, except images
+        Object.entries(values).forEach((i) => {
+          if (i[1] && i[0] !== "images") form.append(...i);
+        });
+        // Append the images
+        values.images.forEach((i) => form.append("images", i));
+
+        await onOk(form);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue, values }) => (
+        <Modal
+          {...props}
+          title={data ? "Editar Peso" : "Nuevo Peso"}
+          okLabel="Guardar"
+          onOk={handleSubmit}
+        >
+          <Form>
+            <Field
+              type="number"
+              name="package"
+              label="Peso Package(kg)"
+              component={CustomField}
+            />
+
+            <Field
+              type="number"
+              name="carton"
+              label="Peso Carton(kg)"
+              component={CustomField}
+            />
+            <Field
+              type="number"
+              name="product"
+              label="Peso Producto(kg)"
+              component={CustomField}
+            />
+            <Field
+              type="number"
+              name="primary_package"
+              label="Peso Primary Package(kg)"
+              component={CustomField}
+            />
+            {values.images.map((i, idx, arr) => (
+              <div
+                key={idx}
+                className="is-flex is-justify-content-center is-align-items-center my-2"
+              >
+                <Thumb file={i} />
+                <span
+                  onClick={() =>
+                    setFieldValue(
+                      "images",
+                      arr.filter((_, ix) => ix !== idx)
+                    )
+                  }
+                  className="button is-danger is-small"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </div>
+            ))}
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Fotos"
+                  onChange={(value: any) =>
+                    setFieldValue("images", values.images.concat(value))
+                  }
+                  accept="image/*"
+                  {...props}
+                />
+              )}
+            </Field>
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditMeasureModal: FC<PropsControl> = ({
+  data,
+  onOk,
+  order,
+  ...props
+}) => (
+  <Formik<MeasureValues>
+    initialValues={{
+      comment: data?.comment ?? "",
+      images: [],
+    }}
+    onSubmit={async (values, { setSubmitting }) => {
+      if (!lodash.isEmpty(values.images)) {
+        const form = new FormData();
+        // Append the order id and all the values in FormData
+        form.append("order", String(order.id));
+        form.append("comment", values.comment);
+        // Append the images
+        values.images.forEach((i) => form.append("images", i));
+
+        await onOk(form);
+      }
+      setSubmitting(false);
+    }}
+  >
+    {({ handleSubmit, setFieldValue, values }) => (
+      <Modal
+        {...props}
+        title={data ? "Editar Peso" : "Nuevo Peso"}
+        okLabel="Guardar"
+        onOk={handleSubmit}
+      >
+        <Form>
+          <Field
+            type="textarea"
+            name="comment"
+            label="Comentario"
+            component={CustomField}
+          />
+
+          {values.images.map((i, idx, arr) => (
+            <div
+              key={idx}
+              className="is-flex is-justify-content-center is-align-items-center my-2"
+            >
+              <Thumb file={i} />
+              <span
+                onClick={() =>
+                  setFieldValue(
+                    "images",
+                    arr.filter((_, ix) => ix !== idx)
+                  )
+                }
+                className="button is-danger is-small"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </div>
+          ))}
+          <Field>
+            {(props: any) => (
+              <FileField
+                label="Fotos"
+                onChange={(value: any) =>
+                  setFieldValue("images", values.images.concat(value))
+                }
+                accept="image/*"
+                {...props}
+              />
+            )}
+          </Field>
+        </Form>
+      </Modal>
+    )}
+  </Formik>
+);
+
+export const EditLabel: FC<PropsLabel> = ({ value, label, onOk, ...props }) => {
+  const defaultValue = typeof value === "number" ? 0 : "";
+  const type = typeof value === "number" ? "number" : "text";
+
+  const validationSchema = Yup.object().shape({
+    data: Yup.mixed().required("Campo Requerido"),
+  });
+
+  return (
+    <Formik
+      initialValues={{
+        data: value ?? defaultValue,
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        await onOk(values.data);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit }) => (
+        <Modal {...props} title="Editar" okLabel="Guardar" onOk={handleSubmit}>
+          <Form>
+            <Field
+              type={type}
+              name="data"
+              label={label}
+              component={CustomField}
+            />
           </Form>
         </Modal>
       )}

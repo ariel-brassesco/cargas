@@ -1,9 +1,8 @@
 import { Base } from "./base";
 import { ImageControl } from "./images";
 
-export interface Temperature extends Base {
+export interface Measure extends Base {
   order: number;
-  row: number;
-  temp: number;
+  comment: string;
   images: ImageControl[];
 }

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,52 +9,81 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 // Import Components
 import { ImagePicker } from "../components/ImagePicker";
-import { EditRowModal } from "../components/modals/EditComponent";
+import {
+  EditRowModal,
+  EditTemperatureModal,
+  EditWeightModal,
+  EditMeasureModal,
+  EditLabel,
+} from "../components/modals/EditComponent";
 import { Table, Column, Align } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
 import { Confirm } from "../components/Confirm";
 // Import Actions
 import {
   fetchRows,
-  //   fetchTemps,
-  //   fetchWeights,
-  fetchImagesControl,
+  fetchTemps,
+  fetchWeights,
+  fetchMeasures,
   newRow,
   updateRow,
   deleteRow,
+  updateOrder,
+  createTemp,
+  updateTemp,
+  deleteTemp,
+  createWeight,
+  updateWeight,
+  deleteWeight,
+  createMeasure,
+  updateMeasure,
+  deleteMeasure,
   changeImageControlDisplay,
   changeRowImageDisplay,
 } from "../actions/dashboardActions";
 // Import Getters
 import {
+  getOrder,
   getRows,
-  //   getTemps,
-  //   getWeights,
-  getImages,
+  getTemps,
+  getWeights,
+  getMeasures,
 } from "../reducers/dashboardReducer";
 // Import Types
-import { Order, InitOrder, FinalOrder } from "../types/order";
-import { ImageControl, controlMap } from "../types/images";
+import { Order, InitOrder, FinalOrder, statusMap } from "../types/order";
+import { ImageControl } from "../types/images";
 import { Row } from "../types/row";
+import { Temperature } from "../types/temp";
+import { Weight } from "../types/weight";
+import { Measure } from "../types/measure";
+// Import Services
+import { dateInARFormat, timeFromUTCToLocal } from "../services/datetime";
 
 interface GDProps {
   title: string;
+  order: Order;
+  handleEdit: (name: string) => (data: number | string) => void;
 }
 
 interface IDProps {
   title: string;
   initial?: InitOrder;
+  container?: string;
+  handleEdit: (name: string) => (data: number | string) => void;
 }
 
 interface CDProps {
   title: string;
+  order: Order;
   final?: FinalOrder;
+  handleEdit: (name: string) => (data: number | string) => void;
 }
 
 interface RProps {
   title: string;
   order: Order;
   rows: Row[];
+  updateBoxes: (data: number) => void;
   newRow: (data: FormData) => void;
   updateRow: (id: number) => any;
   deleteRow: (row: Row) => any;
@@ -63,116 +92,192 @@ interface RProps {
 
 interface CProps {
   title: string;
-  control: string;
-  images: ImageControl[];
+  order: Order;
+  data: (Temperature & Weight & Measure)[];
+  newData: (data: FormData) => void;
+  updateData: (id: number) => any;
+  deleteData: (data: Temperature & Weight & Measure) => any;
   picker: (id: number, pick: boolean) => void;
+}
+interface LDProps {
+  label: string;
+  value: string | number;
+  className?: string;
+  edit?: (data: any) => void;
 }
 
 type Props = {
-  order: Order;
+  order_id: number;
 };
 
-const GeneralData: FC<GDProps & Props> = ({ title, order }) => {
-  return (
-    <div>
-      <p className="title is-size-3">{title}</p>
-      <p>Cliente: {order.client.company}</p>
-      <p>Inspector: {order.inspector.user.username}</p>
-      <p>Booking: {order.booking}</p>
-      <p>Estado: {order.status}</p>
-    </div>
+const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
+  typeof edit === "function" ? (
+    <ModalTrigger
+      button={
+        <p className={className}>
+          <span className="has-text-weight-bold mx-5">{label}</span>
+          <span className="has-text-link is-clickable">{value}</span>
+        </p>
+      }
+      modal={<EditLabel label={label} value={value} onOk={edit} />}
+    />
+  ) : (
+    <p className={className}>
+      <span className="has-text-weight-bold mx-5">{label}</span>
+      <span>{value}</span>
+    </p>
   );
-};
 
-const InitialData: FC<IDProps> = ({ title, initial }) =>
+const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
+  <div>
+    <p className="title is-size-3">{title}</p>
+    <div className="is-flex">
+      <div className="is-flex is-flex-direction-column is-align-content-flex-start">
+        <LabelData label="Cliente:" value={order.client.company} />
+        <LabelData label="Inspector:" value={order.inspector.user.username} />
+        <LabelData
+          label="Fecha/Hora:"
+          value={`
+              ${dateInARFormat(order.date)} - 
+              ${timeFromUTCToLocal(order.date, order.time_start)}`}
+        />
+        <LabelData label="Estado:" value={statusMap[order.status]} />
+      </div>
+      <div className="is-flex is-flex-direction-column is-align-content-flex-start">
+        <LabelData
+          label="Origen:"
+          value={order.origin}
+          edit={handleEdit("origin")}
+        />
+        <LabelData
+          label="Descarga:"
+          value={order.discharge}
+          edit={handleEdit("discharge")}
+        />
+        <LabelData
+          label="Booking:"
+          value={order.booking}
+          edit={handleEdit("booking")}
+        />
+        <LabelData
+          label="Vessel Name:"
+          value={order.vessel_name}
+          edit={handleEdit("vessel_name")}
+        />
+        <LabelData
+          label="Planta:"
+          value={order.plant ?? ""}
+          edit={handleEdit("plant")}
+        />
+      </div>
+    </div>
+  </div>
+);
+
+const InitialData: FC<IDProps> = ({ title, initial, container, handleEdit }) =>
   !initial ? null : (
     <>
       <p className="title is-size-3">{title}</p>
-      <div className="is-flex is-flex-wrap-wrap">
+      <LabelData
+        label="Matrícula:"
+        value={container ?? ""}
+        edit={handleEdit("container")}
+      />
+      <div className="is-flex is-flex-wrap-wrap mt-2">
         {initial.empty ? (
-          <div>
-            <p>Contenedor Vacío</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={initial.empty}
               alt="Contenedor Vacío"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Contenedor Vacío</p>
           </div>
         ) : null}
         {initial.matricula ? (
-          <div>
-            <p>Matrícula Contenedor</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={initial.matricula}
               alt="Matrícula del Contenedor"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Matrícula Contenedor</p>
           </div>
         ) : null}
         {initial.ventilation ? (
-          <div>
-            <p>Ventilación del Contenedor</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={initial.ventilation}
               alt="Ventilación del Contenedor"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Ventilación del Contenedor</p>
           </div>
         ) : null}
       </div>
     </>
   );
 
-const CloseData: FC<CDProps> = ({ title, final }) =>
+const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) =>
   !final ? null : (
     <>
       <p className="title is-size-3">{title}</p>
+      <LabelData
+        label="Peso Bruto (kg):"
+        value={order.gross_weight ?? 0}
+        edit={handleEdit("gross_weight")}
+      />
+      <LabelData
+        label="Peso Neto (kg):"
+        value={order.net_weight ?? 0}
+        edit={handleEdit("net_weight")}
+      />
       <div className="is-flex is-flex-wrap-wrap">
         {final.full && (
-          <div>
-            <p>Contenedor Lleno</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={final.full}
               alt="Contenedor LLeno"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Contenedor Lleno</p>
           </div>
         )}
         {final.semi_close && (
-          <div>
-            <p>Contenedor Semi Cerrado</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={final.semi_close}
               alt="Contenedor Semi Cerrado"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Contenedor Semi Cerrado</p>
           </div>
         )}
         {final.close && (
-          <div>
-            <p>Contenedor Cerrado</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={final.close}
               alt="Contenedor Cerrado"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Contenedor Cerrado</p>
           </div>
         )}
         {final.precinto && (
-          <div>
-            <p>Precinto AFIP</p>
+          <div className="has-text-centered mx-2">
             <ImagePicker
               src={final.precinto}
               alt="Precinto AFIP"
               selected={true}
               className="mx-3"
             />
+            <p className="has-text-weight-bold">Precinto AFIP</p>
           </div>
         )}
       </div>
@@ -183,12 +288,15 @@ const RowsData: FC<RProps> = ({
   title,
   order,
   rows,
+  updateBoxes,
   newRow,
   updateRow,
   deleteRow,
   picker,
 }) => {
   const [show, setShow] = useState(false);
+  const openDetail = useCallback(() => setShow(true), [setShow]);
+  const closeDetail = useCallback(() => setShow(false), [setShow]);
 
   const columns: Column[] = [
     {
@@ -266,28 +374,26 @@ const RowsData: FC<RProps> = ({
   return !rows.length ? null : (
     <>
       <p className="title is-size-3">{title}</p>
-
-      <p>
-        <span>Número de Filas:</span>
-        <span>{maxRow}</span>
-      </p>
-      <p>
-        <span>Cajas Totales:</span>
-        <span>{order.boxes}</span>
-      </p>
+      <LabelData label="Número de Filas:" value={maxRow} />
+      <LabelData
+        label="Cajas Totales:"
+        value={order.boxes ?? 0}
+        edit={updateBoxes}
+      />
 
       {order.products.map((p) => (
-        <p key={p.id}>
-          <span>{`N° Cajas de ${p.name}:`}</span>
-          <span>{numBox[p.id]}</span>
-        </p>
+        <LabelData
+          key={p.id}
+          label={`N° Cajas de ${p.name}:`}
+          value={numBox[p.id]}
+        />
       ))}
       {show ? (
-        <button className="button is-light" onClick={() => setShow(false)}>
+        <button className="button is-primary" onClick={closeDetail}>
           Ocultar
         </button>
       ) : (
-        <button className="button is-light" onClick={() => setShow(true)}>
+        <button className="button is-primary" onClick={openDetail}>
           Ver Detalle
         </button>
       )}
@@ -308,13 +414,12 @@ const RowsData: FC<RProps> = ({
           <Table columns={columns} data={rows} />{" "}
         </>
       ) : null}
-      <div className="is-flex is-flex-wrap-wrap">
+      <div className="is-flex is-flex-wrap-wrap mt-2">
         {rows &&
           rows.map(
             (r: Row, idx: number) =>
               r.image && (
-                <div key={idx} className="m-3">
-                  <p>{`Fila ${r.number}`}</p>
+                <div key={idx} className="has-text-centered mx-2">
                   <ImagePicker
                     key={r.id}
                     src={r.image}
@@ -322,6 +427,7 @@ const RowsData: FC<RProps> = ({
                     selected={r.display}
                     onSelect={() => picker(r.id, !r.display)}
                   />
+                  <p className="has-text-weight-bold">{`Fila ${r.number}`}</p>
                 </div>
               )
           )}
@@ -330,78 +436,414 @@ const RowsData: FC<RProps> = ({
   );
 };
 
-const ControlData: FC<CProps> = ({ title, control, images, picker }) =>
-  !images.length ? null : (
+const TempData: FC<CProps> = ({
+  title,
+  order,
+  data,
+  newData,
+  updateData,
+  deleteData,
+  picker,
+}) => {
+  const [show, setShow] = useState(false);
+  const openDetail = useCallback(() => setShow(true), [setShow]);
+  const closeDetail = useCallback(() => setShow(false), [setShow]);
+
+  const columns: Column[] = [
+    {
+      key: "row",
+      title: "Fila",
+      align: Align.center,
+      width: 50,
+    },
+    {
+      key: "temp",
+      title: "Temperatura",
+      align: Align.center,
+      width: 50,
+    },
+    {
+      key: "actions",
+      title: "Acciones",
+      align: Align.center,
+      width: 150,
+      render: (t) => (
+        <div>
+          <ModalTrigger
+            button={
+              <button
+                className="button is-info is-small mr-2 has-tooltip-arrow"
+                data-tooltip="Editar"
+              >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faEdit} />
+                </span>
+              </button>
+            }
+            modal={
+              <EditTemperatureModal
+                data={t}
+                order={order}
+                onOk={updateData(t.id)}
+              />
+            }
+          />
+
+          <Confirm
+            title={`Está seguro que desea eliminar el registro de Temperatura?`}
+            okLabel="Eliminar"
+            onClick={deleteData(t)}
+          >
+            <button
+              className="button is-danger is-small has-tooltip-arrow"
+              data-tooltip="Eliminar"
+            >
+              <span className="icon">
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </button>
+          </Confirm>
+        </div>
+      ),
+    },
+  ];
+
+  return !data.length ? null : (
     <>
-      <p className="title is-size-4">{title}</p>
-      <div className="is-flex is-flex-wrap-wrap">
-        {images.map(
-          (i: ImageControl) =>
-            i.control === control && (
+      <p className="title is-size-5">{title}</p>
+
+      {show ? (
+        <button className="button is-primary" onClick={closeDetail}>
+          Ocultar
+        </button>
+      ) : (
+        <button className="button is-primary" onClick={openDetail}>
+          Ver Detalle
+        </button>
+      )}
+
+      {show ? (
+        <>
+          <ModalTrigger
+            button={
+              <button className="button is-info mx-6">
+                <span className="icon">
+                  <FontAwesomeIcon icon={faPlus} />
+                </span>
+                <span>Agregar Temperatura</span>
+              </button>
+            }
+            modal={<EditTemperatureModal order={order} onOk={newData} />}
+          />
+          <Table
+            columns={columns}
+            data={data}
+            className="table is-narrow is-bordered is-hoverable mt-2"
+          />
+        </>
+      ) : null}
+
+      {data.map((t) => (
+        <div key={`temp-${t.id}`} className="mb-4">
+          <LabelData label="Fila:" value={t.row} />
+          <div className="is-flex is-flex-wrap-wrap">
+            {t.images.map((i: ImageControl) => (
               <ImagePicker
                 key={i.id}
                 src={i.image}
                 alt={title}
                 selected={i.display}
-                className="m-3"
                 onSelect={() => picker(i.id, !i.display)}
               />
-            )
-        )}
-      </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </>
   );
+};
 
-const OrderManager: React.FC<Props> = ({ order }) => {
+const WeightData: FC<CProps> = ({
+  title,
+  order,
+  data,
+  newData,
+  updateData,
+  deleteData,
+  picker,
+}) => {
+  return !data.length ? null : (
+    <>
+      <p className="title is-size-5">{title}</p>
+      <ModalTrigger
+        button={
+          <button className="button is-info mx-6">
+            <span className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+            <span>Agregar Peso</span>
+          </button>
+        }
+        modal={<EditWeightModal order={order} onOk={newData} />}
+      />
+
+      {data.map((w) => (
+        <div key={`weight-${w.id}`} className="mb-4">
+          <div>
+            <ModalTrigger
+              button={
+                <button
+                  className="button is-info is-small mr-2 has-tooltip-arrow"
+                  data-tooltip="Editar"
+                >
+                  <span className="icon">
+                    <FontAwesomeIcon icon={faEdit} />
+                  </span>
+                </button>
+              }
+              modal={
+                <EditWeightModal
+                  data={w}
+                  order={order}
+                  onOk={updateData(w.id)}
+                />
+              }
+            />
+
+            <Confirm
+              title={`Está seguro que desea eliminar el registro de Peso?`}
+              okLabel="Eliminar"
+              onClick={deleteData(w)}
+            >
+              <button
+                className="button is-danger is-small has-tooltip-arrow"
+                data-tooltip="Eliminar"
+              >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </button>
+            </Confirm>
+          </div>
+
+          <LabelData label="Peso Package(kg):" value={w.package} />
+          <LabelData label="Peso Carton(kg):" value={w.carton} />
+          <LabelData
+            label="Peso Primary Package(kg):"
+            value={w.primary_package}
+          />
+          <LabelData label="Peso Producto(kg):" value={w.product} />
+          <div className="is-flex is-flex-wrap-wrap">
+            {w.images.map((i: ImageControl) => (
+              <ImagePicker
+                key={i.id}
+                src={i.image}
+                alt={title}
+                selected={i.display}
+                onSelect={() => picker(i.id, !i.display)}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+};
+
+const MeasureData: FC<CProps> = ({
+  title,
+  order,
+  data,
+  newData,
+  updateData,
+  deleteData,
+  picker,
+}) => {
+  return !data.length ? null : (
+    <>
+      <p className="title is-size-5">{title}</p>
+      <ModalTrigger
+        button={
+          <button className="button is-info mx-6">
+            <span className="icon">
+              <FontAwesomeIcon icon={faPlus} />
+            </span>
+            <span>Agregar Peso</span>
+          </button>
+        }
+        modal={<EditMeasureModal order={order} onOk={newData} />}
+      />
+
+      {data.map((m) => (
+        <div key={`measure-${m.id}`} className="mb-4">
+          <div>
+            <ModalTrigger
+              button={
+                <button
+                  className="button is-info is-small mr-2 has-tooltip-arrow"
+                  data-tooltip="Editar"
+                >
+                  <span className="icon">
+                    <FontAwesomeIcon icon={faEdit} />
+                  </span>
+                </button>
+              }
+              modal={
+                <EditMeasureModal
+                  data={m}
+                  order={order}
+                  onOk={updateData(m.id)}
+                />
+              }
+            />
+
+            <Confirm
+              title={`Está seguro que desea eliminar el registro Organoléptico?`}
+              okLabel="Eliminar"
+              onClick={deleteData(m)}
+            >
+              <button
+                className="button is-danger is-small has-tooltip-arrow"
+                data-tooltip="Eliminar"
+              >
+                <span className="icon">
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </button>
+            </Confirm>
+          </div>
+
+          <LabelData label="Comentario:" value={m.comment} />
+          <div className="is-flex is-flex-wrap-wrap">
+            {m.images.map((i: ImageControl) => (
+              <ImagePicker
+                key={i.id}
+                src={i.image}
+                alt={title}
+                selected={i.display}
+                onSelect={() => picker(i.id, !i.display)}
+              />
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+};
+
+const OrderManager: React.FC<Props> = ({ order_id }) => {
   const dispatch = useDispatch();
   const rows: Row[] = useSelector((state: any) => getRows(state));
-  const images = useSelector((state: any) => getImages(state));
+  const order = useSelector((state: any) => getOrder(order_id)(state));
+  const temps = useSelector((state: any) => getTemps(state));
+  const weights = useSelector((state: any) => getWeights(state));
+  const measures = useSelector((state: any) => getMeasures(state));
 
   useEffect(() => {
     dispatch(fetchRows(order.id));
-    dispatch(fetchImagesControl(order.id));
+    dispatch(fetchTemps(order.id));
+    dispatch(fetchWeights(order.id));
+    dispatch(fetchMeasures(order.id));
   }, [dispatch, order]);
 
   const handleSelectImageControl = (id: number, display: boolean) => {
     dispatch(changeImageControlDisplay(id, display));
   };
 
-  const handleSelectRowImage = (id: number, display: boolean) => {
-    dispatch(changeRowImageDisplay(id, display));
-  };
+  // Handle Temp Actions
+  const handleNewTemp = (data: FormData) => dispatch(createTemp(data));
+  const handleUpdateTemp = (id: number) => (data: FormData) =>
+    dispatch(updateTemp(id, data));
+  const handleDeleteTemp = (t: Temperature) => () => dispatch(deleteTemp(t.id));
 
+  // Handle Weights Actions
+  const handleNewWeight = (data: FormData) => dispatch(createWeight(data));
+  const handleUpdateWeight = (id: number) => (data: FormData) =>
+    dispatch(updateWeight(id, data));
+  const handleDeleteWeight = (t: Temperature) => () =>
+    dispatch(deleteWeight(t.id));
+
+  // Handle Weights Actions
+  const handleNewMeasure = (data: FormData) => dispatch(createMeasure(data));
+  const handleUpdateMeasure = (id: number) => (data: FormData) =>
+    dispatch(updateMeasure(id, data));
+  const handleDeleteMeasure = (t: Temperature) => () =>
+    dispatch(deleteMeasure(t.id));
+
+  // Handle Row Actions
   const handleNewRow = (data: FormData) => dispatch(newRow(data));
   const handleUpdateRow = (id: number) => (data: FormData) =>
     dispatch(updateRow(id, data));
   const handleDeleteRow = (row: Row) => () => dispatch(deleteRow(row.id));
+  const handleSelectRowImage = (id: number, display: boolean) => {
+    dispatch(changeRowImageDisplay(id, display));
+  };
+
+  const handleEditOrder = (name: string) => (data: string | number) =>
+    dispatch(updateOrder(order.id, { [name]: data }));
 
   return (
     <div>
-      <GeneralData title="Datos Generales" order={order} />
+      <GeneralData
+        title="Datos Generales"
+        order={order}
+        handleEdit={handleEditOrder}
+      />
 
-      <InitialData title="Contenedor Inicial" initial={order.initial[0]} />
+      <InitialData
+        title="Contenedor Inicial"
+        initial={order.initial[0]}
+        container={order.container}
+        handleEdit={handleEditOrder}
+      />
 
       <RowsData
         title="Filas"
         order={order}
         rows={rows}
+        updateBoxes={handleEditOrder("boxes")}
         newRow={handleNewRow}
         updateRow={handleUpdateRow}
         deleteRow={handleDeleteRow}
         picker={handleSelectRowImage}
       />
 
-      {Object.entries(controlMap).map((v) => (
-        <ControlData
-          key={v[0]}
-          title={v[1]}
-          control={v[0]}
-          images={images}
-          picker={handleSelectImageControl}
-        />
-      ))}
+      <TempData
+        title="Temperatura"
+        order={order}
+        data={temps}
+        newData={handleNewTemp}
+        updateData={handleUpdateTemp}
+        deleteData={handleDeleteTemp}
+        picker={handleSelectImageControl}
+      />
 
-      <CloseData title="Contenedor Cierre" final={order.final[0]} />
+      <WeightData
+        title="Pesos"
+        order={order}
+        data={weights}
+        newData={handleNewWeight}
+        updateData={handleUpdateWeight}
+        deleteData={handleDeleteWeight}
+        picker={handleSelectImageControl}
+      />
+
+      <MeasureData
+        title="Organolépticos"
+        order={order}
+        data={measures}
+        newData={handleNewMeasure}
+        updateData={handleUpdateMeasure}
+        deleteData={handleDeleteMeasure}
+        picker={handleSelectImageControl}
+      />
+
+      <CloseData
+        title="Contenedor Cierre"
+        final={order.final[0]}
+        order={order}
+        handleEdit={handleEditOrder}
+      />
     </div>
   );
 };

@@ -23,10 +23,19 @@ import {
   DELETE_PRODUCT,
   FETCH_ROWS_ADMIN,
   FETCH_TEMPS_ADMIN,
+  CREATE_TEMP_ADMIN,
+  UPDATE_TEMP_ADMIN,
+  DELETE_TEMP_ADMIN,
   FETCH_WEIGHTS_ADMIN,
+  CREATE_WEIGHT_ADMIN,
+  UPDATE_WEIGHT_ADMIN,
+  DELETE_WEIGHT_ADMIN,
+  FETCH_MEASURES_ADMIN,
+  CREATE_MEASURE_ADMIN,
+  UPDATE_MEASURE_ADMIN,
+  DELETE_MEASURE_ADMIN,
   FETCH_IMAGES_ADMIN,
   CHANGE_DISPLAY_IMAGES_ADMIN,
-  CHANGE_DISPLAY_ROWS_ADMIN,
 } from "../reducers/dashboardReducer";
 import { NEW_ROW, UPDATE_ROW, DELETE_ROW } from "../reducers/inspectorReducer";
 import { apiRoutes, http } from "../services/http";
@@ -223,6 +232,7 @@ export const deleteOrder = (id: number) => async (dispatch: Dispatch) => {
 };
 
 /* MANAGE ORDER ACTIONS */
+// Actions for Rows
 export const fetchRows = (id: number) => async (dispatch: Dispatch) => {
   try {
     const data = await http.get(`${apiRoutes.rows_data}?order=${id}`);
@@ -231,6 +241,35 @@ export const fetchRows = (id: number) => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
+export const newRow = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const row = await http.post(apiRoutes.rows_data, data);
+
+    return dispatch({ type: NEW_ROW, payload: row });
+  } catch (error) {}
+};
+
+export const updateRow = (id: number, data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const row = await http.patch(`${apiRoutes.rows_data}${id}/`, data);
+
+    return dispatch({ type: UPDATE_ROW, payload: row });
+  } catch (error) {}
+};
+
+export const deleteRow = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    await http.delete(`${apiRoutes.rows_data}${id}/`);
+
+    return dispatch({ type: DELETE_ROW, payload: id });
+  } catch (error) {}
+};
+
+// Actions for Temperatures
 export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
   try {
     const data = await http.get(`${apiRoutes.temps_data}?order=${id}`);
@@ -239,6 +278,35 @@ export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
+export const createTemp = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.post(apiRoutes.temps_data, data);
+
+    return dispatch({ type: CREATE_TEMP_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const updateTemp = (id: number, data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.patch(`${apiRoutes.temps_data}${id}/`, data);
+
+    return dispatch({ type: UPDATE_TEMP_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const deleteTemp = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    await http.delete(`${apiRoutes.temps_data}${id}/`);
+
+    return dispatch({ type: DELETE_TEMP_ADMIN, payload: id });
+  } catch (error) {}
+};
+
+// Actions for Weights
 export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
   try {
     const data = await http.get(`${apiRoutes.weights_data}?order=${id}`);
@@ -247,6 +315,73 @@ export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
+export const createWeight = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.post(apiRoutes.weights_data, data);
+
+    return dispatch({ type: CREATE_WEIGHT_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const updateWeight = (id: number, data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.patch(`${apiRoutes.weights_data}${id}/`, data);
+
+    return dispatch({ type: UPDATE_WEIGHT_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const deleteWeight = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    await http.delete(`${apiRoutes.weights_data}${id}/`);
+
+    return dispatch({ type: DELETE_WEIGHT_ADMIN, payload: id });
+  } catch (error) {}
+};
+
+// Actions for Measures
+
+export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    const res = await http.get(`${apiRoutes.measures_data}?order=${id}`);
+
+    return dispatch({ type: FETCH_MEASURES_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const createMeasure = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.post(apiRoutes.measures_data, data);
+
+    return dispatch({ type: CREATE_MEASURE_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const updateMeasure = (id: number, data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const res = await http.patch(`${apiRoutes.measures_data}${id}/`, data);
+
+    return dispatch({ type: UPDATE_MEASURE_ADMIN, payload: res });
+  } catch (error) {}
+};
+
+export const deleteMeasure = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    await http.delete(`${apiRoutes.measures_data}${id}/`);
+
+    return dispatch({ type: DELETE_MEASURE_ADMIN, payload: id });
+  } catch (error) {}
+};
+
+// Other Actions
 export const fetchImagesControl = (id: number) => async (
   dispatch: Dispatch
 ) => {
@@ -278,34 +413,6 @@ export const changeRowImageDisplay = (id: number, display: boolean) => async (
       display,
     });
 
-    return dispatch({ type: CHANGE_DISPLAY_ROWS_ADMIN, payload: data });
-  } catch (error) {}
-};
-
-export const newRow = (data: Record<string, any>) => async (
-  dispatch: Dispatch
-) => {
-  try {
-    const row = await http.post(apiRoutes.rows_data, data);
-
-    return dispatch({ type: NEW_ROW, payload: row });
-  } catch (error) {}
-};
-
-export const updateRow = (id: number, data: Record<string, any>) => async (
-  dispatch: Dispatch
-) => {
-  try {
-    const row = await http.patch(`${apiRoutes.rows_data}${id}/`, data);
-
-    return dispatch({ type: UPDATE_ROW, payload: row });
-  } catch (error) {}
-};
-
-export const deleteRow = (id: number) => async (dispatch: Dispatch) => {
-  try {
-    await http.delete(`${apiRoutes.rows_data}${id}/`);
-
-    return dispatch({ type: DELETE_ROW, payload: id });
+    return dispatch({ type: UPDATE_ROW, payload: data });
   } catch (error) {}
 };

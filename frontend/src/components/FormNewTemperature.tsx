@@ -32,7 +32,12 @@ const validationSchema = Yup.object().shape({
   temp: Yup.number().required("Campo requerido"),
 });
 
-const FormNewRow: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
+const FormNewTemperature: React.FC<Props> = ({
+  order,
+  backUrl,
+  okUrl,
+  onOk,
+}) => {
   const history = useHistory();
   return (
     <Formik<Values>
@@ -74,7 +79,10 @@ const FormNewRow: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
             component={CustomField}
           />
           {values.images.map((i, idx, arr) => (
-            <div key={idx}>
+            <div
+              key={idx}
+              className="is-flex is-justify-content-center is-align-items-center my-2"
+            >
               <Thumb file={i} />
               <span
                 onClick={() =>
@@ -127,4 +135,4 @@ const FormNewRow: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   );
 };
 
-export default FormNewRow;
+export default FormNewTemperature;

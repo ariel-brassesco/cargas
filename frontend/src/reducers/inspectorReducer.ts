@@ -5,6 +5,7 @@ import { Order } from "../types/order";
 import { Row } from "../types/row";
 import { Temperature } from "../types/temp";
 import { Weight } from "../types/weight";
+import { Measure } from "../types/measure";
 
 export const FETCH_ORDERS_INSPECTOR: string = "FETCH_ORDERS_INSPECTOR";
 export const FETCH_ROWS_INSPECTOR: string = "FETCH_ROWS_INSPECTOR";
@@ -31,7 +32,7 @@ type State = {
   next: number;
   temps: Temperature[];
   weights: Weight[];
-  measures: any[];
+  measures: Measure[];
 };
 
 const initialState: State = {

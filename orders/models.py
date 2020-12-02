@@ -84,27 +84,6 @@ class RowOrder(models.Model):
         super(RowOrder, self).save(*args, **kwargs)
 
 
-class WeightControl(models.Model):
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name='weights'
-    )
-    package = models.FloatField()
-    carton = models.FloatField()
-    primary_package = models.FloatField(default=0)
-    product = models.FloatField()
-
-
-class TemperatureControl(models.Model):
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name='temps')
-    row = models.PositiveIntegerField(default=1)
-    temp = models.FloatField()
-
-
 def name_files_container(instance, filename):
     return f"carga_{instance.order.id}/contenedor/{filename}"
 
@@ -222,6 +201,9 @@ class ImageControl(models.Model):
     display = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.image.name
+
     def get_file_extension(self, name):
         # Get the file extension
         return f".{name.split('.')[-1]}"
@@ -237,3 +219,35 @@ class ImageControl(models.Model):
             self.image.name = image_name + \
                 f"{self.get_file_extension(self.image.name)}"
         super(ImageControl, self).save(*args, **kwargs)
+
+
+class WeightControl(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='weights'
+    )
+    package = models.FloatField()
+    carton = models.FloatField()
+    primary_package = models.FloatField(default=0)
+    product = models.FloatField()
+    images = models.ManyToManyField(ImageControl)
+
+
+class TemperatureControl(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='temps')
+    row = models.PositiveIntegerField(default=1)
+    temp = models.FloatField()
+    images = models.ManyToManyField(ImageControl)
+
+
+class OrganolepticControl(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='measure')
+    comment = models.TextField(default="")
+    images = models.ManyToManyField(ImageControl)

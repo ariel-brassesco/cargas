@@ -48,8 +48,8 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
     const name = `box_${c.product.id}`;
 
     return a.hasOwnProperty(name)
-      ? { ...a, name: a.name + c.quantity }
-      : { ...a, name: c.quantity };
+      ? { ...a, [name]: a[name] + c.quantity }
+      : { ...a, [name]: c.quantity };
   }, {});
 
   return (
@@ -74,8 +74,7 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
           if (i[1] && !i[0].startsWith("box")) form.append(...i);
           else if (i[0].startsWith("box")) boxes += i[1];
         });
-        console.log(boxes);
-        console.log(typeof boxes);
+
         form.append("boxes", String(boxes));
         const res = onOk && (await onOk(form));
         setSubmitting(false);

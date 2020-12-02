@@ -56,11 +56,11 @@ const InspectorStartOrder: React.FC<Props> = ({ order, onOk }) => {
       }}
     >
       {({ isSubmitting, isValid, setFieldValue }) => (
-        <Form className="px-2">
+        <Form className="mt-3 px-2">
           <Field
             type="text"
             name="container"
-            label="Contenedor"
+            label="Matrícula"
             component={CustomFieldHorizontal}
           />
 

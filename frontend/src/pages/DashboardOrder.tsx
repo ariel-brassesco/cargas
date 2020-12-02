@@ -242,11 +242,11 @@ class DashboardOrdersPage extends React.Component<Props, State> {
           <Route
             path={`${ORDER_MANAGE}/:order`}
             render={({ match }) => {
-              const order = orders.find(
+              const check = orders.some(
                 (o) => String(o.id) === match.params.order
               );
-              if (!order) return null;
-              return <OrderManager order={order} />;
+              if (!check) return null;
+              return <OrderManager order_id={Number(match.params.order)} />;
             }}
           />
 

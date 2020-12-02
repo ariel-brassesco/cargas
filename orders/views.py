@@ -14,6 +14,7 @@ from .serializers import (
     RowOrderSerializer,
     TempControlSerializer,
     WeightControlSerializer,
+    OrganolepticControlSerializer,
     ImageControlSerializer
 )
 from .models import (
@@ -24,6 +25,7 @@ from .models import (
     RowOrder,
     TemperatureControl,
     WeightControl,
+    OrganolepticControl,
     ImageControl
 )
 from registration.models import Client, Inspector
@@ -188,6 +190,120 @@ class TempControlViewSet(ModelViewSet):
     queryset = TemperatureControl.objects.all()
     serializer_class = TempControlSerializer
 
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "delete":
+            permission_classes = [IsAdminUser]
+        else:
+            if (not self.request.user.is_client):
+                permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+        order = request.query_params.get("order")
+        if not order:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        ).filter(order__pk=order)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        # Create Temperature Control
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=False)
+        control = self.perform_create(serializer)
+        # Load Images
+        images = request.FILES.getlist("images")
+        order = Order.objects.get(pk=request.data.get("order"))
+        row = request.data.get("row")
+        for img in images:
+            image = ImageControl.objects.create(
+                order=order,
+                number=row,
+                image=img,
+                control="temperature"
+            )
+            control.images.add(image)
+        # Send the response
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class WeightControlViewSet(ModelViewSet):
+    queryset = WeightControl.objects.all()
+    serializer_class = WeightControlSerializer
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == "delete":
+            permission_classes = [IsAdminUser]
+        else:
+            if (not self.request.user.is_client):
+                permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    def list(self, request, *args, **kwargs):
+        order = request.query_params.get("order")
+        if not order:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        ).filter(order__pk=order)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        control = self.perform_create(serializer)
+        # Load Images
+        images = request.FILES.getlist("images")
+        order = Order.objects.get(pk=request.data.get("order"))
+        for img in images:
+            image = ImageControl.objects.create(
+                order=order,
+                image=img,
+                control="weight"
+            )
+            control.images.add(image)
+        # Send the response
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class OrganolepticControlViewSet(ModelViewSet):
+    queryset = OrganolepticControl.objects.all()
+    serializer_class = OrganolepticControlSerializer
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
@@ -220,68 +336,18 @@ class TempControlViewSet(ModelViewSet):
         # Create Temperature Control
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        # Load Images
-        images = request.FILES.getlist("images")
-        order = Order.objects.get(pk=request.data.get("order"))
-        row = request.data.get("row")
-        for img in images:
-            ImageControl.objects.create(
-                order=order,
-                number=row,
-                image=img,
-                control="temperature"
-            )
-        # Send the response
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-class WeightControlViewSet(ModelViewSet):
-    queryset = WeightControl.objects.all()
-    serializer_class = WeightControlSerializer
-
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action == "delete":
-            permission_classes = [IsAdminUser]
-        else:
-            if (not self.request.user.is_client):
-                permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-
-    def list(self, request, *args, **kwargs):
-        order = request.query_params.get("order")
-        if not order:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        queryset = self.filter_queryset(
-            self.get_queryset()
-        ).filter(order__pk=order)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        control = self.perform_create(serializer)
         # Load Images
         images = request.FILES.getlist("images")
         order = Order.objects.get(pk=request.data.get("order"))
         for img in images:
-            ImageControl.objects.create(
+            image = ImageControl.objects.create(
                 order=order,
                 image=img,
-                control="weights"
+                control="measure"
             )
+            control.images.add(image)
+
         # Send the response
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -364,8 +430,8 @@ class ImageControlViewSet(ModelViewSet):
             self.get_queryset()
         ).filter(order__pk=order)
 
-        # if request.user.is_client:
-        #     queryset = queryset.filter(display=True)
+        if request.user.is_client:
+            queryset = queryset.filter(display=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -374,35 +440,3 @@ class ImageControlViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-
-
-@api_view(["POST"])
-@permission_classes([IsAuthenticated])
-def create_measure(request):
-    if request.user.is_client:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-    # Load Images
-    images = request.FILES.getlist("images")
-    order = Order.objects.get(pk=request.data.get("order"))
-    data = []
-    for img in images:
-        data.append(
-            ImageControl.objects.create(
-                order=order,
-                image=img,
-                control="measure"
-            )
-        )
-    serializer = ImageControlSerializer(data, many=True)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_list_measure(request):
-    if request.user.is_client:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-    order = request.query_params.get("order")
-    data = ImageControl.objects.filter(control="measure").filter(order=order)
-    serializer = ImageControlSerializer(data, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)

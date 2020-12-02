@@ -15,8 +15,12 @@ export const ImagePicker: React.FC<Props> = ({
   className = "",
   onSelect,
 }) => (
-  <div className={`${className} ${selected ? "has-background-success" : ""}`}>
-    <figure className="image is-128x128">
+  <div
+    className={`p-1 has-text-centered ${className} ${
+      selected ? "has-background-success" : ""
+    }`}
+  >
+    <figure className="image is-1by1 is-128x128">
       <img src={src} alt={alt} onClick={onSelect} />
     </figure>
   </div>
