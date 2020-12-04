@@ -54,10 +54,11 @@ export interface Order extends Base {
   boxes?: number;
   net_weight?: number;
   gross_weight?: number;
-  lot?: string[];
+  lot?: string;
   status: string;
   initial: InitOrder[];
   final: FinalOrder[];
+  is_active: boolean;
 }
 
 export interface OrderPagination {

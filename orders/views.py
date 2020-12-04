@@ -100,6 +100,7 @@ class InspectorOrderViewSet(ModelViewSet):
             gross_weight = request.data.get("gross_weight", 0)
             net_weight = request.data.get("net_weight", 0)
             boxes = request.data.get("boxes", 0)
+            seal = request.data.get("seal", "")
             # Create ContainerOrder
             serial_container = CloseOrderSerializer(
                 data=request.data,
@@ -112,6 +113,7 @@ class InspectorOrderViewSet(ModelViewSet):
             container.order.gross_weight = gross_weight
             container.order.net_weight = net_weight
             container.order.boxes = boxes
+            container.order.seal = seal
             container.order.save()
             # Serialize Order and Send
             serializer = self.get_serializer(container.order)
@@ -134,8 +136,7 @@ class InspectorOrderViewSet(ModelViewSet):
 
 
 class ClientOrderViewSet(ModelViewSet):
-    queryset = Order.objects.exclude(
-        status__in=["cancel", "ready"]).order_by('-date')
+    queryset = Order.objects.exclude(is_active=False).order_by('-date')
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
@@ -197,7 +198,7 @@ class TempControlViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
+        if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):
@@ -254,7 +255,7 @@ class WeightControlViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
+        if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):
@@ -308,7 +309,7 @@ class OrganolepticControlViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
+        if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):
@@ -361,7 +362,7 @@ class ContainerOrderViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
+        if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):
@@ -393,7 +394,7 @@ class CloseOrderViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "delete":
+        if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):

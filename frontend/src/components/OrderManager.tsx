@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
-  // faUndo,
+  faUndo,
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -58,6 +59,8 @@ import { Weight } from "../types/weight";
 import { Measure } from "../types/measure";
 // Import Services
 import { dateInARFormat, timeFromUTCToLocal } from "../services/datetime";
+// Import Routes
+import { DASHBOARD_ORDERS } from "../routes";
 
 interface GDProps {
   title: string;
@@ -110,7 +113,7 @@ type Props = {
   order_id: number;
 };
 
-const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
+export const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
   typeof edit === "function" ? (
     <ModalTrigger
       button={
@@ -183,36 +186,33 @@ const InitialData: FC<IDProps> = ({ title, initial, container, handleEdit }) =>
         value={container ?? ""}
         edit={handleEdit("container")}
       />
-      <div className="is-flex is-flex-wrap-wrap mt-2">
+      <div className="is-flex is-flex-wrap-wrap mt-2 is-justify-content-flex-start">
         {initial.empty ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.empty}
               alt="Contenedor Vacío"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Contenedor Vacío</p>
           </div>
         ) : null}
         {initial.matricula ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.matricula}
               alt="Matrícula del Contenedor"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Matrícula Contenedor</p>
           </div>
         ) : null}
         {initial.ventilation ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.ventilation}
               alt="Ventilación del Contenedor"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Ventilación del Contenedor</p>
           </div>
@@ -543,22 +543,24 @@ const TempData: FC<CProps> = ({
         </>
       ) : null}
 
-      {data.map((t) => (
-        <div key={`temp-${t.id}`} className="mb-4">
-          <LabelData label="Fila:" value={t.row} />
-          <div className="is-flex is-flex-wrap-wrap">
-            {t.images.map((i: ImageControl) => (
-              <ImagePicker
-                key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
-            ))}
+      {data.map((t) =>
+        !t.images.length ? (
+          <div key={`temp-${t.id}`} className="mb-4">
+            <LabelData label="Fila:" value={t.row} />
+            <div className="is-flex is-flex-wrap-wrap">
+              {t.images.map((i: ImageControl) => (
+                <ImagePicker
+                  key={i.id}
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ) : null
+      )}
     </>
   );
 };
@@ -784,6 +786,11 @@ const OrderManager: React.FC<Props> = ({ order_id }) => {
 
   return (
     <div>
+      <Link to={DASHBOARD_ORDERS} className="button is-danger">
+        <FontAwesomeIcon icon={faUndo} />
+        <span className="ml-1">Volver</span>
+      </Link>
+
       <GeneralData
         title="Datos Generales"
         order={order}

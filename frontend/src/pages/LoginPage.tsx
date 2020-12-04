@@ -29,18 +29,16 @@ class LoginPage extends React.Component<Props> {
   };
 
   private handleSubmit = async (values: Values) => {
-    this.setState({ errorMsg: "" });
-    try {
-      await this.props.dispatch(login(values));
-      this.props.history.push(DASHBOARD_ORDERS);
-    } catch {
-      //Else show Invalid Credentials message
-      this.setState({ errorMsg: "Usuario o Contraseña Incorrecta" });
-      this.props.dispatch(logout());
-    }
+    const res = await login(values)(this.props.dispatch);
+
+    if (res) return this.props.history.push(DASHBOARD_ORDERS);
+    //Else show Invalid Credentials message
+    this.setState({ errorMsg: "Usuario o Contraseña Incorrectos" });
+    this.props.dispatch(logout());
   };
 
   render() {
+    console.log(this.state.errorMsg);
     return (
       <section className="hero is-fullheight">
         <div className="hero-body">

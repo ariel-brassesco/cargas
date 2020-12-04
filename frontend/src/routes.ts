@@ -23,3 +23,6 @@ export const INSPECTOR_WEIGHT_CONTROL: string = "/add/weight";
 export const INSPECTOR_MEASURE_CONTROL: string = "/add/organoleptic";
 export const INSPECTOR_CHECK_ORDER: string = "/check";
 export const INSPECTOR_CHECK_ROWS: string = PROFILE_INSPECTOR + "/check/rows";
+
+// CLIENT ORDERS ROUTES
+export const CLIENT_ORDER_DETAIL: string = PROFILE_CLIENT + "/detalle/carga";

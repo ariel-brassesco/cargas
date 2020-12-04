@@ -105,9 +105,11 @@ export const CustomFieldHorizontal = ({
   form: { touched, errors },
   ...props
 }) => (
-  <div className="field is-horizontal">
+  <div className="field is-horizontal is-flex">
     {props.label ? (
-      <label className="label is-large">{props.label}</label>
+      <div className="field-label">
+        <label className="label is-large">{props.label}</label>
+      </div>
     ) : null}
     <div className="field-body">
       <div className="field">
