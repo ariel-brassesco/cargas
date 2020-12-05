@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { Formik, Form, Field } from "formik";
 import { Link, useHistory } from "react-router-dom";
 import * as Yup from "yup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 // Import Components
 import { CustomFieldHorizontal } from "../components/Common";
 import { FileField } from "../components/FormsComponents";
@@ -24,6 +26,8 @@ type Props = {
 
 interface Values {
   boxes: number;
+  seal: string;
+  lot: string[];
   gross_weight: number;
   net_weight: number;
   full: File | undefined;
@@ -33,7 +37,8 @@ interface Values {
 }
 
 const validationSchema = Yup.object().shape({
-  full: Yup.mixed().required("Imagen Requerida"),
+  seal: Yup.string(),
+  // full: Yup.mixed().required("Imagen Requerida"),
   semi_close: Yup.mixed(),
   close: Yup.mixed(),
   precinto: Yup.mixed(),
@@ -43,7 +48,6 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
   const history = useHistory();
   const rows = useSelector((state: any) => getRows(state));
 
-  // const boxInit = rows.reduce((a: number, c: Row) => a + c.quantity, 0);
   const boxNames = rows.reduce((a: Record<string, number>, c: Row) => {
     const name = `box_${c.product.id}`;
 
@@ -56,8 +60,10 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
     <Formik<Values>
       initialValues={{
         ...boxNames,
+        lot: order.lot ? order.lot.split(",") : [""],
         net_weight: order.net_weight ?? 0,
         gross_weight: order.gross_weight ?? 0,
+        seal: order.seal ?? "",
         full: undefined,
         semi_close: undefined,
         close: undefined,
@@ -74,8 +80,12 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
           if (i[1] && !i[0].startsWith("box")) form.append(...i);
           else if (i[0].startsWith("box")) boxes += i[1];
         });
-
+        // Add the boxes key in Form
         form.append("boxes", String(boxes));
+        // Set the lot key in Form
+        const lot = values.lot.filter((l) => Boolean(l)).join(",");
+        form.set("lot", lot);
+        //Send the Form
         const res = onOk && (await onOk(form));
         setSubmitting(false);
         if (res && okUrl) history.push(okUrl);
@@ -83,6 +93,62 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
     >
       {({ isSubmitting, isValid, setFieldValue, values }) => (
         <Form>
+          <Field
+            type="text"
+            name="seal"
+            label="Precinto AFIP:"
+            component={CustomFieldHorizontal}
+          />
+
+          {values.lot.map((l, idx, arr) => (
+            <div
+              key={idx}
+              className="is-flex is-align-items-center is-justify-content-space-evenly my-1"
+            >
+              <Field
+                type="text"
+                label={idx === 0 ? "Lotes:" : ""}
+                value={l}
+                onChange={(e: any) =>
+                  setFieldValue(
+                    "lot",
+                    values.lot.map((v, i) =>
+                      i === idx && Number(e.target.value) > 0
+                        ? e.target.value
+                        : v
+                    )
+                  )
+                }
+                component={CustomFieldHorizontal}
+              />
+              <div className="mb-3 is-flex is-flex-direction-column">
+                {arr.length === idx + 1 ? (
+                  <span className="icon has-text-info is-normal">
+                    <FontAwesomeIcon
+                      icon={faPlusCircle}
+                      onClick={() =>
+                        setFieldValue("lot", values.lot.concat(""))
+                      }
+                    />
+                  </span>
+                ) : null}
+                {arr.length > 1 ? (
+                  <span className="icon has-text-danger is-normal">
+                    <FontAwesomeIcon
+                      icon={faTimesCircle}
+                      onClick={() =>
+                        setFieldValue(
+                          "lot",
+                          values.lot.filter((_, i) => i !== idx)
+                        )
+                      }
+                    />
+                  </span>
+                ) : null}
+              </div>
+            </div>
+          ))}
+
           {order.products.map((p) => (
             <Field
               key={p.id}
@@ -102,6 +168,7 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
               )}
             </p>
           </div>
+
           <Field
             type="number"
             name="gross_weight"

@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
-  // faUndo,
+  faUndo,
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,6 +16,7 @@ import {
   EditWeightModal,
   EditMeasureModal,
   EditLabel,
+  EditLot,
 } from "../components/modals/EditComponent";
 import { Table, Column, Align } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
@@ -58,6 +60,8 @@ import { Weight } from "../types/weight";
 import { Measure } from "../types/measure";
 // Import Services
 import { dateInARFormat, timeFromUTCToLocal } from "../services/datetime";
+// Import Routes
+import { DASHBOARD_ORDERS } from "../routes";
 
 interface GDProps {
   title: string;
@@ -106,11 +110,18 @@ interface LDProps {
   edit?: (data: any) => void;
 }
 
+interface LotProps {
+  label: string;
+  value: string;
+  className?: string;
+  edit?: (data: any) => void;
+}
+
 type Props = {
   order_id: number;
 };
 
-const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
+export const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
   typeof edit === "function" ? (
     <ModalTrigger
       button={
@@ -126,6 +137,32 @@ const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
       <span className="has-text-weight-bold mx-5">{label}</span>
       <span>{value}</span>
     </p>
+  );
+
+export const LotData: FC<LotProps> = ({ label, value, edit, className }) =>
+  typeof edit === "function" ? (
+    <div className={className}>
+      <span className="has-text-weight-bold mx-5">{label}</span>
+
+      {value.split(",").map((v, idx) => (
+        <ModalTrigger
+          key={idx}
+          button={
+            <span className="tag is-light is-clickable mx-1">{v || "-"}</span>
+          }
+          modal={<EditLot label={label} value={value} onOk={edit} />}
+        />
+      ))}
+    </div>
+  ) : (
+    <div className={className}>
+      <span className="has-text-weight-bold mx-5">{label}</span>
+      {value.split(",").map((v, idx) => (
+        <span key={idx} className="tag is-light mx-1">
+          {v || "-"}
+        </span>
+      ))}
+    </div>
   );
 
 const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
@@ -183,36 +220,33 @@ const InitialData: FC<IDProps> = ({ title, initial, container, handleEdit }) =>
         value={container ?? ""}
         edit={handleEdit("container")}
       />
-      <div className="is-flex is-flex-wrap-wrap mt-2">
+      <div className="is-flex is-flex-wrap-wrap mt-2 is-justify-content-flex-start">
         {initial.empty ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.empty}
               alt="Contenedor Vacío"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Contenedor Vacío</p>
           </div>
         ) : null}
         {initial.matricula ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.matricula}
               alt="Matrícula del Contenedor"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Matrícula Contenedor</p>
           </div>
         ) : null}
         {initial.ventilation ? (
-          <div className="has-text-centered mx-2">
+          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
             <ImagePicker
               src={initial.ventilation}
               alt="Ventilación del Contenedor"
               selected={true}
-              className="mx-3"
             />
             <p className="has-text-weight-bold">Ventilación del Contenedor</p>
           </div>
@@ -225,6 +259,17 @@ const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) =>
   !final ? null : (
     <>
       <p className="title is-size-3">{title}</p>
+      <LabelData
+        label="Precinto AFIP:"
+        value={order.seal ?? "-"}
+        edit={handleEdit("seal")}
+      />
+      <LotData
+        className="is-flex"
+        label="Lotes:"
+        value={order.lot ?? ""}
+        edit={handleEdit("lot")}
+      />
       <LabelData
         label="Peso Bruto (kg):"
         value={order.gross_weight ?? 0}
@@ -508,7 +553,7 @@ const TempData: FC<CProps> = ({
     },
   ];
 
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
 
@@ -543,22 +588,24 @@ const TempData: FC<CProps> = ({
         </>
       ) : null}
 
-      {data.map((t) => (
-        <div key={`temp-${t.id}`} className="mb-4">
-          <LabelData label="Fila:" value={t.row} />
-          <div className="is-flex is-flex-wrap-wrap">
-            {t.images.map((i: ImageControl) => (
-              <ImagePicker
-                key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
-            ))}
+      {data.map((t) =>
+        !t.images.length ? (
+          <div key={`temp-${t.id}`} className="mb-4">
+            <LabelData label="Fila:" value={t.row} />
+            <div className="is-flex is-flex-wrap-wrap">
+              {t.images.map((i: ImageControl) => (
+                <ImagePicker
+                  key={i.id}
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ) : null
+      )}
     </>
   );
 };
@@ -572,7 +619,7 @@ const WeightData: FC<CProps> = ({
   deleteData,
   picker,
 }) => {
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
       <ModalTrigger
@@ -659,7 +706,7 @@ const MeasureData: FC<CProps> = ({
   deleteData,
   picker,
 }) => {
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
       <ModalTrigger
@@ -784,6 +831,11 @@ const OrderManager: React.FC<Props> = ({ order_id }) => {
 
   return (
     <div>
+      <Link to={DASHBOARD_ORDERS} className="button is-danger">
+        <FontAwesomeIcon icon={faUndo} />
+        <span className="ml-1">Volver</span>
+      </Link>
+
       <GeneralData
         title="Datos Generales"
         order={order}
