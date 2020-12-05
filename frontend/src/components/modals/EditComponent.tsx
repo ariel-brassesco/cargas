@@ -3,7 +3,11 @@ import { useSelector } from "react-redux";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faTimesCircle,
+  faPlusCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import lodash from "lodash";
 // Import Components
 import { CustomField, CustomFieldHorizontal, CustomSelect } from "../Common";
@@ -69,6 +73,10 @@ interface MeasureValues {
   comment: string;
 }
 
+interface LotValues {
+  data: string[];
+}
+
 type Props = {
   user?: any;
   onOk: (client: any) => void;
@@ -101,6 +109,12 @@ type PropsControl = {
 
 type PropsLabel = {
   value?: string | number;
+  label: string;
+  onOk: (data: any) => void;
+};
+
+type PropsLot = {
+  value?: string;
   label: string;
   onOk: (data: any) => void;
 };
@@ -749,6 +763,81 @@ export const EditLabel: FC<PropsLabel> = ({ value, label, onOk, ...props }) => {
               label={label}
               component={CustomField}
             />
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditLot: FC<PropsLot> = ({ value, label, onOk, ...props }) => {
+  const validationSchema = Yup.object().shape({
+    data: Yup.mixed().required("Campo Requerido"),
+  });
+
+  return (
+    <Formik<LotValues>
+      initialValues={{
+        data: value ? value.split(",") : [""],
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const lot = values.data.filter((l) => Boolean(l)).join(",");
+        await onOk(lot);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue, values }) => (
+        <Modal {...props} title="Editar" okLabel="Guardar" onOk={handleSubmit}>
+          <Form>
+            {values.data.map((l, idx, arr) => (
+              <div
+                key={idx}
+                className="is-flex is-align-items-center is-justify-content-space-evenly my-1"
+              >
+                <Field
+                  type="text"
+                  label={idx === 0 ? "Lotes:" : ""}
+                  value={l}
+                  onChange={(e: any) =>
+                    setFieldValue(
+                      "data",
+                      values.data.map((v, i) =>
+                        i === idx && Number(e.target.value) > 0
+                          ? e.target.value
+                          : v
+                      )
+                    )
+                  }
+                  component={CustomFieldHorizontal}
+                />
+                <div className="mb-3 is-flex is-flex-direction-column">
+                  {arr.length === idx + 1 ? (
+                    <span className="icon has-text-info is-normal">
+                      <FontAwesomeIcon
+                        icon={faPlusCircle}
+                        onClick={() =>
+                          setFieldValue("data", values.data.concat(""))
+                        }
+                      />
+                    </span>
+                  ) : null}
+                  {arr.length > 1 ? (
+                    <span className="icon has-text-danger is-normal">
+                      <FontAwesomeIcon
+                        icon={faTimesCircle}
+                        onClick={() =>
+                          setFieldValue(
+                            "data",
+                            values.data.filter((_, i) => i !== idx)
+                          )
+                        }
+                      />
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            ))}
           </Form>
         </Modal>
       )}

@@ -101,6 +101,7 @@ class InspectorOrderViewSet(ModelViewSet):
             net_weight = request.data.get("net_weight", 0)
             boxes = request.data.get("boxes", 0)
             seal = request.data.get("seal", "")
+            lot = request.data.get("lot", "")
             # Create ContainerOrder
             serial_container = CloseOrderSerializer(
                 data=request.data,
@@ -114,6 +115,7 @@ class InspectorOrderViewSet(ModelViewSet):
             container.order.net_weight = net_weight
             container.order.boxes = boxes
             container.order.seal = seal
+            container.order.lot = lot
             container.order.save()
             # Serialize Order and Send
             serializer = self.get_serializer(container.order)

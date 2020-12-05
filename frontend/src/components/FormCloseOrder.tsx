@@ -71,7 +71,6 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
-        console.log(values);
         const form = new FormData();
         // Append the order id and all the values in FormData
         form.append("order", String(order.id));
@@ -100,7 +99,7 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
             label="Precinto AFIP:"
             component={CustomFieldHorizontal}
           />
-          {console.log(values)}
+
           {values.lot.map((l, idx, arr) => (
             <div
               key={idx}

@@ -16,6 +16,7 @@ import {
   EditWeightModal,
   EditMeasureModal,
   EditLabel,
+  EditLot,
 } from "../components/modals/EditComponent";
 import { Table, Column, Align } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
@@ -109,6 +110,13 @@ interface LDProps {
   edit?: (data: any) => void;
 }
 
+interface LotProps {
+  label: string;
+  value: string;
+  className?: string;
+  edit?: (data: any) => void;
+}
+
 type Props = {
   order_id: number;
 };
@@ -129,6 +137,32 @@ export const LabelData: FC<LDProps> = ({ label, value, edit, className }) =>
       <span className="has-text-weight-bold mx-5">{label}</span>
       <span>{value}</span>
     </p>
+  );
+
+export const LotData: FC<LotProps> = ({ label, value, edit, className }) =>
+  typeof edit === "function" ? (
+    <div className={className}>
+      <span className="has-text-weight-bold mx-5">{label}</span>
+
+      {value.split(",").map((v, idx) => (
+        <ModalTrigger
+          key={idx}
+          button={
+            <span className="tag is-light is-clickable mx-1">{v || "-"}</span>
+          }
+          modal={<EditLot label={label} value={value} onOk={edit} />}
+        />
+      ))}
+    </div>
+  ) : (
+    <div className={className}>
+      <span className="has-text-weight-bold mx-5">{label}</span>
+      {value.split(",").map((v, idx) => (
+        <span key={idx} className="tag is-light mx-1">
+          {v || "-"}
+        </span>
+      ))}
+    </div>
   );
 
 const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
@@ -225,6 +259,17 @@ const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) =>
   !final ? null : (
     <>
       <p className="title is-size-3">{title}</p>
+      <LabelData
+        label="Precinto AFIP:"
+        value={order.seal ?? "-"}
+        edit={handleEdit("seal")}
+      />
+      <LotData
+        className="is-flex"
+        label="Lotes:"
+        value={order.lot ?? ""}
+        edit={handleEdit("lot")}
+      />
       <LabelData
         label="Peso Bruto (kg):"
         value={order.gross_weight ?? 0}
@@ -508,7 +553,7 @@ const TempData: FC<CProps> = ({
     },
   ];
 
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
 
@@ -574,7 +619,7 @@ const WeightData: FC<CProps> = ({
   deleteData,
   picker,
 }) => {
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
       <ModalTrigger
@@ -661,7 +706,7 @@ const MeasureData: FC<CProps> = ({
   deleteData,
   picker,
 }) => {
-  return !data.length ? null : (
+  return (
     <>
       <p className="title is-size-5">{title}</p>
       <ModalTrigger
