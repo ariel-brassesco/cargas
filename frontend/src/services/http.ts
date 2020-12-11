@@ -61,7 +61,6 @@ export const apiRoutes = {
   credentials: "accounts/send_credentials/",
   orders_data: "/orders/admin/",
   products_data: "/orders/products/",
-  client_orders: "/orders/client/",
   container_init_data: "/orders/container/init/",
   rows_data: "/orders/admin/rows/",
   temps_data: "/orders/admin/temps/",
@@ -76,4 +75,7 @@ export const apiRoutes = {
   inspector_measures: "/orders/inspector/measures/",
   inspector_close: "/orders/inspector/close/",
   inspector_container: "/orders/inspector/container/",
+  client_orders: "/orders/client/",
+  client_rows: "/orders/client/rows/",
+  client_images: "/orders/client/control/",
 };

@@ -5,9 +5,10 @@ import {
   FETCH_CLIENT_CLIENT,
   FETCH_ORDERS_CLIENT,
   FETCH_ROWS_CLIENT,
-  FETCH_TEMPS_CLIENT,
-  FETCH_WEIGHTS_CLIENT,
-  FETCH_MEASURES_CLIENT,
+  FETCH_IMAGES_CLIENT,
+  // FETCH_TEMPS_CLIENT,
+  // FETCH_WEIGHTS_CLIENT,
+  // FETCH_MEASURES_CLIENT,
 } from "../reducers/clientReducer";
 
 // Action for Orders
@@ -29,32 +30,40 @@ export const fetchOrders = (id: number) => async (dispatch: Dispatch) => {
 
 export const fetchRows = (id: number) => async (dispatch: Dispatch) => {
   try {
-    const rows = await http.get(`${apiRoutes.inspector_rows}?order=${id}`);
+    const rows = await http.get(`${apiRoutes.client_rows}?order=${id}`);
 
     return dispatch({ type: FETCH_ROWS_CLIENT, payload: rows });
   } catch (error) {}
 };
 
-export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
+export const fetchImages = (id: number) => async (dispatch: Dispatch) => {
   try {
-    const temps = await http.get(`${apiRoutes.inspector_temps}?order=${id}`);
+    const images = await http.get(`${apiRoutes.client_images}?order=${id}`);
 
-    return dispatch({ type: FETCH_TEMPS_CLIENT, payload: temps });
+    return dispatch({ type: FETCH_IMAGES_CLIENT, payload: images });
   } catch (error) {}
 };
 
-export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
-  try {
-    const res = await http.get(`${apiRoutes.inspector_weights}?order=${id}`);
+// export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
+//   try {
+//     const temps = await http.get(`${apiRoutes.inspector_temps}?order=${id}`);
 
-    return dispatch({ type: FETCH_WEIGHTS_CLIENT, payload: res });
-  } catch (error) {}
-};
+//     return dispatch({ type: FETCH_TEMPS_CLIENT, payload: temps });
+//   } catch (error) {}
+// };
 
-export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
-  try {
-    const res = await http.get(`${apiRoutes.inspector_measures}?order=${id}`);
+// export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
+//   try {
+//     const res = await http.get(`${apiRoutes.inspector_weights}?order=${id}`);
 
-    return dispatch({ type: FETCH_MEASURES_CLIENT, payload: res });
-  } catch (error) {}
-};
+//     return dispatch({ type: FETCH_WEIGHTS_CLIENT, payload: res });
+//   } catch (error) {}
+// };
+
+// export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
+//   try {
+//     const res = await http.get(`${apiRoutes.inspector_measures}?order=${id}`);
+
+//     return dispatch({ type: FETCH_MEASURES_CLIENT, payload: res });
+//   } catch (error) {}
+// };

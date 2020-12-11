@@ -35,7 +35,7 @@ export const Image = (props) => {
   //Render nothing if not src
   if (!src) return null;
   return (
-    <figure className={className}>
+    <figure className={className} onClick={props.onClick}>
       <img className={imgClass} src={src} alt={alt} />
     </figure>
   );

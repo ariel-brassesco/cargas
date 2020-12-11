@@ -594,13 +594,17 @@ const TempData: FC<CProps> = ({
             <LabelData label="Fila:" value={t.row} />
             <div className="is-flex is-flex-wrap-wrap">
               {t.images.map((i: ImageControl) => (
-                <ImagePicker
+                <div
                   key={i.id}
-                  src={i.image}
-                  alt={title}
-                  selected={i.display}
-                  onSelect={() => picker(i.id, !i.display)}
-                />
+                  className="is-flex is-flex-direction-column is-align-items-center mx-2"
+                >
+                  <ImagePicker
+                    src={i.image}
+                    alt={title}
+                    selected={i.display}
+                    onSelect={() => picker(i.id, !i.display)}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -682,13 +686,17 @@ const WeightData: FC<CProps> = ({
           <LabelData label="Peso Producto(kg):" value={w.product} />
           <div className="is-flex is-flex-wrap-wrap">
             {w.images.map((i: ImageControl) => (
-              <ImagePicker
+              <div
                 key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
+                className="is-flex is-flex-direction-column is-align-items-center mx-2"
+              >
+                <ImagePicker
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -715,7 +723,7 @@ const MeasureData: FC<CProps> = ({
             <span className="icon">
               <FontAwesomeIcon icon={faPlus} />
             </span>
-            <span>Agregar Peso</span>
+            <span>Agregar Medición</span>
           </button>
         }
         modal={<EditMeasureModal order={order} onOk={newData} />}
@@ -763,13 +771,17 @@ const MeasureData: FC<CProps> = ({
           <LabelData label="Comentario:" value={m.comment} />
           <div className="is-flex is-flex-wrap-wrap">
             {m.images.map((i: ImageControl) => (
-              <ImagePicker
+              <div
                 key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
+                className="is-flex is-flex-direction-column is-align-items-center mx-2"
+              >
+                <ImagePicker
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              </div>
             ))}
           </div>
         </div>
