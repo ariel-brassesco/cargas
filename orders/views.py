@@ -443,3 +443,27 @@ class ImageControlViewSet(ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_rows_photos(request):
+    try:
+        order = request.query_params.get("order")
+        rows = RowOrder.objects.filter(order__pk=order, display=True)
+        serializer = RowOrderSerializer(rows, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_control_photos(request):
+    try:
+        order = request.query_params.get("order")
+        images = ImageControl.objects.filter(order__pk=order, display=True)
+        serializer = ImageControlSerializer(images, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -11,6 +11,7 @@ import {
 // Import Components
 import { ImagePicker } from "../components/ImagePicker";
 import {
+  EditOrderInitModal,
   EditRowModal,
   EditTemperatureModal,
   EditWeightModal,
@@ -42,6 +43,8 @@ import {
   deleteMeasure,
   changeImageControlDisplay,
   changeRowImageDisplay,
+  updateInitOrderImage,
+  updateCloseOrderImage,
 } from "../actions/dashboardActions";
 // Import Getters
 import {
@@ -211,8 +214,22 @@ const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
   </div>
 );
 
-const InitialData: FC<IDProps> = ({ title, initial, container, handleEdit }) =>
-  !initial ? null : (
+const InitialData: FC<IDProps> = ({
+  title,
+  initial,
+  container,
+  handleEdit,
+}) => {
+  const dispatch = useDispatch();
+  const handleChangeImage = (data) =>
+    !!initial && dispatch(updateInitOrderImage(initial?.id, data));
+  const images = {
+    empty: "Contenedor Vacío",
+    matricula: "Matrícula del Contenedor",
+    ventilation: "Ventilación del Contenedor",
+  };
+
+  return (
     <>
       <p className="title is-size-3">{title}</p>
       <LabelData
@@ -220,45 +237,53 @@ const InitialData: FC<IDProps> = ({ title, initial, container, handleEdit }) =>
         value={container ?? ""}
         edit={handleEdit("container")}
       />
-      <div className="is-flex is-flex-wrap-wrap mt-2 is-justify-content-flex-start">
-        {initial.empty ? (
-          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
-            <ImagePicker
-              src={initial.empty}
-              alt="Contenedor Vacío"
-              selected={true}
+      <div className="is-flex">
+        {Object.keys(images).map((img, idx) => (
+          <div key={idx} className="is-flex is-flex-direction-column mx-2">
+            <ModalTrigger
+              button={
+                <button className="button is-info my-2">{images[img]}</button>
+              }
+              modal={
+                <EditOrderInitModal
+                  name={img}
+                  type="file"
+                  label={images[img]}
+                  value={undefined}
+                  onOk={handleChangeImage}
+                />
+              }
             />
-            <p className="has-text-weight-bold">Contenedor Vacío</p>
+            {!!initial && !!initial[img] ? (
+              <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
+                <ImagePicker
+                  src={initial[img]}
+                  alt={images[img]}
+                  selected={true}
+                />
+                <p className="has-text-weight-bold">{images[img]}</p>
+              </div>
+            ) : null}
           </div>
-        ) : null}
-        {initial.matricula ? (
-          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
-            <ImagePicker
-              src={initial.matricula}
-              alt="Matrícula del Contenedor"
-              selected={true}
-            />
-            <p className="has-text-weight-bold">Matrícula Contenedor</p>
-          </div>
-        ) : null}
-        {initial.ventilation ? (
-          <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
-            <ImagePicker
-              src={initial.ventilation}
-              alt="Ventilación del Contenedor"
-              selected={true}
-            />
-            <p className="has-text-weight-bold">Ventilación del Contenedor</p>
-          </div>
-        ) : null}
+        ))}
       </div>
     </>
   );
+};
 
-const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) =>
-  !final ? null : (
+const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) => {
+  const dispatch = useDispatch();
+  const handleChangeImage = (data) =>
+    !!final && dispatch(updateCloseOrderImage(final?.id, data));
+  const images = {
+    full: "Contenedor LLeno",
+    semi_close: "Contenedor Semi Cerrado",
+    close: "Contenedor Cerrado",
+    precinto: "Precinto AFIP",
+  };
+  return (
     <>
-      <p className="title is-size-3">{title}</p>
+      <p className="title is-size-3 mt-2">{title}</p>
       <LabelData
         label="Precinto AFIP:"
         value={order.seal ?? "-"}
@@ -280,54 +305,39 @@ const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) =>
         value={order.net_weight ?? 0}
         edit={handleEdit("net_weight")}
       />
-      <div className="is-flex is-flex-wrap-wrap">
-        {final.full && (
-          <div className="has-text-centered mx-2">
-            <ImagePicker
-              src={final.full}
-              alt="Contenedor LLeno"
-              selected={true}
-              className="mx-3"
+      <div className="is-flex">
+        {Object.keys(images).map((img, idx) => (
+          <div key={idx} className="is-flex is-flex-direction-column mx-2">
+            <ModalTrigger
+              button={
+                <button className="button is-info my-2">{images[img]}</button>
+              }
+              modal={
+                <EditOrderInitModal
+                  name={img}
+                  type="file"
+                  label={images[img]}
+                  value={undefined}
+                  onOk={handleChangeImage}
+                />
+              }
             />
-            <p className="has-text-weight-bold">Contenedor Lleno</p>
+            {!!final && !!final[img] ? (
+              <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
+                <ImagePicker
+                  src={final[img]}
+                  alt={images[img]}
+                  selected={true}
+                />
+                <p className="has-text-weight-bold">{images[img]}</p>
+              </div>
+            ) : null}
           </div>
-        )}
-        {final.semi_close && (
-          <div className="has-text-centered mx-2">
-            <ImagePicker
-              src={final.semi_close}
-              alt="Contenedor Semi Cerrado"
-              selected={true}
-              className="mx-3"
-            />
-            <p className="has-text-weight-bold">Contenedor Semi Cerrado</p>
-          </div>
-        )}
-        {final.close && (
-          <div className="has-text-centered mx-2">
-            <ImagePicker
-              src={final.close}
-              alt="Contenedor Cerrado"
-              selected={true}
-              className="mx-3"
-            />
-            <p className="has-text-weight-bold">Contenedor Cerrado</p>
-          </div>
-        )}
-        {final.precinto && (
-          <div className="has-text-centered mx-2">
-            <ImagePicker
-              src={final.precinto}
-              alt="Precinto AFIP"
-              selected={true}
-              className="mx-3"
-            />
-            <p className="has-text-weight-bold">Precinto AFIP</p>
-          </div>
-        )}
+        ))}
       </div>
     </>
   );
+};
 
 const RowsData: FC<RProps> = ({
   title,
@@ -594,13 +604,17 @@ const TempData: FC<CProps> = ({
             <LabelData label="Fila:" value={t.row} />
             <div className="is-flex is-flex-wrap-wrap">
               {t.images.map((i: ImageControl) => (
-                <ImagePicker
+                <div
                   key={i.id}
-                  src={i.image}
-                  alt={title}
-                  selected={i.display}
-                  onSelect={() => picker(i.id, !i.display)}
-                />
+                  className="is-flex is-flex-direction-column is-align-items-center mx-2"
+                >
+                  <ImagePicker
+                    src={i.image}
+                    alt={title}
+                    selected={i.display}
+                    onSelect={() => picker(i.id, !i.display)}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -621,7 +635,7 @@ const WeightData: FC<CProps> = ({
 }) => {
   return (
     <>
-      <p className="title is-size-5">{title}</p>
+      <p className="title is-size-5 mt-2">{title}</p>
       <ModalTrigger
         button={
           <button className="button is-info mx-6">
@@ -635,60 +649,70 @@ const WeightData: FC<CProps> = ({
       />
 
       {data.map((w) => (
-        <div key={`weight-${w.id}`} className="mb-4">
-          <div>
-            <ModalTrigger
-              button={
+        <div
+          key={`weight-${w.id}`}
+          className="is-flex is-flex-direction-column my-4"
+        >
+          <div className="is-flex">
+            <div className="is-flex is-flex-direction-column">
+              <ModalTrigger
+                button={
+                  <button
+                    className="button is-info is-small my-1 has-tooltip-arrow"
+                    data-tooltip="Editar"
+                  >
+                    <span className="icon">
+                      <FontAwesomeIcon icon={faEdit} />
+                    </span>
+                  </button>
+                }
+                modal={
+                  <EditWeightModal
+                    data={w}
+                    order={order}
+                    onOk={updateData(w.id)}
+                  />
+                }
+              />
+
+              <Confirm
+                title={`Está seguro que desea eliminar el registro de Peso?`}
+                okLabel="Eliminar"
+                onClick={deleteData(w)}
+              >
                 <button
-                  className="button is-info is-small mr-2 has-tooltip-arrow"
-                  data-tooltip="Editar"
+                  className="button is-danger is-small has-tooltip-arrow"
+                  data-tooltip="Eliminar"
                 >
                   <span className="icon">
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FontAwesomeIcon icon={faTrash} />
                   </span>
                 </button>
-              }
-              modal={
-                <EditWeightModal
-                  data={w}
-                  order={order}
-                  onOk={updateData(w.id)}
-                />
-              }
-            />
-
-            <Confirm
-              title={`Está seguro que desea eliminar el registro de Peso?`}
-              okLabel="Eliminar"
-              onClick={deleteData(w)}
-            >
-              <button
-                className="button is-danger is-small has-tooltip-arrow"
-                data-tooltip="Eliminar"
-              >
-                <span className="icon">
-                  <FontAwesomeIcon icon={faTrash} />
-                </span>
-              </button>
-            </Confirm>
+              </Confirm>
+            </div>
+            <div className="is-flex is-flex-direction-column">
+              <LabelData label="Peso Package(kg):" value={w.package} />
+              <LabelData label="Peso Carton(kg):" value={w.carton} />
+              <LabelData
+                label="Peso Primary Package(kg):"
+                value={w.primary_package}
+              />
+              <LabelData label="Peso Producto(kg):" value={w.product} />
+            </div>
           </div>
-
-          <LabelData label="Peso Package(kg):" value={w.package} />
-          <LabelData label="Peso Carton(kg):" value={w.carton} />
-          <LabelData
-            label="Peso Primary Package(kg):"
-            value={w.primary_package}
-          />
-          <LabelData label="Peso Producto(kg):" value={w.product} />
           <div className="is-flex is-flex-wrap-wrap">
             {w.images.map((i: ImageControl) => (
-              <ImagePicker
+              <div
                 key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
+                className="is-flex is-flex-direction-column is-align-items-center mx-2"
+              >
+                <ImagePicker
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -715,7 +739,7 @@ const MeasureData: FC<CProps> = ({
             <span className="icon">
               <FontAwesomeIcon icon={faPlus} />
             </span>
-            <span>Agregar Peso</span>
+            <span>Agregar Medición</span>
           </button>
         }
         modal={<EditMeasureModal order={order} onOk={newData} />}
@@ -763,13 +787,17 @@ const MeasureData: FC<CProps> = ({
           <LabelData label="Comentario:" value={m.comment} />
           <div className="is-flex is-flex-wrap-wrap">
             {m.images.map((i: ImageControl) => (
-              <ImagePicker
+              <div
                 key={i.id}
-                src={i.image}
-                alt={title}
-                selected={i.display}
-                onSelect={() => picker(i.id, !i.display)}
-              />
+                className="is-flex is-flex-direction-column is-align-items-center mx-2"
+              >
+                <ImagePicker
+                  src={i.image}
+                  alt={title}
+                  selected={i.display}
+                  onSelect={() => picker(i.id, !i.display)}
+                />
+              </div>
             ))}
           </div>
         </div>

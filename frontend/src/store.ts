@@ -5,7 +5,7 @@ import appReducer from "./reducers/appReducer";
 
 function saveState(state: Record<string, any>) {
   try {
-    localStorage.setItem("storeCache", JSON.stringify(state));
+    sessionStorage.setItem("storeCache", JSON.stringify(state));
   } catch (e) {
     console.warn(e);
   }
@@ -13,7 +13,7 @@ function saveState(state: Record<string, any>) {
 
 function loadState() {
   try {
-    const state = localStorage.getItem("storeCache");
+    const state = sessionStorage.getItem("storeCache");
     if (state == null) {
       return undefined;
     }

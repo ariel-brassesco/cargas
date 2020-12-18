@@ -10,7 +10,9 @@ from .views import (
     OrganolepticControlViewSet,
     ContainerOrderViewSet,
     CloseOrderViewSet,
-    ImageControlViewSet
+    ImageControlViewSet,
+    get_rows_photos,
+    get_control_photos
 )
 
 app_name = "orders"
@@ -79,4 +81,6 @@ urlpatterns = [
     path("inspector/", inspector_list),
     path("inspector/<int:pk>/", inspector_detail),
     path("client/", client_list),
+    path("client/control/", get_control_photos),
+    path("client/rows/", get_rows_photos),
 ]
