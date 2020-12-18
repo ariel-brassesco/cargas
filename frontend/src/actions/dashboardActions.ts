@@ -231,6 +231,30 @@ export const deleteOrder = (id: number) => async (dispatch: Dispatch) => {
   } catch (error) {}
 };
 
+/* INIT ORDER ACTIONS */
+export const updateInitOrderImage = (id: number, data) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const order = await http.patch(
+      `${apiRoutes.inspector_container}${id}/`,
+      data
+    );
+
+    return dispatch({ type: UPDATE_ORDER, payload: order });
+  } catch (error) {}
+};
+
+export const updateCloseOrderImage = (id: number, data) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    const order = await http.patch(`${apiRoutes.inspector_close}${id}/`, data);
+
+    return dispatch({ type: UPDATE_ORDER, payload: order });
+  } catch (error) {}
+};
+
 /* MANAGE ORDER ACTIONS */
 // Actions for Rows
 export const fetchRows = (id: number) => async (dispatch: Dispatch) => {

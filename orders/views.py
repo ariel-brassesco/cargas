@@ -446,6 +446,7 @@ class ImageControlViewSet(ModelViewSet):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_rows_photos(request):
     try:
         order = request.query_params.get("order")
@@ -457,6 +458,7 @@ def get_rows_photos(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_control_photos(request):
     try:
         order = request.query_params.get("order")

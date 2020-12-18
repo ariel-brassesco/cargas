@@ -1,6 +1,6 @@
 import React from "react";
 import { connect, DispatchProp } from "react-redux";
-import { withRouter, RouteComponentProps, Link } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { compose } from "redux";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
@@ -38,7 +38,6 @@ class LoginPage extends React.Component<Props> {
   };
 
   render() {
-    console.log(this.state.errorMsg);
     return (
       <section className="hero is-fullheight">
         <div className="hero-body">
@@ -83,9 +82,9 @@ class LoginPage extends React.Component<Props> {
                 </Formik>
               </div>
 
-              <p className="has-text-grey has-text-centered">
+              {/* <p className="has-text-grey has-text-centered">
                 <Link to="/forgot-password">Olvide mi Contraseña</Link>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
