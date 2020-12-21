@@ -30,9 +30,11 @@ urlpatterns = [
     path("orders/", include("orders.urls")),
     url(r"^api-token-auth/", obtain_jwt_token),
     url(r"^api-token-refresh/", refresh_jwt_token),
-    path("", index, name="index"),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [url(r"^.*", index, name="index"), ]
