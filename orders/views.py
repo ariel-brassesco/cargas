@@ -203,8 +203,8 @@ class TempControlViewSet(ModelViewSet):
         if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            if (not self.request.user.is_client):
-                permission_classes = [IsAuthenticated]
+            # if (not self.request.user.is_client):
+            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
@@ -260,8 +260,8 @@ class WeightControlViewSet(ModelViewSet):
         if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            if (not self.request.user.is_client):
-                permission_classes = [IsAuthenticated]
+            # if (not self.request.user.is_client):
+            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
@@ -457,13 +457,13 @@ def get_rows_photos(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def get_control_photos(request):
-    try:
-        order = request.query_params.get("order")
-        images = ImageControl.objects.filter(order__pk=order, display=True)
-        serializer = ImageControlSerializer(images, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+# @api_view(["GET"])
+# @permission_classes([IsAuthenticated])
+# def get_control_photos(request):
+#     try:
+#         order = request.query_params.get("order")
+#         images = ImageControl.objects.filter(order__pk=order, display=True)
+#         serializer = ImageControlSerializer(images, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+#     except:
+#         return Response(status=status.HTTP_400_BAD_REQUEST)

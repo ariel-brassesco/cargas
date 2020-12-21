@@ -78,4 +78,6 @@ export const apiRoutes = {
   client_orders: "/orders/client/",
   client_rows: "/orders/client/rows/",
   client_images: "/orders/client/control/",
+  client_temps: "/orders/client/temps/",
+  client_weights: "/orders/client/weights/",
 };
