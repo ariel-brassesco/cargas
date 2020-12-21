@@ -104,7 +104,7 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
               key={i[0]}
               button={
                 <Image
-                  className="image is-w-128 is-clickable m-2"
+                  className="image is-w-128 is-clickable m-2 m-2"
                   src={i[1]}
                   alt={i[0]}
                 />
@@ -123,7 +123,7 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
               key={i[0]}
               button={
                 <Image
-                  className="image is-w-128 is-clickable"
+                  className="image is-w-128 is-clickable m-2"
                   src={i[1]}
                   alt={i[0]}
                 />
@@ -148,7 +148,7 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
               key={r.id}
               button={
                 <Image
-                  className="image is-w-128 is-clickable"
+                  className="image is-w-128 is-clickable m-2"
                   src={r.image}
                   alt={`Fila #${r.number}`}
                 />
@@ -178,7 +178,7 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
               key={i.id}
               button={
                 <Image
-                  className="image is-w-128 is-clickable"
+                  className="image is-w-128 is-clickable m-2"
                   src={i.image}
                   alt={i.control}
                 />
@@ -198,16 +198,20 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
       </div>
       <p className="has-text-weight-bold is-size-3 mt-2">Datos Producto</p>
       <div className="is-flex is-justify-content-start is-flex-wrap-wrap mt-2">
-        <Table
-          className="table is-narrow is-bordered is-hoverable mr-4"
-          columns={temp_cols}
-          data={temps}
-        />
-        <Table
-          className="table is-narrow is-bordered is-hoverable"
-          columns={weight_cols}
-          data={weights}
-        />
+        {temps.length ? (
+          <Table
+            className="table is-narrow is-bordered is-hoverable mr-4"
+            columns={temp_cols}
+            data={temps}
+          />
+        ) : null}
+        {weights.length ? (
+          <Table
+            className="table is-narrow is-bordered is-hoverable"
+            columns={weight_cols}
+            data={weights}
+          />
+        ) : null}
       </div>
     </div>
   );
