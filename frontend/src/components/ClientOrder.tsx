@@ -21,7 +21,11 @@ export const ClientOrder: React.FC<Props> = ({ order }) => {
   return (
     <div className="card my-3">
       <header className="card-header has-background-grey-light">
-        <p className="card-header-title">Carga #{order.id}</p>
+        {order.order ? (
+          <p className="card-header-title">Número de Carga: {order.order}</p>
+        ) : (
+          <p className="card-header-title">Carga #{order.id}</p>
+        )}
         <span className="card-header-icon" aria-label="more options">
           <Link
             className="button is-success"

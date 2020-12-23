@@ -35,6 +35,7 @@ export interface FinalOrder {
 }
 
 export interface Order extends Base {
+  order: string;
   client: Client;
   inspector: Inspector;
   products: Product[];
@@ -58,6 +59,7 @@ export interface Order extends Base {
   status: string;
   initial: InitOrder[];
   final: FinalOrder[];
+  comment: string;
   is_active: boolean;
 }
 

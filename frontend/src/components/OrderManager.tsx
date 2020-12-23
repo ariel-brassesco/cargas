@@ -11,7 +11,7 @@ import {
 // Import Components
 import { ImagePicker } from "../components/ImagePicker";
 import {
-  EditOrderInitModal,
+  EditFieldOrderModal,
   EditRowModal,
   EditTemperatureModal,
   EditWeightModal,
@@ -22,6 +22,8 @@ import {
 import { Table, Column, Align } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
 import { Confirm } from "../components/Confirm";
+import { CommentField } from "./CommentField";
+import { EditOrderFinalModal } from "./modals/EditComponent";
 // Import Actions
 import {
   fetchRows,
@@ -32,6 +34,8 @@ import {
   updateRow,
   deleteRow,
   updateOrder,
+  initOrder,
+  closeOrder,
   createTemp,
   updateTemp,
   deleteTemp,
@@ -73,9 +77,9 @@ interface GDProps {
 }
 
 interface IDProps {
+  order: Order;
   title: string;
   initial?: InitOrder;
-  container?: string;
   handleEdit: (name: string) => (data: number | string) => void;
 }
 
@@ -181,6 +185,11 @@ const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
               ${dateInARFormat(order.date)} - 
               ${timeFromUTCToLocal(order.date, order.time_start)}`}
         />
+        <LabelData
+          label="Número de Carga:"
+          value={!!order.order ? order.order : "-"}
+          edit={handleEdit("order")}
+        />
         <LabelData label="Estado:" value={statusMap[order.status]} />
       </div>
       <div className="is-flex is-flex-direction-column is-align-content-flex-start">
@@ -210,16 +219,18 @@ const GeneralData: FC<GDProps> = ({ title, order, handleEdit }) => (
           edit={handleEdit("plant")}
         />
       </div>
+      <div className="is-flex is-flex-direction-column is-align-content-flex-start">
+        <CommentField
+          comment={order.comment ?? ""}
+          className="is-flex ml-2"
+          onOk={handleEdit("comment")}
+        />
+      </div>
     </div>
   </div>
 );
 
-const InitialData: FC<IDProps> = ({
-  title,
-  initial,
-  container,
-  handleEdit,
-}) => {
+const InitialData: FC<IDProps> = ({ order, title, initial, handleEdit }) => {
   const dispatch = useDispatch();
   const handleChangeImage = (data) =>
     !!initial && dispatch(updateInitOrderImage(initial?.id, data));
@@ -229,44 +240,63 @@ const InitialData: FC<IDProps> = ({
     ventilation: "Ventilación del Contenedor",
   };
 
+  const handleInitOrder = (data: FormData) => {
+    data.append("order", String(order.id));
+    dispatch(initOrder(data));
+  };
+
   return (
     <>
       <p className="title is-size-3">{title}</p>
       <LabelData
         label="Matrícula:"
-        value={container ?? ""}
+        value={order.container ?? ""}
         edit={handleEdit("container")}
       />
-      <div className="is-flex">
-        {Object.keys(images).map((img, idx) => (
-          <div key={idx} className="is-flex is-flex-direction-column mx-2">
-            <ModalTrigger
-              button={
-                <button className="button is-info my-2">{images[img]}</button>
-              }
-              modal={
-                <EditOrderInitModal
-                  name={img}
-                  type="file"
-                  label={images[img]}
-                  value={undefined}
-                  onOk={handleChangeImage}
-                />
-              }
+      {!initial ? (
+        <ModalTrigger
+          button={
+            <button className="button is-info my-2">Agregar Imágenes</button>
+          }
+          modal={
+            <EditOrderFinalModal
+              title="Inicio del Contenedor"
+              onOk={handleInitOrder}
             />
-            {!!initial && !!initial[img] ? (
-              <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
-                <ImagePicker
-                  src={initial[img]}
-                  alt={images[img]}
-                  selected={true}
-                />
-                <p className="has-text-weight-bold">{images[img]}</p>
-              </div>
-            ) : null}
-          </div>
-        ))}
-      </div>
+          }
+        />
+      ) : (
+        <div className="is-flex">
+          {Object.keys(images).map((img, idx) => (
+            <div key={idx} className="is-flex is-flex-direction-column mx-2">
+              <ModalTrigger
+                button={
+                  <button className="button is-info my-2">{images[img]}</button>
+                }
+                modal={
+                  <EditFieldOrderModal
+                    name={img}
+                    type="file"
+                    label={images[img]}
+                    value={undefined}
+                    onOk={handleChangeImage}
+                  />
+                }
+              />
+              {!!initial && !!initial[img] ? (
+                <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
+                  <ImagePicker
+                    src={initial[img]}
+                    alt={images[img]}
+                    selected={true}
+                  />
+                  <p className="has-text-weight-bold">{images[img]}</p>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
@@ -281,6 +311,12 @@ const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) => {
     close: "Contenedor Cerrado",
     precinto: "Precinto AFIP",
   };
+
+  const handleCloseOrder = (data: FormData) => {
+    data.append("order", String(order.id));
+    dispatch(closeOrder(data));
+  };
+
   return (
     <>
       <p className="title is-size-3 mt-2">{title}</p>
@@ -305,36 +341,50 @@ const CloseData: FC<CDProps> = ({ title, final, order, handleEdit }) => {
         value={order.net_weight ?? 0}
         edit={handleEdit("net_weight")}
       />
-      <div className="is-flex">
-        {Object.keys(images).map((img, idx) => (
-          <div key={idx} className="is-flex is-flex-direction-column mx-2">
-            <ModalTrigger
-              button={
-                <button className="button is-info my-2">{images[img]}</button>
-              }
-              modal={
-                <EditOrderInitModal
-                  name={img}
-                  type="file"
-                  label={images[img]}
-                  value={undefined}
-                  onOk={handleChangeImage}
-                />
-              }
+      {!final ? (
+        <ModalTrigger
+          button={
+            <button className="button is-info my-2">Agregar Imágenes</button>
+          }
+          modal={
+            <EditOrderFinalModal
+              title="Cierre del Contenedor"
+              onOk={handleCloseOrder}
             />
-            {!!final && !!final[img] ? (
-              <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
-                <ImagePicker
-                  src={final[img]}
-                  alt={images[img]}
-                  selected={true}
-                />
-                <p className="has-text-weight-bold">{images[img]}</p>
-              </div>
-            ) : null}
-          </div>
-        ))}
-      </div>
+          }
+        />
+      ) : (
+        <div className="is-flex">
+          {Object.keys(images).map((img, idx) => (
+            <div key={idx} className="is-flex is-flex-direction-column mx-2">
+              <ModalTrigger
+                button={
+                  <button className="button is-info my-2">{images[img]}</button>
+                }
+                modal={
+                  <EditFieldOrderModal
+                    name={img}
+                    type="file"
+                    label={images[img]}
+                    value={undefined}
+                    onOk={handleChangeImage}
+                  />
+                }
+              />
+              {!!final && !!final[img] ? (
+                <div className="is-flex is-flex-direction-column is-align-items-center mx-2">
+                  <ImagePicker
+                    src={final[img]}
+                    alt={images[img]}
+                    selected={true}
+                  />
+                  <p className="has-text-weight-bold">{images[img]}</p>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      )}
     </>
   );
 };
@@ -871,9 +921,9 @@ const OrderManager: React.FC<Props> = ({ order_id }) => {
       />
 
       <InitialData
+        order={order}
         title="Contenedor Inicial"
         initial={order.initial[0]}
-        container={order.container}
         handleEdit={handleEditOrder}
       />
 

@@ -28,6 +28,8 @@ export const FETCH_ORDERS = "FETCH_ORDERS";
 export const CREATE_ORDER = "CREATE_ORDER";
 export const UPDATE_ORDER = "UPDATE_ORDER";
 export const DELETE_ORDER = "DELETE_ORDER";
+export const INIT_ORDER_ADMIN = "INIT_ORDER_ADMIN";
+export const CLOSE_ORDER_ADMIN = "CLOSE_ORDER_ADMIN";
 export const FETCH_PRODUCTS = "FETCH_PRODUCTS";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
@@ -223,6 +225,27 @@ export const dashboardReducer: Reducer<State> = (
           ...state.orders,
           results:
             state.orders.results!.filter((o: Order) => o.id !== payload) ?? [],
+        },
+      };
+    case INIT_ORDER_ADMIN:
+      return {
+        ...state,
+        orders: {
+          ...state.orders,
+          results: state.orders.results?.map((o: Order) =>
+            o.id === payload.id ? payload : o
+          ),
+        },
+      };
+
+    case CLOSE_ORDER_ADMIN:
+      return {
+        ...state,
+        orders: {
+          ...state.orders,
+          results: state.orders.results?.map((o: Order) =>
+            o.id === payload.id ? payload : o
+          ),
         },
       };
     // MANAGE ORDER ACTIONS

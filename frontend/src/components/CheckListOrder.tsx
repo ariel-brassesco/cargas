@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // Import Components
 import { Image } from "./Common";
 import { ModalTrigger } from "./ModalTrigger";
-import { EditOrderInitModal } from "./modals/EditComponent";
+import { EditFieldOrderModal } from "./modals/EditComponent";
 // Import Icons
 import { CheckCircleIcon, TimesCircleIcon } from "./Icons";
 // Import Getters
@@ -91,7 +91,7 @@ const CheckerModal: React.FC<CheckerProps> = ({
               </span>
             }
             modal={
-              <EditOrderInitModal
+              <EditFieldOrderModal
                 label={labelOk}
                 value={value}
                 name={name}

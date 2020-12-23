@@ -25,6 +25,7 @@ class Order(models.Model):
         ("ready", "ready")
     ]
 
+    order = models.CharField(max_length=100, default="")
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     inspector = models.ForeignKey(Inspector, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product)

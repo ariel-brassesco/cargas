@@ -24,7 +24,7 @@ type Props = {
 };
 
 export const CardOrder: React.FC<Props> = ({ order }) => {
-  const [show, setDisplay] = useState(false);
+  const [show, setDisplay] = useState(true);
 
   const handleDisplay = () => setDisplay(!show);
 

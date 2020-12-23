@@ -17,6 +17,8 @@ import {
   CREATE_ORDER,
   UPDATE_ORDER,
   DELETE_ORDER,
+  INIT_ORDER_ADMIN,
+  CLOSE_ORDER_ADMIN,
   FETCH_PRODUCTS,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
@@ -232,6 +234,28 @@ export const deleteOrder = (id: number) => async (dispatch: Dispatch) => {
 };
 
 /* INIT ORDER ACTIONS */
+export const initOrder = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    await http.post(apiRoutes.container_init, data);
+    const order = await http.get(`${apiRoutes.orders_data}${data.order}/`);
+
+    return dispatch({ type: INIT_ORDER_ADMIN, payload: order });
+  } catch (error) {}
+};
+
+export const closeOrder = (data: Record<string, any>) => async (
+  dispatch: Dispatch
+) => {
+  try {
+    await http.post(apiRoutes.container_close, data);
+    const order = await http.get(`${apiRoutes.orders_data}${data.order}/`);
+
+    return dispatch({ type: CLOSE_ORDER_ADMIN, payload: order });
+  } catch (error) {}
+};
+
 export const updateInitOrderImage = (id: number, data) => async (
   dispatch: Dispatch
 ) => {

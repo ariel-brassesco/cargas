@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes, action
@@ -5,6 +6,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
+from django.conf import settings
 
 from .serializers import (
     OrderSerializer,
@@ -145,10 +147,13 @@ class ClientOrderViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         if not request.query_params.get("client"):
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        # Set date to retreive orders
+        delta_days = datetime.timedelta(days=settings.DAYS_ALLOW_CLIENT_ORDER)
+        date = datetime.datetime.now() - delta_days
 
         queryset = self.filter_queryset(
             self.get_queryset()
-        ).filter(client__pk=request.query_params.get("client"))
+        ).filter(client__pk=request.query_params.get("client"), date__gt=date)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -396,7 +401,7 @@ class CloseOrderViewSet(ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == "destroy":
+        if self.action in ("create", "destroy"):
             permission_classes = [IsAdminUser]
         else:
             if (not self.request.user.is_client):

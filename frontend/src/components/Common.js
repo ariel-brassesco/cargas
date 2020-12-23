@@ -86,7 +86,7 @@ export const CustomField = ({ field, form: { touched, errors }, ...props }) => (
       {props.type === "textarea" ? (
         <textarea
           type="text"
-          className="input is-medium form-comment"
+          className="textarea is-medium form-comment"
           {...field}
           {...props}
         ></textarea>

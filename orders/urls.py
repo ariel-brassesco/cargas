@@ -12,7 +12,6 @@ from .views import (
     CloseOrderViewSet,
     ImageControlViewSet,
     get_rows_photos,
-    # get_control_photos
 )
 
 app_name = "orders"
@@ -52,8 +51,10 @@ measures_list = OrganolepticControlViewSet.as_view(
 
 rows_detail = RowOrderViewSet.as_view(
     {"patch": "partial_update", "delete": "destroy"})
-container_detail = ContainerOrderViewSet.as_view({"patch": "partial_update"})
-close_container_detail = CloseOrderViewSet.as_view({"patch": "partial_update"})
+container_detail = ContainerOrderViewSet.as_view(
+    {"post": "create", "patch": "partial_update"})
+close_container_detail = CloseOrderViewSet.as_view(
+    {"post": "create",  "patch": "partial_update"})
 
 images_list = ImageControlViewSet.as_view({"get": "list"})
 images_detail = ImageControlViewSet.as_view({"patch": "partial_update"})
@@ -66,6 +67,8 @@ urlpatterns = [
     path("admin/temps/", temps_list),
     path("admin/weights/", weights_list),
     path("admin/measures/", measures_list),
+    path("admin/init/", container_detail),
+    path("admin/close/", close_container_detail),
     path("admin/", order_list),
     path("admin/<int:pk>/", order_detail),
     path("products/", product_list),

@@ -70,11 +70,13 @@ class DashboardOrdersPage extends React.Component<Props, State> {
   private columns: Column[] = [
     {
       key: "id",
-      title: "#",
+      title: "Carga",
       align: Align.right,
       width: 50,
       render: (order: Order) => (
-        <Link to={`${ORDER_MANAGE}/${order.id}`}>{order.id}</Link>
+        <Link to={`${ORDER_MANAGE}/${order.id}`}>
+          {!!order.order ? order.order : order.id}
+        </Link>
       ),
     },
     {
@@ -175,10 +177,6 @@ class DashboardOrdersPage extends React.Component<Props, State> {
 
   private handleUpdateOrder = (order: Order) => (data: Record<string, any>) =>
     this.props.dispatch(updateOrder(order.id, data));
-
-  // private handleChangeStatus = (id: number, status: string) => () => {
-  //   this.props.dispatch(updateOrder(id, { status }));
-  // };
 
   private handleDeleteOrder = (id: number) => () => {
     this.props.dispatch(deleteOrder(id));

@@ -16,6 +16,7 @@ import {
 } from "../services/datetime";
 
 type Values = {
+  order: string;
   client: string;
   inspector: string;
   products: number[];
@@ -59,6 +60,7 @@ export const EditOrder: FC<Props> = ({
   return (
     <Formik<Values>
       initialValues={{
+        order: order?.order ?? "",
         client: String(order?.client.user.id ?? ""),
         inspector: String(order?.inspector.user.id ?? ""),
         products: order?.products.map((p) => p.id) ?? [],
@@ -183,15 +185,22 @@ export const EditOrder: FC<Props> = ({
               <Field name="plant" label="Planta" component={CustomField} />
             </div>
           </div>
-
-          <Field name="status" label="Estado" component={CustomSelect}>
-            {Object.entries(statusMap).map((s) => (
-              <option value={s[0]} key={s[0]}>
-                {s[1]}
-              </option>
-            ))}
-          </Field>
-
+          <div className="field is-horizontal">
+            <div className="field-body">
+              <Field
+                name="order"
+                label="Número de Carga"
+                component={CustomField}
+              />
+              <Field name="status" label="Estado" component={CustomSelect}>
+                {Object.entries(statusMap).map((s) => (
+                  <option value={s[0]} key={s[0]}>
+                    {s[1]}
+                  </option>
+                ))}
+              </Field>
+            </div>
+          </div>
           <div className="buttons">
             <button
               className="button is-danger"

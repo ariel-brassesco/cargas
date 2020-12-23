@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 // Import Components
-import { CustomFieldHorizontal } from "../components/Common";
+import { CustomFieldHorizontal, CustomField } from "../components/Common";
 import { FileField } from "../components/FormsComponents";
 import { Thumb } from "../components/Thumb";
 // Import Types
@@ -34,11 +34,12 @@ interface Values {
   semi_close: File | undefined;
   close: File | undefined;
   precinto: File | undefined;
+  comment: string;
 }
 
 const validationSchema = Yup.object().shape({
   seal: Yup.string(),
-  // full: Yup.mixed().required("Imagen Requerida"),
+  full: Yup.mixed().required("Imagen Requerida"),
   semi_close: Yup.mixed(),
   close: Yup.mixed(),
   precinto: Yup.mixed(),
@@ -61,13 +62,14 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
       initialValues={{
         ...boxNames,
         lot: order.lot ? order.lot.split(",") : [""],
-        net_weight: order.net_weight ?? 0,
-        gross_weight: order.gross_weight ?? 0,
+        net_weight: !!order.net_weight ? order.net_weight : "",
+        gross_weight: !!order.gross_weight ? order.gross_weight : "",
         seal: order.seal ?? "",
         full: undefined,
         semi_close: undefined,
         close: undefined,
         precinto: undefined,
+        comment: order.comment ?? "",
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
@@ -231,6 +233,13 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
               </FileField>
             )}
           </Field>
+
+          <Field
+            type="textarea"
+            name="comment"
+            label="Comentario"
+            component={CustomField}
+          />
 
           <div className="buttons is-justify-content-space-evenly">
             <button

@@ -46,6 +46,19 @@ type ProductValues = {
   name: string;
 };
 
+interface InitOrderValues {
+  empty: any | undefined;
+  matricula: File | undefined;
+  ventilation: File | undefined;
+}
+
+interface CloseOrderValues {
+  full: File | undefined;
+  semi_close: File | undefined;
+  close: File | undefined;
+  precinto: File | undefined;
+}
+
 type RowValues = {
   number: number;
   product: string;
@@ -87,11 +100,21 @@ type PropsProduct = {
   onOk: (product: any) => void;
 };
 
-type PropsOrderInit = {
+type PropsFieldOrder = {
   name: string;
   type: string;
   value: any;
   label?: string;
+  onOk: (data: any) => void;
+};
+
+type PropsOrderInit = {
+  title: string;
+  onOk: (data: any) => void;
+};
+
+type PropsOrderFinal = {
+  title: string;
   onOk: (data: any) => void;
 };
 
@@ -308,7 +331,7 @@ export const EditProductModal: FC<PropsProduct> = ({
   );
 };
 
-export const EditOrderInitModal: FC<PropsOrderInit> = ({
+export const EditFieldOrderModal: FC<PropsFieldOrder> = ({
   name,
   type,
   value,
@@ -357,6 +380,174 @@ export const EditOrderInitModal: FC<PropsOrderInit> = ({
                 component={CustomFieldHorizontal}
               />
             )}
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditOrderInitModal: FC<PropsOrderInit> = ({
+  title,
+  onOk,
+  ...props
+}) => {
+  const validationSchema = Yup.object().shape({
+    empty: Yup.mixed().required("Imagen Requerida"),
+    matricula: Yup.mixed().required("Imagen requerido"),
+    ventilation: Yup.mixed(),
+  });
+  return (
+    <Formik<InitOrderValues>
+      initialValues={{
+        empty: undefined,
+        matricula: undefined,
+        ventilation: undefined,
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const form = new FormData();
+        // Append the images
+        Object.entries(values).forEach((i) => {
+          if (i[1]) {
+            form.append(...i);
+          }
+        });
+        await onOk(form);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue }) => (
+        <Modal {...props} title={title} okLabel="Guardar" onOk={handleSubmit}>
+          <Form>
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Contenedor Vacío"
+                  onChange={(value: any) => setFieldValue("empty", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Matricula"
+                  onChange={(value: any) => setFieldValue("matricula", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Ventilación (optional)"
+                  onChange={(value: any) => setFieldValue("ventilation", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+          </Form>
+        </Modal>
+      )}
+    </Formik>
+  );
+};
+
+export const EditOrderFinalModal: FC<PropsOrderFinal> = ({
+  title,
+  onOk,
+  ...props
+}) => {
+  const validationSchema = Yup.object().shape({
+    full: Yup.mixed().required("Imagen Requerida"),
+    semi_close: Yup.mixed(),
+    close: Yup.mixed(),
+    precinto: Yup.mixed(),
+  });
+  return (
+    <Formik<CloseOrderValues>
+      initialValues={{
+        full: undefined,
+        semi_close: undefined,
+        close: undefined,
+        precinto: undefined,
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const form = new FormData();
+        // Append the images
+        Object.entries(values).forEach((i) => {
+          if (i[1]) {
+            form.append(...i);
+          }
+        });
+        await onOk(form);
+        setSubmitting(false);
+      }}
+    >
+      {({ handleSubmit, setFieldValue }) => (
+        <Modal {...props} title={title} okLabel="Guardar" onOk={handleSubmit}>
+          <Form>
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Contenedor Lleno"
+                  onChange={(value: any) => setFieldValue("full", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Contenedor Semi-Cerrado"
+                  onChange={(value: any) => setFieldValue("semi_close", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Contenedor Cerrado"
+                  onChange={(value: any) => setFieldValue("close", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
+            <Field>
+              {(props: any) => (
+                <FileField
+                  label="Precinto AFIP"
+                  onChange={(value: any) => setFieldValue("precinto", value)}
+                  accept="image/*"
+                  {...props}
+                >
+                  <Thumb />
+                </FileField>
+              )}
+            </Field>
           </Form>
         </Modal>
       )}
