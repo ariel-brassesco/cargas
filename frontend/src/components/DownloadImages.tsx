@@ -34,6 +34,7 @@ export const DownloadImages: FC<Props> = ({ images, label, folder }) => {
     );
 
     if (!imagesBlob.filter(Boolean).length) {
+      setDownloading(false);
       return;
     }
     const imagesFile = imagesBlob.map((blob, idx) =>
