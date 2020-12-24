@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.getenv('DEBUG', 'true') == 'true'
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'true') == 'true'
+# DEBUG = False
 
 # Import development settings or production settings
 if DEBUG:
@@ -154,9 +154,7 @@ STATICFILES_DIRS = [
 DEFAULT_FILE_STORAGE = ('django.core.files.storage.FileSystemStorage'
                         if DEBUG else 'gdstorage.storage.GoogleDriveStorage')
 
-CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "https://cargas-ar.herokuapp.com",
-    "https://drive.google.com/",
 ]

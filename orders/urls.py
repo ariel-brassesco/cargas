@@ -12,6 +12,7 @@ from .views import (
     CloseOrderViewSet,
     ImageControlViewSet,
     get_rows_photos,
+    download_images,
 )
 
 app_name = "orders"
@@ -88,4 +89,5 @@ urlpatterns = [
     path("client/rows/", get_rows_photos),
     path("client/temps/", temps_list),
     path("client/weights/", weights_list),
+    path("download/", download_images),
 ]

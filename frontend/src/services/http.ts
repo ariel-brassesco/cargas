@@ -55,6 +55,7 @@ export const http = new Http();
 export const apiRoutes = {
   login: "/api-token-auth/",
   me: "/accounts/me",
+  download_images: "/orders/download/",
   clients_data: "/accounts/clients/",
   inspectors_data: "accounts/inspectors/",
   validate_username: "/accounts/validate_username/",

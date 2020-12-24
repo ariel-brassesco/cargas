@@ -6,7 +6,15 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
+from django.http import HttpResponse
 from django.conf import settings
+from .utils import (
+    get_files_from_init,
+    get_files_from_final,
+    get_files_from_rows,
+    get_files_from_control,
+    save_files_zip
+)
 
 from .serializers import (
     OrderSerializer,
@@ -462,13 +470,46 @@ def get_rows_photos(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(["GET"])
-# @permission_classes([IsAuthenticated])
-# def get_control_photos(request):
-#     try:
-#         order = request.query_params.get("order")
-#         images = ImageControl.objects.filter(order__pk=order, display=True)
-#         serializer = ImageControlSerializer(images, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-#     except:
-#         return Response(status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def download_images(request):
+    from zipfile38 import ZipFile
+
+    order_id = request.query_params.get("order")
+    order = Order.objects.get(id=order_id)
+
+    rows = RowOrder.objects.filter(order__pk=order_id, display=True)
+    images = ImageControl.objects.filter(order__pk=order_id, display=True)
+    initial = ContainerOrder.objects.filter(order__pk=order_id).first()
+    final = CloseOrder.objects.filter(order__pk=order_id).first()
+
+    zip_name = f"{order.order}.zip" if order.order else f"Carga_{order.id}.zip"
+    response = HttpResponse(content_type='application/zip')
+    # response = Response(content_type='application/zip')
+    with ZipFile(response, "w") as zip_file:
+        if initial:
+            files = get_files_from_init(initial)
+            save_files_zip(zip_file, files)
+
+        if final:
+            files = get_files_from_final(final)
+            save_files_zip(zip_file, files)
+        if rows.exists():
+            files = get_files_from_rows(rows)
+            save_files_zip(zip_file, files)
+        if images.exists():
+            files = get_files_from_control(images)
+            save_files_zip(zip_file, files)
+
+    # zip_file = ZipFile(zip_name, "r")
+    # response = Response(
+    #     data=zip_file.read(zip_name),
+    #     status=status.HTTP_200_OK,
+    #     content_type='application/zip'
+    # )
+    # response.status_code = status.HTTP_200_OK
+    response['Content-Disposition'] = f'attachment; filename={zip_name}'
+
+    return response
+
+    # return Response(status=status.HTTP_400_BAD_REQUEST)

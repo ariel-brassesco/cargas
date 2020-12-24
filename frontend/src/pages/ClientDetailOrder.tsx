@@ -32,13 +32,6 @@ import { Row } from "../types/row";
 import { ImageControl } from "../types/images";
 // Import Routes
 import { PROFILE_CLIENT } from "../routes";
-// Import Utils
-import {
-  getImageDataFromInitial,
-  getImageDataFromFinal,
-  getImageDataFromRows,
-  getImageDataFromControl,
-} from "../services/utils";
 
 type Props = {
   order: Order;
@@ -63,13 +56,6 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
   const final = !!order.final
     ? pick(order.final[0], ["full", "close", "semi_close", "precinto"])
     : {};
-
-  const imgDownload = () => [
-    ...getImageDataFromInitial(order.initial[0]),
-    ...getImageDataFromFinal(order.final[0]),
-    ...getImageDataFromRows(rows),
-    ...getImageDataFromControl(images),
-  ];
 
   const temp_headers = [
     { label: "Fila", key: "row" },
@@ -126,8 +112,8 @@ const ClientOrderDetail: React.FC<Props> = ({ order }) => {
         <div className="is-flex-grow-1" />
         <DownloadImages
           label="Descargar Imágenes"
-          folder={order.order || `Carga_${order.id}`}
-          images={imgDownload()}
+          order={order.id}
+          filename={order.order || `Carga_${order.id}`}
         />
         <Link to={PROFILE_CLIENT} className="button is-warning mx-2">
           <FontAwesomeIcon icon={faUndo} />

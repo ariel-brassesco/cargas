@@ -1,8 +1,9 @@
 import React, { FC, useState } from "react";
-import JSZip from "jszip";
+import { toast } from "react-toastify";
 import { saveAs } from "file-saver";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
+import { http, apiRoutes } from "../services/http";
 
 export interface ImageData {
   url: string;
@@ -11,55 +12,29 @@ export interface ImageData {
 }
 
 type Props = {
-  images: ImageData[];
+  filename: string;
+  order: string | number;
   label?: string;
-  folder: string;
 };
 
-export const DownloadImages: FC<Props> = ({ images, label, folder }) => {
+export const DownloadImages: FC<Props> = ({ filename, order, label }) => {
   const [downloading, setDownloading] = useState(false);
   const download = async () => {
     setDownloading(true);
-    if (!images[0]) {
-      setDownloading(false);
-      return;
+    try {
+      const file = await http.get(
+        `${apiRoutes.download_images}?order=${order}`,
+        { responseType: "arraybuffer" }
+      );
+      toast.success("Descarga Exitosa!!");
+      const name =
+        filename.split(".").pop() !== "zip" ? `${filename}.zip` : filename;
+
+      saveAs(new File([file], filename), name);
+    } catch (error) {
+      toast.error("Algo salió mal. Inténtalo de nuevo.");
     }
-    // Fetch the image and parse the response stream as a blob
-    const imagesBlob = await Promise.all(
-      images.map((image) =>
-        fetch(image.url)
-          .then((res) => res.blob())
-          .catch((err) => console.error(err))
-      )
-    );
 
-    if (!imagesBlob.filter(Boolean).length) {
-      setDownloading(false);
-      return;
-    }
-    const imagesFile = imagesBlob.map((blob, idx) =>
-      !!blob ? new File([blob], images[idx].filename) : null
-    );
-
-    const zip = new JSZip();
-    const zip_folder = zip.folder(folder);
-
-    if (zip_folder) {
-      /* Add the images to the folder */
-      imagesFile.forEach((file, idx) => {
-        if (!!file) {
-          let filename = !!images[idx].folder
-            ? `${images[idx].folder}/${images[idx].filename}`
-            : images[idx].filename;
-          zip_folder.file(filename, file);
-        }
-      });
-
-      /* Generate a zip file asynchronously and trigger the download */
-      await zip_folder
-        .generateAsync({ type: "blob" })
-        .then((content) => saveAs(content, folder));
-    }
     setDownloading(false);
   };
 
