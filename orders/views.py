@@ -501,15 +501,5 @@ def download_images(request):
             files = get_files_from_control(images)
             save_files_zip(zip_file, files)
 
-    # zip_file = ZipFile(zip_name, "r")
-    # response = Response(
-    #     data=zip_file.read(zip_name),
-    #     status=status.HTTP_200_OK,
-    #     content_type='application/zip'
-    # )
-    # response.status_code = status.HTTP_200_OK
     response['Content-Disposition'] = f'attachment; filename={zip_name}'
-
     return response
-
-    # return Response(status=status.HTTP_400_BAD_REQUEST)

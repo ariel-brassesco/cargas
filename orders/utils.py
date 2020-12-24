@@ -21,7 +21,7 @@ def get_files_from_final(close_order):
 def get_files_from_rows(rows):
     return [
         {
-            "filename": f"filas/${row.number}/image_product_${row.product.id}.jpeg",
+            "filename": f"filas/{row.number}/image_product_{row.product.id}.jpeg",
             "file": getattr(row, "image")
         } for row in rows
     ]
@@ -30,7 +30,7 @@ def get_files_from_rows(rows):
 def get_files_from_control(controls):
     return [
         {
-            "filename": f"producto/${control.control}/${control.number}/image_${control.id}.jpeg",
+            "filename": f"producto/${control.control}/{control.number}/image_{control.id}.jpeg",
             "file": getattr(control, "image")
         } for control in controls
     ]
