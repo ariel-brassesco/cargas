@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 // Import Components
 import { LabelData, LotData } from "./OrderManager";
+import { Comment } from "./CommentField";
 // Import Services
 import { dateInARFormat, timeFromUTCToLocal } from "../services/datetime";
 // Import Types
@@ -79,6 +80,11 @@ export const ClientOrder: React.FC<Props> = ({ order }) => {
             <LabelData label="Cajas Totales:" value={order.boxes ?? "-"} />
           </div>
         </div>
+        <Comment
+          className="is-flex is-flex-direction-column is-w-600 mx-5"
+          label="Comentarios:"
+          comment={order.comment ?? ""}
+        />
       </div>
     </div>
   );

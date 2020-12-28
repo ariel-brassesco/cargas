@@ -7,13 +7,16 @@ type Props = {
 
 export const ModalTrigger: FC<Props> = ({ button, modal }) => {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openModal = useCallback(() => setOpen(true), [setOpen]);
   const handleOk = useCallback(
     async (...args: any[]) => {
       if (typeof modal.props.onOk === "function") {
+        setLoading(true);
         await modal.props.onOk(...args);
         setOpen(false);
+        setLoading(false);
       }
     },
     [modal.props]
@@ -26,6 +29,7 @@ export const ModalTrigger: FC<Props> = ({ button, modal }) => {
         {...modal.props}
         open={open}
         onOpenChange={setOpen}
+        loading={loading}
         onOk={handleOk}
       />
     </>

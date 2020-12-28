@@ -57,3 +57,16 @@ export const CommentField: FC<Props> = ({
     </Formik>
   );
 };
+
+type CommentProps = {
+  comment?: string;
+  label?: string;
+  className?: string;
+};
+
+export const Comment: FC<CommentProps> = ({ label, comment, className }) => (
+  <p className={className}>
+    <span className="has-text-weight-bold">{label}</span>
+    <span>{comment}</span>
+  </p>
+);
