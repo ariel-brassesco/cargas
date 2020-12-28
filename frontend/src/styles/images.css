@@ -5,3 +5,7 @@
 .is-w-90p {
   max-width: 90%;
 }
+
+.is-w-600 {
+  max-width: 600px;
+}

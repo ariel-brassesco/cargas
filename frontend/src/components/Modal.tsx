@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback } from "react";
 
 type Props = {
+  loading?: boolean;
   open?: boolean;
   onOpenChange?: Function;
   title?: ReactNode;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 export const Modal: React.FC<Props> = ({
+  loading,
   open,
   onOpenChange,
   title,
@@ -46,7 +48,11 @@ export const Modal: React.FC<Props> = ({
           )}
 
           {!!okLabel && (
-            <button className="button is-success" onClick={onOk}>
+            <button
+              className={`button is-success ${loading ? "is-loading" : ""}`}
+              disabled={loading}
+              onClick={onOk}
+            >
               {okLabel}
             </button>
           )}
