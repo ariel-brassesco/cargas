@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
@@ -47,6 +47,7 @@ const InspectorStartOrder: React.FC<Props> = ({ order, onOk }) => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true);
         const form = new FormData();
         Object.entries(values).forEach((i) => {
           if (i[1]) form.append(...i);

@@ -37,9 +37,9 @@ const InspectorProfile: React.FC = () => {
 
   const handleLogout = useCallback(() => dispatch(logout()), [dispatch]);
 
-  const handleInitOrder = (order: number) => (data: FormData) => {
+  const handleInitOrder = (order: number) => async (data: FormData) => {
     data.append("order", String(order));
-    dispatch(initOrder(data));
+    await dispatch(initOrder(data));
   };
 
   const { first_name, last_name } = account;
