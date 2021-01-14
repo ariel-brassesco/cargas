@@ -73,6 +73,7 @@ const FormCloseOrder: React.FC<Props> = ({ order, backUrl, okUrl, onOk }) => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true);
         const form = new FormData();
         // Append the order id and all the values in FormData
         form.append("order", String(order.id));
