@@ -64,7 +64,8 @@ export const logout = () => (dispatch: Dispatch) => {
   try {
     http.setAuth("");
     //Remove Token in localStorage
-    localStorage.removeItem("token");
+    window.localStorage.clear();
+    window.sessionStorage.clear();
   } catch (error) {}
   return dispatch({ type: DASHBOARD_LOGOUT });
 };

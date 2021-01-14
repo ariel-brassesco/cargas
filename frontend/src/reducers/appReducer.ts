@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { dashboardReducer } from "./dashboardReducer";
+import { dashboardReducer, DASHBOARD_LOGOUT } from "./dashboardReducer";
 import { inspectorReducer } from "./inspectorReducer";
 import { clientReducer } from "./clientReducer";
 
@@ -9,4 +9,8 @@ const appReducer = combineReducers({
   client: clientReducer,
 });
 
-export default appReducer;
+//Reset the reducer when user logout
+const rootReducer = (state, action) =>
+  appReducer(action.type === DASHBOARD_LOGOUT ? undefined : state, action);
+
+export default rootReducer;
