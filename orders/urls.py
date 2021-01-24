@@ -45,13 +45,22 @@ inspector_detail = InspectorOrderViewSet.as_view({"patch": "partial_update"})
 client_list = ClientOrderViewSet.as_view({"get": "list"})
 
 rows_list = RowOrderViewSet.as_view({"get": "list", "post": "create"})
-temps_list = TempControlViewSet.as_view({"get": "list", "post": "create"})
-weights_list = WeightControlViewSet.as_view({"get": "list", "post": "create"})
-measures_list = OrganolepticControlViewSet.as_view(
-    {"get": "list", "post": "create"})
-
 rows_detail = RowOrderViewSet.as_view(
     {"patch": "partial_update", "delete": "destroy"})
+
+temps_list = TempControlViewSet.as_view({"get": "list", "post": "create"})
+temps_detail = TempControlViewSet.as_view(
+    {"patch": "partial_update", "delete": "destroy"})
+
+weights_list = WeightControlViewSet.as_view({"get": "list", "post": "create"})
+weights_detail = WeightControlViewSet.as_view(
+    {"patch": "partial_update", "delete": "destroy"})
+
+measures_list = OrganolepticControlViewSet.as_view(
+    {"get": "list", "post": "create"})
+measures_detail = OrganolepticControlViewSet.as_view(
+    {"patch": "partial_update", "delete": "destroy"})
+
 container_detail = ContainerOrderViewSet.as_view(
     {"post": "create", "patch": "partial_update"})
 close_container_detail = CloseOrderViewSet.as_view(
@@ -66,8 +75,11 @@ urlpatterns = [
     path("admin/rows/", rows_list),
     path("admin/rows/<int:pk>/", rows_detail),
     path("admin/temps/", temps_list),
+    path("admin/temps/<int:pk>/", temps_detail),
     path("admin/weights/", weights_list),
+    path("admin/weights/<int:pk>/", weights_detail),
     path("admin/measures/", measures_list),
+    path("admin/measures/<int:pk>/", measures_detail),
     path("admin/init/", container_detail),
     path("admin/close/", close_container_detail),
     path("admin/", order_list),
