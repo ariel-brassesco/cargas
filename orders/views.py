@@ -1,10 +1,8 @@
 import datetime
 from rest_framework import status
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView
 from rest_framework.viewsets import ModelViewSet
 from django.http import HttpResponse
 from django.conf import settings
@@ -38,8 +36,6 @@ from .models import (
     OrganolepticControl,
     ImageControl
 )
-from registration.models import Client, Inspector
-from registration.serializers import ClientSerializer, InspectorSerializer
 from .pagination import OrdersPagination
 # Create your views here.
 

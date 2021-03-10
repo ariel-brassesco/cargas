@@ -18,6 +18,7 @@ import {
   EditMeasureModal,
   EditLabel,
   EditLot,
+  EditOrderInitModal,
 } from "../components/modals/EditComponent";
 import { Table, Column, Align } from "../components/Table";
 import { ModalTrigger } from "../components/ModalTrigger";
@@ -259,7 +260,7 @@ const InitialData: FC<IDProps> = ({ order, title, initial, handleEdit }) => {
             <button className="button is-info my-2">Agregar Imágenes</button>
           }
           modal={
-            <EditOrderFinalModal
+            <EditOrderInitModal
               title="Inicio del Contenedor"
               onOk={handleInitOrder}
             />

@@ -7,10 +7,10 @@ import dotenv
 
 def main():
     try:
-        dotenv.read_dotenv()
+        dotenv.load_dotenv()
     except Exception as e:
         print('no .env file, using default os env')
-    
+
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cargas.settings')
     try:
