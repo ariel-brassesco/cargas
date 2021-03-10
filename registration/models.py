@@ -1,24 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinLengthValidator, MaxLengthValidator, RegexValidator
+from django.core.validators import RegexValidator
 
-from cargas.settings import MAX_PHONE_LENGTH
+from cargas.settings import MAX_PHONE_LENGTH, PASSWORD_RESET_TIMEOUT
 
 import secrets
 import datetime
 import string
 import random
 # Create your models here.
+
+
 class Address(models.Model):
     address = models.CharField(max_length=100)
     lat = models.DecimalField(max_digits=9, decimal_places=7, default=0)
-    lon= models.DecimalField(max_digits=9, decimal_places=7, default=0)
+    lon = models.DecimalField(max_digits=9, decimal_places=7, default=0)
     elev = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+
     class Meta:
         verbose_name_plural = "Address"
 
     def __str__(self):
         return self.address
+
 
 class User(AbstractUser):
     '''
@@ -33,18 +37,22 @@ class User(AbstractUser):
     token_valid = models.BooleanField(default=True)
 
     def user_type(self):
-        if self.is_superuser: return 'IS_SUPERUSER'
-        if self.is_staff: return 'IS_STAFF'
-        if self.is_inspector: return 'IS_INSPECTOR'
-        if self.is_client: return 'IS_CLIENT'
+        if self.is_superuser:
+            return 'IS_SUPERUSER'
+        if self.is_staff:
+            return 'IS_STAFF'
+        if self.is_inspector:
+            return 'IS_INSPECTOR'
+        if self.is_client:
+            return 'IS_CLIENT'
         raise TypeError('The User has no type.')
-    
+
     def gen_password(self):
         # Random string with the combination of lower and upper case
         letters = string.ascii_letters
         password = ''.join(random.choice(letters) for i in range(10))
         return password
-    
+
     def send_credentials(self):
         password = self.gen_password()
         self.set_password(password)
@@ -74,7 +82,7 @@ class User(AbstractUser):
 
         # Return True if the token is correct and is_valid
         res = (token == self.token) and self.token_valid
-        
+
         # Set the token invalid
         self.token_valid = False
 
@@ -89,30 +97,36 @@ class User(AbstractUser):
         self.token_valid = True
         super(User, self).save(*args, **kwargs)
 
+
 class Inspector(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
     phone = models.CharField(
         max_length=MAX_PHONE_LENGTH,
         validators=[RegexValidator(regex=r'^\d+$')])
-    address = models.ForeignKey(Address, blank=True, null=True, on_delete=models.CASCADE)
+    address = models.ForeignKey(
+        Address, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
-    
+
     def perform_delete(self):
         if not (self.user.is_staff or self.user.is_superuser):
             self.user.delete()
 
+
 class Client(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
     company = models.CharField(max_length=50)
     phone = models.CharField(
         max_length=MAX_PHONE_LENGTH,
         validators=[RegexValidator(regex=r'^\d+$')])
-    address = models.ForeignKey(Address, blank=True, null=True, on_delete=models.CASCADE)
-    
+    address = models.ForeignKey(
+        Address, blank=True, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.company
-    
+
     def perform_delete(self):
         self.user.delete()

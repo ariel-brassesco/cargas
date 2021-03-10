@@ -13,7 +13,8 @@ import dotenv
 from django.core.wsgi import get_wsgi_application
 
 try:
-    dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+    dotenv.load_dotenv(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)), '.env'))
 except Exception as e:
     print('no .env file, using default os env')
 
