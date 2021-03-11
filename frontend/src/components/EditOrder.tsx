@@ -55,6 +55,11 @@ export const EditOrder: FC<Props> = ({
     products: Yup.array().required("Campo Requerido"),
     date: Yup.date().required("Campo requerido"),
     booking: Yup.string().required("Campo requerido"),
+    origin: Yup.string().required("Campo requerido"),
+    discharge: Yup.string().required("Campo requerido"),
+    vessel_name: Yup.string().required("Campo requerido"),
+    plant: Yup.string().required("Campo requerido"),
+    order: Yup.string().required("Campo requerido"),
   });
 
   return (

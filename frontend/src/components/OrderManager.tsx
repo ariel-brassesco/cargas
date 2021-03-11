@@ -477,7 +477,7 @@ const RowsData: FC<RProps> = ({
       : { ...a, [name]: c.quantity };
   }, {});
 
-  return !rows.length ? null : (
+  return (
     <>
       <p className="title is-size-3">{title}</p>
       <LabelData label="Número de Filas:" value={maxRow} />
@@ -650,7 +650,7 @@ const TempData: FC<CProps> = ({
       ) : null}
 
       {data.map((t) =>
-        !t.images.length ? (
+        !!t.images.length ? (
           <div key={`temp-${t.id}`} className="mb-4">
             <LabelData label="Fila:" value={t.row} />
             <div className="is-flex is-flex-wrap-wrap">
