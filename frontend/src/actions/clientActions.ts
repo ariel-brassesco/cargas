@@ -8,7 +8,7 @@ import {
   FETCH_IMAGES_CLIENT,
   FETCH_TEMPS_CLIENT,
   FETCH_WEIGHTS_CLIENT,
-  // FETCH_MEASURES_CLIENT,
+  FETCH_MEASURES_CLIENT,
 } from "../reducers/clientReducer";
 
 // Action for Orders
@@ -46,7 +46,7 @@ export const fetchImages = (id: number) => async (dispatch: Dispatch) => {
 
 export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
   try {
-    const temps = await http.get(`${apiRoutes.inspector_temps}?order=${id}`);
+    const temps = await http.get(`${apiRoutes.client_temps}?order=${id}`);
 
     return dispatch({ type: FETCH_TEMPS_CLIENT, payload: temps });
   } catch (error) {}
@@ -54,16 +54,16 @@ export const fetchTemps = (id: number) => async (dispatch: Dispatch) => {
 
 export const fetchWeights = (id: number) => async (dispatch: Dispatch) => {
   try {
-    const res = await http.get(`${apiRoutes.inspector_weights}?order=${id}`);
+    const res = await http.get(`${apiRoutes.client_weights}?order=${id}`);
 
     return dispatch({ type: FETCH_WEIGHTS_CLIENT, payload: res });
   } catch (error) {}
 };
 
-// export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
-//   try {
-//     const res = await http.get(`${apiRoutes.inspector_measures}?order=${id}`);
+export const fetchMeasures = (id: number) => async (dispatch: Dispatch) => {
+  try {
+    const res = await http.get(`${apiRoutes.client_measures}?order=${id}`);
 
-//     return dispatch({ type: FETCH_MEASURES_CLIENT, payload: res });
-//   } catch (error) {}
-// };
+    return dispatch({ type: FETCH_MEASURES_CLIENT, payload: res });
+  } catch (error) {}
+};

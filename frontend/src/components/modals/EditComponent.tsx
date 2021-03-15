@@ -592,12 +592,13 @@ export const EditRowModal: FC<PropsRow> = ({ row, onOk, order, ...props }) => {
         setSubmitting(false);
       }}
     >
-      {({ handleSubmit, setFieldValue }) => (
+      {({ handleSubmit, setFieldValue, isValid, isSubmitting }) => (
         <Modal
           {...props}
           title={row ? "Editar Fila" : "Nueva Fila"}
           okLabel="Guardar"
           onOk={handleSubmit}
+          loading={!isValid || isSubmitting}
         >
           <Form>
             <Field
