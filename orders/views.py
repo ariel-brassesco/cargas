@@ -460,7 +460,7 @@ def get_rows_photos(request):
         serializer = RowOrderSerializer(rows, many=True)
         data = []
         for row in serializer.data:
-            if(row.get("display", False)):
+            if(not row.get("display", False)):
                 row["image"] = ""
             data.append(row)
         return Response(data, status=status.HTTP_200_OK)
