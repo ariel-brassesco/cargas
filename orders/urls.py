@@ -101,5 +101,6 @@ urlpatterns = [
     path("client/rows/", get_rows_photos),
     path("client/temps/", temps_list),
     path("client/weights/", weights_list),
+    path("client/measures/", measures_list),
     path("download/", download_images),
 ]

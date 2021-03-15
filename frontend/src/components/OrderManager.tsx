@@ -859,11 +859,11 @@ const MeasureData: FC<CProps> = ({
 
 const OrderManager: React.FC<Props> = ({ order_id }) => {
   const dispatch = useDispatch();
-  const rows: Row[] = useSelector((state: any) => getRows(state));
-  const order = useSelector((state: any) => getOrder(order_id)(state));
-  const temps = useSelector((state: any) => getTemps(state));
-  const weights = useSelector((state: any) => getWeights(state));
-  const measures = useSelector((state: any) => getMeasures(state));
+  const rows: Row[] = useSelector(getRows);
+  const order = useSelector(getOrder(order_id));
+  const temps = useSelector(getTemps);
+  const weights = useSelector(getWeights);
+  const measures = useSelector(getMeasures);
 
   useEffect(() => {
     dispatch(fetchRows(order.id));

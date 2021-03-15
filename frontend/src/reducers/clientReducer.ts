@@ -7,7 +7,7 @@ import { Row } from "../types/row";
 import { ImageControl } from "../types/images";
 import { Temperature } from "../types/temp";
 import { Weight } from "../types/weight";
-// import { Measure } from "../types/measure";
+import { Measure } from "../types/measure";
 
 export const FETCH_CLIENT_CLIENT: string = "FETCH_CLIENT_CLIENT";
 export const FETCH_ORDERS_CLIENT: string = "FETCH_ORDERS_CLIENT";
@@ -15,7 +15,7 @@ export const FETCH_ROWS_CLIENT: string = "FETCH_ROWS_CLIENT";
 export const FETCH_IMAGES_CLIENT: string = "FETCH_IMAGES_CLIENT";
 export const FETCH_TEMPS_CLIENT: string = "FETCH_TEMPS_CLIENT";
 export const FETCH_WEIGHTS_CLIENT: string = "FETCH_WEIGHTS_CLIENT";
-// export const FETCH_MEASURES_CLIENT: string = "FETCH_MEASURES_CLIENT";
+export const FETCH_MEASURES_CLIENT: string = "FETCH_MEASURES_CLIENT";
 
 type State = {
   client: Partial<Client>;
@@ -24,7 +24,7 @@ type State = {
   images: ImageControl[];
   temps: Temperature[];
   weights: Weight[];
-  // measures: Measure[];
+  measures: Measure[];
 };
 
 const initialState: State = {
@@ -34,7 +34,7 @@ const initialState: State = {
   images: [],
   temps: [],
   weights: [],
-  // measures: [],
+  measures: [],
 };
 
 export const clientReducer: Reducer<State> = (
@@ -83,11 +83,11 @@ export const clientReducer: Reducer<State> = (
         weights: payload ?? [],
       };
 
-    // case FETCH_MEASURES_CLIENT:
-    //   return {
-    //     ...state,
-    //     measures: payload ?? [],
-    //   };
+    case FETCH_MEASURES_CLIENT:
+      return {
+        ...state,
+        measures: payload ?? [],
+      };
 
     default:
       return state;
@@ -101,4 +101,4 @@ export const getRows = (state: any) => state.client.rows;
 export const getImages = (state: any) => state.client.images;
 export const getTemps = (state: any) => state.client.temps;
 export const getWeights = (state: any) => state.client.weights;
-// export const getMeasures = (state: any) => state.client.measures;
+export const getMeasures = (state: any) => state.client.measures;

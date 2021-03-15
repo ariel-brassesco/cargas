@@ -212,7 +212,6 @@ class TempControlViewSet(ModelViewSet):
         if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            # if (not self.request.user.is_client):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
@@ -269,7 +268,6 @@ class WeightControlViewSet(ModelViewSet):
         if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            # if (not self.request.user.is_client):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
@@ -323,8 +321,7 @@ class OrganolepticControlViewSet(ModelViewSet):
         if self.action == "destroy":
             permission_classes = [IsAdminUser]
         else:
-            if (not self.request.user.is_client):
-                permission_classes = [IsAuthenticated]
+            permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
     def list(self, request, *args, **kwargs):
@@ -459,9 +456,14 @@ class ImageControlViewSet(ModelViewSet):
 def get_rows_photos(request):
     try:
         order = request.query_params.get("order")
-        rows = RowOrder.objects.filter(order__pk=order, display=True)
+        rows = RowOrder.objects.filter(order__pk=order)
         serializer = RowOrderSerializer(rows, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = []
+        for row in serializer.data:
+            if(row.get("display", False)):
+                row["image"] = ""
+            data.append(row)
+        return Response(data, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
