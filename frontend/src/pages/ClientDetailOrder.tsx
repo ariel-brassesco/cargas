@@ -95,7 +95,26 @@ const RowsData: FC<RProps> = ({ title, order, rows }) => {
 
   return (
     <div className="box my-3">
-      <p className="title is-size-4">{title}</p>
+      <div className="is-flex is-flex-wrap-wrap">
+        <p className="has-text-weight-bold is-size-5 mt-2">{title}</p>
+        {!!rows.length ? (
+          <DownloadCSV
+            className="button is-info m-2"
+            headers={rows_headers}
+            data={rows
+              .sort((a, b) =>
+                a.number - b.number === 0 ? a.id - b.id : a.number - b.number
+              )
+              .map(({ number, quantity, product }) => ({
+                number,
+                quantity,
+                name: product.name,
+              }))}
+            filename={`${order.order || order.id}_Rows.csv`}
+            label="Descargar Filas"
+          />
+        ) : null}
+      </div>
       <LabelData label="Número de Filas:" value={maxRow} />
 
       {order.products.map((p) => (
@@ -107,24 +126,11 @@ const RowsData: FC<RProps> = ({ title, order, rows }) => {
       ))}
 
       {!!rows.length ? (
-        <>
-          <DownloadCSV
-            className="button is-info m-2"
-            headers={rows_headers}
-            data={rows.map(({ number, quantity, product }) => ({
-              number,
-              quantity,
-              name: product.name,
-            }))}
-            filename={`${order.order || order.id}_Rows.csv`}
-            label="Descargar Filas"
-          />
-          <Table
-            columns={columns}
-            data={rows}
-            className="table is-narrow is-bordered is-hoverable"
-          />
-        </>
+        <Table
+          columns={columns}
+          data={rows}
+          className="table is-narrow is-bordered is-hoverable"
+        />
       ) : null}
 
       {show ? (
@@ -139,29 +145,33 @@ const RowsData: FC<RProps> = ({ title, order, rows }) => {
 
       {show ? (
         <div className="is-flex is-flex-wrap-wrap is-align-items-center">
-          {rows.map((r: Row) =>
-            !!r.image ? (
-              <ModalTrigger
-                key={r.id}
-                button={
-                  <Image
-                    className="image is-w-128 is-clickable m-2"
-                    src={r.image}
-                    alt={`Fila #${r.number}`}
-                  />
-                }
-                modal={
-                  <ModalImage>
+          {rows
+            .sort((a, b) =>
+              a.number - b.number === 0 ? a.id - b.id : a.number - b.number
+            )
+            .map((r: Row) =>
+              !!r.image ? (
+                <ModalTrigger
+                  key={r.id}
+                  button={
                     <Image
-                      className="image is-w-90p"
+                      className="image is-w-128 is-clickable m-2"
                       src={r.image}
                       alt={`Fila #${r.number}`}
                     />
-                  </ModalImage>
-                }
-              />
-            ) : null
-          )}
+                  }
+                  modal={
+                    <ModalImage>
+                      <Image
+                        className="image is-w-90p"
+                        src={r.image}
+                        alt={`Fila #${r.number}`}
+                      />
+                    </ModalImage>
+                  }
+                />
+              ) : null
+            )}
         </div>
       ) : null}
     </div>
@@ -308,12 +318,16 @@ const TempData: FC<CProps> = ({ title, order, data }) => {
           <DownloadCSV
             className="button is-info m-2"
             headers={temp_headers}
-            data={data.map((w) => ({
-              package: w.package,
-              carton: w.carton,
-              primary_package: w.primary_package,
-              product: w.product,
-            }))}
+            data={data
+              .sort((a, b) =>
+                a.row - b.row === 0 ? a.id - b.id : a.row - b.row
+              )
+              .map((w) => ({
+                package: w.package,
+                carton: w.carton,
+                primary_package: w.primary_package,
+                product: w.product,
+              }))}
             filename={`${order.order || order.id}_Pesos.csv`}
             label="Descargar Pesos"
           />
@@ -339,36 +353,40 @@ const TempData: FC<CProps> = ({ title, order, data }) => {
             )}
 
             {show &&
-              data.map((t) => (
-                <div
-                  key={`temps-${t.id}`}
-                  className="is-flex is-flex-wrap-wrap is-align-items-center"
-                >
-                  {t.images
-                    .filter((i) => i.display)
-                    .map((i: ImageControl) => (
-                      <ModalTrigger
-                        key={i.id}
-                        button={
-                          <Image
-                            className="image is-w-128 is-clickable m-2"
-                            src={i.image}
-                            alt={i.control}
-                          />
-                        }
-                        modal={
-                          <ModalImage>
+              data
+                .sort((a, b) =>
+                  a.row - b.row === 0 ? a.id - b.id : a.row - b.row
+                )
+                .map((t) => (
+                  <div
+                    key={`temps-${t.id}`}
+                    className="is-flex is-flex-wrap-wrap is-align-items-center"
+                  >
+                    {t.images
+                      .filter((i) => i.display)
+                      .map((i: ImageControl) => (
+                        <ModalTrigger
+                          key={i.id}
+                          button={
                             <Image
-                              className="image is-w-90p"
+                              className="image is-w-128 is-clickable m-2"
                               src={i.image}
                               alt={i.control}
                             />
-                          </ModalImage>
-                        }
-                      />
-                    ))}
-                </div>
-              ))}
+                          }
+                          modal={
+                            <ModalImage>
+                              <Image
+                                className="image is-w-90p"
+                                src={i.image}
+                                alt={i.control}
+                              />
+                            </ModalImage>
+                          }
+                        />
+                      ))}
+                  </div>
+                ))}
           </>
         ) : null}
       </div>
