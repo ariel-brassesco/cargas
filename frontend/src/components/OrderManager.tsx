@@ -522,21 +522,25 @@ const RowsData: FC<RProps> = ({
       ) : null}
       <div className="is-flex is-flex-wrap-wrap mt-2">
         {rows &&
-          rows.map(
-            (r: Row, idx: number) =>
-              r.image && (
-                <div key={idx} className="has-text-centered mx-2">
-                  <ImagePicker
-                    key={r.id}
-                    src={r.image}
-                    alt={`Imagen Fila ${r.number}`}
-                    selected={r.display}
-                    onSelect={() => picker(r.id, !r.display)}
-                  />
-                  <p className="has-text-weight-bold">{`Fila ${r.number}`}</p>
-                </div>
-              )
-          )}
+          rows
+            .sort((a, b) =>
+              a.number - b.number === 0 ? a.id - b.id : a.number - b.number
+            )
+            .map(
+              (r: Row, idx: number) =>
+                r.image && (
+                  <div key={idx} className="has-text-centered mx-2">
+                    <ImagePicker
+                      key={r.id}
+                      src={r.image}
+                      alt={`Imagen Fila ${r.number}`}
+                      selected={r.display}
+                      onSelect={() => picker(r.id, !r.display)}
+                    />
+                    <p className="has-text-weight-bold">{`Fila ${r.number}`}</p>
+                  </div>
+                )
+            )}
       </div>
     </>
   );
@@ -643,7 +647,9 @@ const TempData: FC<CProps> = ({
           />
           <Table
             columns={columns}
-            data={data}
+            data={data.sort((a, b) =>
+              a.row - b.row === 0 ? a.id - b.id : a.row - b.row
+            )}
             className="table is-narrow is-bordered is-hoverable mt-2"
           />
         </>
