@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.getenv('DEBUG', 'true') == 'true'
-DEBUG = True
+DEBUG = False
 
 # Import development settings or production settings
 if DEBUG:

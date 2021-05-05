@@ -13,7 +13,6 @@ import { Order } from "../types/order";
 const ClientHomePage: FC = () => {
   const [search, setSearch] = useState("");
   const orders: Order[] = useSelector((state: any) => getOrders(state));
-  console.log(search);
   return (
     <div className="mt-3">
       {lodash.isEmpty(orders) ? (
